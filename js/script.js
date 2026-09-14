@@ -6,6 +6,8 @@
       image (مسار الصورة جوه images/)
    الخامات المتاحة (cat): wood, leather, crystal, acrylic, metal
    ============================================================ */
+const ACCOUNT_NAME = "اسم الحساب";
+
 const SHIELDS = [
   {
     id: "g1",
@@ -465,6 +467,11 @@ window.addEventListener(
     host.appendChild(s);
   }
 })();
+
+const accountNameEl = document.getElementById("account-name");
+if (accountNameEl) {
+  accountNameEl.textContent = ACCOUNT_NAME;
+}
 
 renderGrid();
 renderFilters();
