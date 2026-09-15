@@ -385,6 +385,7 @@ const modalMaterial = document.getElementById("modal-product-material");
 const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
 const modalWhatsapp = document.getElementById("modal-product-whatsapp");
+const scrollTopButton = document.getElementById("scroll-top");
 let active = "all";
 let currentCount = 0;
 
@@ -457,6 +458,7 @@ function renderGrid() {
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M20.52 3.48A11.92 11.92 0 0 0 12.09 0C5.5 0 .12 5.38.12 12.02c0 2.12.55 4.18 1.6 5.99L0 24l6.15-1.61a11.98 11.98 0 0 0 5.94 1.8h.01c6.58 0 11.97-5.38 11.97-12.02 0-3.2-1.24-6.21-3.48-8.49Zm-8.43 18.46h-.01c-1.91 0-3.78-.51-5.41-1.48l-.39-.23-3.65.96.98-3.55-.25-.39A9.48 9.48 0 0 1 2.1 12.02c0-5.23 4.26-9.48 9.49-9.48a9.42 9.42 0 0 1 6.7 2.78 9.46 9.46 0 0 1 2.78 6.7c0 5.24-4.26 9.48-9.49 9.48Zm5.21-7.1c-.28-.14-1.67-.82-1.93-.92-.26-.1-.45-.14-.63.14-.18.28-.71.92-.87 1.11-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.39-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.63-1.52-.86-2.08-.22-.55-.45-.47-.63-.48l-.54-.01c-.18 0-.48.07-.73.36-.25.29-1 1-1 2.45s1.03 2.84 1.17 3.04c.14.2 2.02 3.08 4.9 4.32.68.29 1.22.46 1.64.59.69.22 1.32.19 1.81.11.55-.08 1.67-.68 1.9-1.34.23-.66.23-1.23.16-1.35-.07-.12-.26-.2-.54-.34Z" fill="currentColor"/>
           </svg>
+          <span>واتساب</span>
         </a>
       </div>
     </div>
@@ -558,13 +560,17 @@ function observeCards() {
 }
 
 /* sticky bar shadow once scrolled */
-window.addEventListener(
-  "scroll",
-  () => {
-    filterBar.classList.toggle("stuck", window.scrollY > 40);
-  },
-  { passive: true },
-);
+function updateScrollControls() {
+  filterBar.classList.toggle("stuck", window.scrollY > 40);
+  scrollTopButton.classList.toggle("visible", window.scrollY > 360);
+}
+
+window.addEventListener("scroll", updateScrollControls, { passive: true });
+updateScrollControls();
+
+scrollTopButton.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 
 productModal.querySelectorAll("[data-modal-close]").forEach((element) => {
   element.addEventListener("click", closeProductModal);

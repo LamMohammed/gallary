@@ -17,10 +17,33 @@
   <div class="floaters" id="floaters"></div>
 
   <section class="hero">
-    <p class="kicker">أرشيف الدروع التكريمية</p>
-    <h1>دروع التكريم</h1>
-    <p>مجموعة فاخرة من دروع التكريم بخامات متعددة: الكريستال الشفاف، الأكريليك المحفور بالليزر، والمعدن . اختر الخامة
-      لتصفّح القطع الخاصة بها.</p>
+    <div class="hero-copy">
+      <p class="kicker">مجموعة الدروع الفاخرة</p>
+      <h1>نحتفي<br><span>بكل إنجاز</span></h1>
+      <p class="hero-description">مجموعة مختارة من دروع التكريم الفاخرة، صُمّمت لتمنح كل لحظة إنجاز حضورًا يليق بها.</p>
+      <div class="hero-actions">
+        <a class="hero-cta" href="#grid">استكشف المجموعة <span aria-hidden="true">←</span></a>
+        <a class="hero-secondary" href="#grid">اكتشف تصاميمنا</a>
+      </div>
+    </div>
+    <div class="hero-stack" aria-label="نماذج من مجموعة الدروع التكريمية">
+      <figure class="hero-card hero-card--back-left" tabindex="0">
+        <img src="images/acrylic-2.jpg" alt="درع أكريليك محفور" loading="eager">
+      </figure>
+      <figure class="hero-card hero-card--back-right" tabindex="0">
+        <img src="images/gold-4.jpg" alt="درع ذهبي ملكي" loading="eager">
+      </figure>
+      <figure class="hero-card hero-card--middle-left" tabindex="0">
+        <img src="images/crystal-7.jpg" alt="درع كريستالي" loading="eager">
+      </figure>
+      <figure class="hero-card hero-card--middle-right" tabindex="0">
+        <img src="images/acrylic-4.jpg" alt="لوحة أكريليك للتقدير" loading="eager">
+      </figure>
+      <figure class="hero-card hero-card--front" tabindex="0">
+        <span class="hero-featured__label">FEATURED PIECE</span>
+        <img src="images/crystal-1.jpg" alt="درع تكريمي كريستالي مميز" fetchpriority="high">
+      </figure>
+    </div>
   </section>
 
   <div class="filter-bar">
@@ -45,6 +68,10 @@
       </div>
     </section>
   </div>
+
+  <button class="scroll-top" id="scroll-top" type="button" aria-label="العودة إلى أعلى الصفحة">
+    <span aria-hidden="true">↑</span>
+  </button>
 
   <footer>
     <p>© جميع الحقوق محفوظة لـ <span id="account-name">محمد رضا شركه ميم </span></p>
