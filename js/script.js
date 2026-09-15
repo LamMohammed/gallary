@@ -1,16 +1,18 @@
 /* ============================================================
    بيانات الدروع — عشان تضيف درع جديد:
    1) ضيف صورة المنتج جوه فولدر images/
-   2) انسخ سطر من اللي تحت وغيّر: id (فريد)، cat (خامة)،
+   2) انسخ سطر من اللي تحت وغيّر: id (فريد)، code (كود المنتج)، cat (خامة)،
       name (اسم الدرع)، era (وصف قصير)، size (المقاس)،
       image (مسار الصورة جوه images/)
    الخامات المتاحة (cat): wood, leather, crystal, acrylic, metal
    ============================================================ */
-const ACCOUNT_NAME = "اسم الحساب";
+const ACCOUNT_NAME = "شركة ميم  ";
+const WHATSAPP_NUMBER = "201000082027";
 
 const SHIELDS = [
   {
     id: "g1",
+    code: "GO-001",
     cat: "gold",
     name: " `ذهبي `",
     era: "  ذهبي ملكي  بتصميم  عصري ·  ",
@@ -19,6 +21,7 @@ const SHIELDS = [
   },
   {
     id: "g2",
+    code: "GO-002",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -28,6 +31,7 @@ const SHIELDS = [
 
   {
     id: "g3",
+    code: "GO-003",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -37,6 +41,7 @@ const SHIELDS = [
 
   {
     id: "g4",
+    code: "GO-004",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -45,6 +50,7 @@ const SHIELDS = [
   },
   {
     id: "g5",
+    code: "GO-005",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -53,6 +59,7 @@ const SHIELDS = [
   },
   {
     id: "g6",
+    code: "GO-006",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -61,6 +68,7 @@ const SHIELDS = [
   },
   {
     id: "g7",
+    code: "GO-007",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -69,6 +77,7 @@ const SHIELDS = [
   },
   {
     id: "g8",
+    code: "GO-008",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -77,6 +86,7 @@ const SHIELDS = [
   },
   {
     id: "g9",
+    code: "GO-009",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -85,6 +95,7 @@ const SHIELDS = [
   },
   {
     id: "g10",
+    code: "GO-010",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -93,6 +104,7 @@ const SHIELDS = [
   },
   {
     id: "g11",
+    code: "GO-011",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -101,6 +113,7 @@ const SHIELDS = [
   },
   {
     id: "g12",
+    code: "GO-012",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -109,6 +122,7 @@ const SHIELDS = [
   },
   {
     id: "g13",
+    code: "GO-013",
     cat: "gold",
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
@@ -121,6 +135,7 @@ const SHIELDS = [
 
   {
     id: "c1",
+    code: "CR-001",
     cat: "crystal",
     name: "المسلة الكريستالية",
     era: "كريستال شفاف · قاعدة خشبية",
@@ -129,6 +144,7 @@ const SHIELDS = [
   },
   {
     id: "c2",
+    code: "CR-002",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -137,6 +153,7 @@ const SHIELDS = [
   },
   {
     id: "c3",
+    code: "CR-003",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -145,6 +162,7 @@ const SHIELDS = [
   },
   {
     id: "c4",
+    code: "CR-004",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -153,6 +171,7 @@ const SHIELDS = [
   },
   {
     id: "c5",
+    code: "CR-005",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -161,6 +180,7 @@ const SHIELDS = [
   },
   {
     id: "c6",
+    code: "CR-006",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -170,6 +190,7 @@ const SHIELDS = [
 
   {
     id: "c7",
+    code: "CR-007",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -178,6 +199,7 @@ const SHIELDS = [
   },
   {
     id: "c8",
+    code: "CR-008",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -186,6 +208,7 @@ const SHIELDS = [
   },
   {
     id: "c9",
+    code: "CR-009",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -194,6 +217,7 @@ const SHIELDS = [
   },
   {
     id: "c10",
+    code: "CR-010",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -202,6 +226,7 @@ const SHIELDS = [
   },
   {
     id: "c11",
+    code: "CR-011",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -210,6 +235,7 @@ const SHIELDS = [
   },
   {
     id: "c12",
+    code: "CR-012",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -218,6 +244,7 @@ const SHIELDS = [
   },
   {
     id: "c13",
+    code: "CR-013",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -226,6 +253,7 @@ const SHIELDS = [
   },
   {
     id: "c14",
+    code: "CR-014",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -234,6 +262,7 @@ const SHIELDS = [
   },
   {
     id: "c15",
+    code: "CR-015",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -242,6 +271,7 @@ const SHIELDS = [
   },
   {
     id: "c16",
+    code: "CR-016",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -250,6 +280,7 @@ const SHIELDS = [
   },
 {
     id: "c17",
+    code: "CR-017",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -258,6 +289,7 @@ const SHIELDS = [
   },
 {
     id: "c18",
+    code: "CR-018",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -266,6 +298,7 @@ const SHIELDS = [
   },
 {
     id: "c19",
+    code: "CR-019",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -274,6 +307,7 @@ const SHIELDS = [
   },
 {
     id: "c20",
+    code: "CR-020",
     cat: "crystal",
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
@@ -284,6 +318,7 @@ const SHIELDS = [
 
   {
     id: "a1",
+    code: "AC-001",
     cat: "acrylic",
     name: "لوحة الشكر",
     era: "أكريليك فاتح · حفر ليزر",
@@ -292,6 +327,7 @@ const SHIELDS = [
   },
   {
     id: "a2",
+    code: "AC-002",
     cat: "acrylic",
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
@@ -300,6 +336,7 @@ const SHIELDS = [
   },
   {
     id: "a3",
+    code: "AC-003",
     cat: "acrylic",
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
@@ -308,6 +345,7 @@ const SHIELDS = [
   },
   {
     id: "a4",
+    code: "AC-004",
     cat: "acrylic",
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
@@ -316,6 +354,7 @@ const SHIELDS = [
   },
   {
     id: "a5",
+    code: "AC-005",
     cat: "acrylic",
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
@@ -340,6 +379,12 @@ const grid = document.getElementById("grid");
 const filtersEl = document.getElementById("filters");
 const countEl = document.getElementById("count");
 const filterBar = document.querySelector(".filter-bar");
+const productModal = document.getElementById("product-modal");
+const modalImage = document.getElementById("modal-product-image");
+const modalMaterial = document.getElementById("modal-product-material");
+const modalName = document.getElementById("modal-product-name");
+const modalCode = document.getElementById("modal-product-code");
+const modalWhatsapp = document.getElementById("modal-product-whatsapp");
 let active = "all";
 let currentCount = 0;
 
@@ -352,6 +397,34 @@ function catLabel(id) {
   return CATS.find((c) => c.id === id).label;
 }
 
+function whatsappUrl(product) {
+  const message = `👋 مرحبًا، أريد الاستفسار عن هذا المنتج:
+
+🏆 اسم المنتج: ${product.name}
+📌 كود المنتج: ${product.code}
+✨ الخامة: ${catLabel(product.cat)}
+
+أريد معرفة السعر والتفاصيل المتاحة.`;
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+function openProductModal(product) {
+  modalImage.src = product.image;
+  modalImage.alt = product.name;
+  modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
+  modalName.textContent = product.name;
+  modalCode.textContent = `كود المنتج: ${product.code}`;
+  modalWhatsapp.href = whatsappUrl(product);
+  productModal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closeProductModal() {
+  productModal.hidden = true;
+  document.body.classList.remove("modal-open");
+}
+
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
     (s, i) => `
@@ -361,13 +434,31 @@ function renderGrid() {
           ${cameraIcon}
           <span>ضيف صورة "${s.image.split("/").pop()}" في فولدر images</span>
         </div>
-        <img src="${s.image}" alt="${s.name}" loading="lazy"
+        <img class="product-image" src="${s.image}" alt="${s.name}" loading="lazy"
+             data-product-id="${s.id}" tabindex="0" role="button"
              onerror="this.remove()">
+        <span class="product-code-badge">${s.code}</span>
         <div class="shine"></div>
       </div>
       <p class="era">${s.era}</p>
       <h3>${s.name}</h3>
-      <p class="cat">${catLabel(s.cat)} · ${s.size}</p>
+      <div class="card-meta">
+        <p class="cat">${catLabel(s.cat)} · ${s.size}</p>
+        <a
+          class="wa-button"
+          href="${whatsappUrl(s)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="تواصل عبر واتساب: ${s.name}"
+          title="WhatsApp"
+          data-product-id="${s.id}"
+          data-product-code="${s.code}"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20.52 3.48A11.92 11.92 0 0 0 12.09 0C5.5 0 .12 5.38.12 12.02c0 2.12.55 4.18 1.6 5.99L0 24l6.15-1.61a11.98 11.98 0 0 0 5.94 1.8h.01c6.58 0 11.97-5.38 11.97-12.02 0-3.2-1.24-6.21-3.48-8.49Zm-8.43 18.46h-.01c-1.91 0-3.78-.51-5.41-1.48l-.39-.23-3.65.96.98-3.55-.25-.39A9.48 9.48 0 0 1 2.1 12.02c0-5.23 4.26-9.48 9.49-9.48a9.42 9.42 0 0 1 6.7 2.78 9.46 9.46 0 0 1 2.78 6.7c0 5.24-4.26 9.48-9.49 9.48Zm5.21-7.1c-.28-.14-1.67-.82-1.93-.92-.26-.1-.45-.14-.63.14-.18.28-.71.92-.87 1.11-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.39-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.63-1.52-.86-2.08-.22-.55-.45-.47-.63-.48l-.54-.01c-.18 0-.48.07-.73.36-.25.29-1 1-1 2.45s1.03 2.84 1.17 3.04c.14.2 2.02 3.08 4.9 4.32.68.29 1.22.46 1.64.59.69.22 1.32.19 1.81.11.55-.08 1.67-.68 1.9-1.34.23-.66.23-1.23.16-1.35-.07-.12-.26-.2-.54-.34Z" fill="currentColor"/>
+          </svg>
+        </a>
+      </div>
     </div>
   `,
   ).join("");
@@ -381,6 +472,19 @@ function renderGrid() {
       const thumb = card.querySelector(".thumb");
       thumb.style.setProperty("--mx", x + "%");
       thumb.style.setProperty("--my", y + "%");
+    });
+  });
+
+  grid.querySelectorAll(".product-image").forEach((image) => {
+    const product = SHIELDS.find((item) => item.id === image.dataset.productId);
+    if (!product) return;
+
+    image.addEventListener("click", () => openProductModal(product));
+    image.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openProductModal(product);
+      }
     });
   });
 
@@ -420,8 +524,19 @@ function applyFilter() {
   let visible = 0;
   cards.forEach((card) => {
     const match = active === "all" || card.dataset.cat === active;
-    card.classList.toggle("hidden", !match);
-    if (match) visible++;
+    if (match) {
+      card.classList.remove("hidden", "in-view");
+      requestAnimationFrame(() => {
+        if (!card.classList.contains("hidden") &&
+            (active === "all" || card.dataset.cat === active)) {
+          card.classList.add("in-view");
+        }
+      });
+      visible++;
+    } else {
+      card.classList.remove("in-view");
+      card.classList.add("hidden");
+    }
   });
   animateCount(visible);
 }
@@ -450,6 +565,14 @@ window.addEventListener(
   },
   { passive: true },
 );
+
+productModal.querySelectorAll("[data-modal-close]").forEach((element) => {
+  element.addEventListener("click", closeProductModal);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !productModal.hidden) closeProductModal();
+});
 
 /* ambient floating shapes */
 (function initFloaters() {

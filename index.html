@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دروع التكريم</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دروع التكريم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <div class="floaters" id="floaters"></div>
@@ -15,7 +19,8 @@
   <section class="hero">
     <p class="kicker">أرشيف الدروع التكريمية</p>
     <h1>دروع التكريم</h1>
-    <p>مجموعة فاخرة من دروع التكريم بخامات متعددة:   الكريستال الشفاف، الأكريليك المحفور بالليزر، والمعدن  . اختر الخامة لتصفّح القطع الخاصة بها.</p>
+    <p>مجموعة فاخرة من دروع التكريم بخامات متعددة: الكريستال الشفاف، الأكريليك المحفور بالليزر، والمعدن . اختر الخامة
+      لتصفّح القطع الخاصة بها.</p>
   </section>
 
   <div class="filter-bar">
@@ -25,9 +30,25 @@
 
   <main class="grid" id="grid"></main>
 
+  <div class="product-modal" id="product-modal" hidden>
+    <div class="product-modal__backdrop" data-modal-close></div>
+    <section class="product-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-product-name">
+      <button class="product-modal__close" type="button" aria-label="إغلاق" data-modal-close>&times;</button>
+      <img class="product-modal__image" id="modal-product-image" alt="">
+      <div class="product-modal__content">
+        <p class="product-modal__material" id="modal-product-material"></p>
+        <h2 id="modal-product-name"></h2>
+        <p class="product-modal__code" id="modal-product-code"></p>
+        <a class="product-modal__whatsapp" id="modal-product-whatsapp" target="_blank" rel="noopener noreferrer">
+          تواصل عبر WhatsApp
+        </a>
+      </div>
+    </section>
+  </div>
+
   <footer>
-      <p>© جميع الحقوق محفوظة لـ <span id="account-name">اسم الحساب</span></p>
+    <p>© جميع الحقوق محفوظة لـ <span id="account-name">محمد رضا شركه ميم </span></p>
   </footer>
-<script src="js/script.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
