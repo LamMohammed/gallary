@@ -17,7 +17,7 @@ const SHIELDS = [
     name: " `ذهبي `",
     era: "  ذهبي ملكي  بتصميم  عصري ·  ",
     size: "176×230",
-    image: "images/gold-1.jpg",
+    image: "images/gold-1.webp",
   },
   {
     id: "g2",
@@ -26,7 +26,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-2.jpg",
+    image: "images/gold-2.webp",
   },
 
   {
@@ -36,7 +36,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-3.jpg",
+    image: "images/gold-3.webp",
   },
 
   {
@@ -46,7 +46,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-4.jpg",
+    image: "images/gold-4.webp",
   },
   {
     id: "g5",
@@ -55,7 +55,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-5.jpg",
+    image: "images/gold-5.webp",
   },
   {
     id: "g6",
@@ -64,7 +64,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-6.jpg",
+    image: "images/gold-6.webp",
   },
   {
     id: "g7",
@@ -73,7 +73,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-7.jpg",
+    image: "images/gold-7.webp",
   },
   {
     id: "g8",
@@ -82,7 +82,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-8.jpg",
+    image: "images/gold-8.webp",
   },
   {
     id: "g9",
@@ -91,7 +91,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-9.jpg",
+    image: "images/gold-9.webp",
   },
   {
     id: "g10",
@@ -100,7 +100,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-10.jpg",
+    image: "images/gold-10.webp",
   },
   {
     id: "g11",
@@ -109,7 +109,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-11.jpg",
+    image: "images/gold-11.webp",
   },
   {
     id: "g12",
@@ -118,7 +118,7 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-12.jpg",
+    image: "images/gold-12.webp",
   },
   {
     id: "g13",
@@ -127,11 +127,11 @@ const SHIELDS = [
     name: "ذهبي ",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
-    image: "images/gold-13.jpg",
+    image: "images/gold-13.webp",
   },
 
-  // {id:'l1', cat:'leather', name:'الإطار الأسود الأنيق', era:'جلد طبيعي · دبل فريم', size:'قياس مزدوج', image:'images/leather-1.jpg'},
-  // {id:'l2', cat:'leather', name:'الإطار الكريمي الفاخر', era:'جلد فاخر · دبل فريم', size:'قياس مزدوج', image:'images/leather-2.jpg'},
+  // {id:'l1', cat:'leather', name:'الإطار الأسود الأنيق', era:'جلد طبيعي · دبل فريم', size:'قياس مزدوج', image:'images/leather-1.webp'},
+  // {id:'l2', cat:'leather', name:'الإطار الكريمي الفاخر', era:'جلد فاخر · دبل فريم', size:'قياس مزدوج', image:'images/leather-2.webp'},
 
   {
     id: "c1",
@@ -140,7 +140,7 @@ const SHIELDS = [
     name: "المسلة الكريستالية",
     era: "كريستال شفاف · قاعدة خشبية",
     size: "ارتفاع 25سم",
-    image: "images/crystal-1.jpg",
+    image: "images/crystal-1.webp",
   },
   {
     id: "c2",
@@ -149,7 +149,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-2.jpg",
+    image: "images/crystal-2.webp",
   },
   {
     id: "c3",
@@ -158,7 +158,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-3.jpg",
+    image: "images/crystal-3.webp",
   },
   {
     id: "c4",
@@ -167,7 +167,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-4.jpg",
+    image: "images/crystal-4.webp",
   },
   {
     id: "c5",
@@ -176,7 +176,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-5.jpg",
+    image: "images/crystal-5.webp",
   },
   {
     id: "c6",
@@ -185,7 +185,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-6.jpg",
+    image: "images/crystal-6.webp",
   },
 
   {
@@ -195,7 +195,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-7.jpg",
+    image: "images/crystal-7.webp",
   },
   {
     id: "c8",
@@ -204,7 +204,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-8.jpg",
+    image: "images/crystal-8.webp",
   },
   {
     id: "c9",
@@ -213,7 +213,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-9.jpg",
+    image: "images/crystal-9.webp",
   },
   {
     id: "c10",
@@ -222,7 +222,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-10.jpg",
+    image: "images/crystal-10.webp",
   },
   {
     id: "c11",
@@ -231,7 +231,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-11.jpg",
+    image: "images/crystal-11.webp",
   },
   {
     id: "c12",
@@ -240,7 +240,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-12.jpg",
+    image: "images/crystal-12.webp",
   },
   {
     id: "c13",
@@ -249,7 +249,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-13.jpg",
+    image: "images/crystal-13.webp",
   },
   {
     id: "c14",
@@ -258,7 +258,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-14.jpg",
+    image: "images/crystal-14.webp",
   },
   {
     id: "c15",
@@ -267,7 +267,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-15.jpg",
+    image: "images/crystal-15.webp",
   },
   {
     id: "c16",
@@ -276,7 +276,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-16.jpg",
+    image: "images/crystal-16.webp",
   },
 {
     id: "c17",
@@ -285,7 +285,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-17.jpg",
+    image: "images/crystal-17.webp",
   },
 {
     id: "c18",
@@ -294,7 +294,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-18.jpg",
+    image: "images/crystal-18.webp",
   },
 {
     id: "c19",
@@ -303,7 +303,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-19.jpg",
+    image: "images/crystal-19.webp",
   },
 {
     id: "c20",
@@ -312,7 +312,7 @@ const SHIELDS = [
     name: "الشفرة الزجاجية",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
-    image: "images/crystal-20.jpg",
+    image: "images/crystal-20.webp",
   },
 
 
@@ -323,7 +323,7 @@ const SHIELDS = [
     name: "لوحة الشكر",
     era: "أكريليك فاتح · حفر ليزر",
     size: "أفقي 30×22سم",
-    image: "images/acrylic-1.jpg",
+    image: "images/acrylic-1.webp",
   },
   {
     id: "a2",
@@ -332,7 +332,7 @@ const SHIELDS = [
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
-    image: "images/acrylic-2.jpg",
+    image: "images/acrylic-2.webp",
   },
   {
     id: "a3",
@@ -341,7 +341,7 @@ const SHIELDS = [
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
-    image: "images/acrylic-3.jpg",
+    image: "images/acrylic-3.webp",
   },
   {
     id: "a4",
@@ -350,7 +350,7 @@ const SHIELDS = [
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
-    image: "images/acrylic-4.jpg",
+    image: "images/acrylic-4.webp",
   },
   {
     id: "a5",
@@ -359,11 +359,11 @@ const SHIELDS = [
     name: "لوحة التقدير",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
-    image: "images/acrylic-5.jpg",
+    image: "images/acrylic-5.webp",
   },
 
-  // {id:'m1', cat:'metal', name:'العرش الفضي', era:'معدن مصقول · أعمدة ملكية', size:'ارتفاع 28سم', image:'images/metal-1.jpg'},
-  // {id:'m2', cat:'metal', name:'الصولجان الملكي', era:'معدن مصقول · نقش متعرج', size:'ارتفاع 30سم', image:'images/metal-2.jpg'},
+  // {id:'m1', cat:'metal', name:'العرش الفضي', era:'معدن مصقول · أعمدة ملكية', size:'ارتفاع 28سم', image:'images/metal-1.webp'},
+  // {id:'m2', cat:'metal', name:'الصولجان الملكي', era:'معدن مصقول · نقش متعرج', size:'ارتفاع 30سم', image:'images/metal-2.webp'},
 ];
 
 const CATS = [
@@ -384,7 +384,12 @@ const modalImage = document.getElementById("modal-product-image");
 const modalMaterial = document.getElementById("modal-product-material");
 const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
+const modalCounter = document.getElementById("modal-product-counter");
 const modalWhatsapp = document.getElementById("modal-product-whatsapp");
+const modalPrevBtn = document.getElementById("modal-prev");
+const modalNextBtn = document.getElementById("modal-next");
+let modalList = [];
+let modalIndex = -1;
 const scrollTopButton = document.getElementById("scroll-top");
 let active = "all";
 let currentCount = 0;
@@ -410,21 +415,56 @@ function whatsappUrl(product) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-function openProductModal(product) {
+function visibleShields() {
+  return active === "all" ? SHIELDS : SHIELDS.filter((s) => s.cat === active);
+}
+
+function openProductModal(product, list) {
+  modalList = list || visibleShields();
+  modalIndex = modalList.findIndex((s) => s.id === product.id);
+  if (modalIndex === -1) {
+    modalList = [product];
+    modalIndex = 0;
+  }
+  renderModalProduct();
+  productModal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function renderModalProduct() {
+  const product = modalList[modalIndex];
+  if (!product) return;
+
+  modalImage.classList.add("is-loading");
+  modalImage.onload = () => modalImage.classList.remove("is-loading");
+  modalImage.onerror = () => modalImage.classList.remove("is-loading");
   modalImage.src = product.image;
   modalImage.alt = product.name;
+
   modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
   modalName.textContent = product.name;
   modalCode.textContent = `كود المنتج: ${product.code}`;
   modalWhatsapp.href = whatsappUrl(product);
-  productModal.hidden = false;
-  document.body.classList.add("modal-open");
+
+  const showNav = modalList.length > 1;
+  modalPrevBtn.style.display = showNav ? "flex" : "none";
+  modalNextBtn.style.display = showNav ? "flex" : "none";
+  modalCounter.textContent = showNav ? `${modalIndex + 1} / ${modalList.length}` : "";
+}
+
+function stepModal(delta) {
+  if (modalList.length === 0) return;
+  modalIndex = (modalIndex + delta + modalList.length) % modalList.length;
+  renderModalProduct();
 }
 
 function closeProductModal() {
   productModal.hidden = true;
   document.body.classList.remove("modal-open");
 }
+
+modalPrevBtn.addEventListener("click", () => stepModal(-1));
+modalNextBtn.addEventListener("click", () => stepModal(1));
 
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
@@ -435,7 +475,7 @@ function renderGrid() {
           ${cameraIcon}
           <span>ضيف صورة "${s.image.split("/").pop()}" في فولدر images</span>
         </div>
-        <img class="product-image" src="${s.image}" alt="${s.name}" loading="lazy"
+        <img class="product-image" src="${s.image}" alt="${s.name}" loading="lazy" decoding="async"
              data-product-id="${s.id}" tabindex="0" role="button"
              onerror="this.remove()">
         <span class="product-code-badge">${s.code}</span>
@@ -577,7 +617,10 @@ productModal.querySelectorAll("[data-modal-close]").forEach((element) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !productModal.hidden) closeProductModal();
+  if (productModal.hidden) return;
+  if (event.key === "Escape") closeProductModal();
+  if (event.key === "ArrowLeft") stepModal(1);
+  if (event.key === "ArrowRight") stepModal(-1);
 });
 
 /* ambient floating shapes */
@@ -602,6 +645,35 @@ if (accountNameEl) {
   accountNameEl.textContent = ACCOUNT_NAME;
 }
 
+/* header contact: name + formatted phone number, built from WHATSAPP_NUMBER */
+(function initHeaderContact() {
+  const link = document.getElementById("header-contact");
+  const phoneEl = document.getElementById("header-contact-phone");
+  if (!link || !phoneEl) return;
+
+  // "201000082027" -> local "01000082027" -> "010 0008 2027"
+  const local = "0" + WHATSAPP_NUMBER.slice(2);
+  const formatted = `${local.slice(0, 3)} ${local.slice(3, 7)} ${local.slice(7)}`;
+
+  phoneEl.textContent = formatted;
+  link.href = `tel:+${WHATSAPP_NUMBER}`;
+})();
+
 renderGrid();
 renderFilters();
 applyFilter();
+
+/* ---------- page loader ---------- */
+(function initPageLoader() {
+  const loader = document.getElementById("page-loader");
+  if (!loader) return;
+  const minDelay = new Promise((resolve) => setTimeout(resolve, 450));
+  const pageLoaded = new Promise((resolve) => {
+    if (document.readyState === "complete") resolve();
+    else window.addEventListener("load", resolve, { once: true });
+  });
+  Promise.all([minDelay, pageLoaded]).then(() => {
+    loader.classList.add("is-hidden");
+    setTimeout(() => loader.remove(), 600);
+  });
+})();
