@@ -379,6 +379,7 @@ const grid = document.getElementById("grid");
 const filtersEl = document.getElementById("filters");
 const countEl = document.getElementById("count");
 const filterBar = document.querySelector(".filter-bar");
+const filterBarSlot = document.querySelector(".filter-bar-slot");
 const productModal = document.getElementById("product-modal");
 const modalImage = document.getElementById("modal-product-image");
 const modalMaterial = document.getElementById("modal-product-material");
@@ -388,6 +389,7 @@ const modalCounter = document.getElementById("modal-product-counter");
 const modalWhatsapp = document.getElementById("modal-product-whatsapp");
 const modalPrevBtn = document.getElementById("modal-prev");
 const modalNextBtn = document.getElementById("modal-next");
+const modalSelectToggle = document.getElementById("modal-select-toggle");
 let modalList = [];
 let modalIndex = -1;
 const scrollTopButton = document.getElementById("scroll-top");
@@ -413,6 +415,92 @@ function whatsappUrl(product) {
 أريد معرفة السعر والتفاصيل المتاحة.`;
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+/* ---------- bulk selection + multi-product WhatsApp send ---------- */
+const selectedIds = new Set();
+const bulkBar = document.getElementById("bulk-bar");
+const bulkCount = document.getElementById("bulk-bar-count");
+const bulkSend = document.getElementById("bulk-bar-send");
+const bulkClear = document.getElementById("bulk-bar-clear");
+
+const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+function toArabicNumber(n) {
+  return String(n)
+    .split("")
+    .map((d) => arabicDigits[d] ?? d)
+    .join("");
+}
+
+function updateBulkBar() {
+  const count = selectedIds.size;
+  if (count === 0) {
+    bulkBar.classList.remove("is-visible");
+    document.body.classList.remove("has-bulk-bar");
+    setTimeout(() => {
+      if (selectedIds.size === 0) bulkBar.hidden = true;
+    }, 300);
+    return;
+  }
+  bulkBar.hidden = false;
+  document.body.classList.add("has-bulk-bar");
+  requestAnimationFrame(() => bulkBar.classList.add("is-visible"));
+  bulkCount.textContent = count === 1 ? "منتج واحد محدد" : `${toArabicNumber(count)} منتجات محددة`;
+}
+
+function toggleSelect(id) {
+  const toggleBtn = grid.querySelector(`.select-toggle[data-product-id="${id}"]`);
+  const card = grid.querySelector(`.card[data-product-id="${id}"]`);
+  if (selectedIds.has(id)) {
+    selectedIds.delete(id);
+    toggleBtn?.classList.remove("is-selected");
+    card?.classList.remove("is-selected");
+  } else {
+    selectedIds.add(id);
+    toggleBtn?.classList.add("is-selected");
+    card?.classList.add("is-selected");
+  }
+  if (modalSelectToggle.dataset.productId === id) {
+    modalSelectToggle.classList.toggle("is-selected", selectedIds.has(id));
+  }
+  updateBulkBar();
+}
+
+function clearSelection() {
+  selectedIds.forEach((id) => {
+    grid.querySelector(`.select-toggle[data-product-id="${id}"]`)?.classList.remove("is-selected");
+    grid.querySelector(`.card[data-product-id="${id}"]`)?.classList.remove("is-selected");
+  });
+  selectedIds.clear();
+  modalSelectToggle.classList.remove("is-selected");
+  updateBulkBar();
+}
+
+bulkSend.addEventListener("click", () => {
+  const items = SHIELDS.filter((s) => selectedIds.has(s.id));
+  if (items.length === 0) return;
+
+  const lines = items.map(
+    (p, i) =>
+      `${i + 1}-\n🏆 اسم المنتج: ${p.name}\n📌 كود المنتج: ${p.code}\n✨ الخامة: ${catLabel(p.cat)}`,
+  );
+  const message = `👋 مرحبًا، أريد الاستفسار عن هذه المنتجات:\n\n${lines.join("\n\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
+
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
+  clearSelection();
+});
+
+bulkClear.addEventListener("click", clearSelection);
+
+/* open a product's modal directly if the page was opened with ?product=<id> */
+function initDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("product");
+  if (!id) return;
+  const product = SHIELDS.find((s) => s.id === id);
+  if (product) {
+    setTimeout(() => openProductModal(product), 400);
+  }
 }
 
 function visibleShields() {
@@ -446,6 +534,13 @@ function renderModalProduct() {
   modalCode.textContent = `كود المنتج: ${product.code}`;
   modalWhatsapp.href = whatsappUrl(product);
 
+  modalSelectToggle.dataset.productId = product.id;
+  modalSelectToggle.classList.toggle("is-selected", selectedIds.has(product.id));
+  modalSelectToggle.setAttribute(
+    "aria-label",
+    selectedIds.has(product.id) ? `إلغاء تحديد ${product.name}` : `تحديد ${product.name} للإرسال`,
+  );
+
   const showNav = modalList.length > 1;
   modalPrevBtn.style.display = showNav ? "flex" : "none";
   modalNextBtn.style.display = showNav ? "flex" : "none";
@@ -465,11 +560,17 @@ function closeProductModal() {
 
 modalPrevBtn.addEventListener("click", () => stepModal(-1));
 modalNextBtn.addEventListener("click", () => stepModal(1));
+modalSelectToggle.addEventListener("click", () => {
+  const id = modalSelectToggle.dataset.productId;
+  if (!id) return;
+  toggleSelect(id);
+  modalSelectToggle.classList.toggle("is-selected", selectedIds.has(id));
+});
 
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
     (s, i) => `
-    <div class="card" data-cat="${s.cat}" style="--d:${(i % 8) * 0.06}s">
+    <div class="card" data-cat="${s.cat}" data-product-id="${s.id}" style="--d:${(i % 8) * 0.06}s">
       <div class="thumb">
         <div class="placeholder">
           ${cameraIcon}
@@ -479,6 +580,11 @@ function renderGrid() {
              data-product-id="${s.id}" tabindex="0" role="button"
              onerror="this.remove()">
         <span class="product-code-badge">${s.code}</span>
+        <button class="select-toggle" type="button" data-product-id="${s.id}" aria-label="تحديد ${s.name} للإرسال">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </button>
         <div class="shine"></div>
       </div>
       <p class="era">${s.era}</p>
@@ -527,6 +633,12 @@ function renderGrid() {
         event.preventDefault();
         openProductModal(product);
       }
+    });
+  });
+
+  grid.querySelectorAll(".select-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      toggleSelect(btn.dataset.productId);
     });
   });
 
@@ -599,10 +711,20 @@ function observeCards() {
   grid.querySelectorAll(".card").forEach((card) => io.observe(card));
 }
 
-/* sticky bar shadow once scrolled */
+/* scroll-to-top button visibility */
 function updateScrollControls() {
-  filterBar.classList.toggle("stuck", window.scrollY > 40);
   scrollTopButton.classList.toggle("visible", window.scrollY > 360);
+
+  const shouldFixFilterBar = window.scrollY >= 300;
+  if (shouldFixFilterBar === filterBar.classList.contains("is-fixed")) return;
+
+  if (shouldFixFilterBar) {
+    filterBarSlot.style.height = `${filterBar.offsetHeight}px`;
+    filterBar.classList.add("is-fixed");
+  } else {
+    filterBar.classList.remove("is-fixed");
+    filterBarSlot.style.height = "";
+  }
 }
 
 window.addEventListener("scroll", updateScrollControls, { passive: true });
@@ -662,6 +784,7 @@ if (accountNameEl) {
 renderGrid();
 renderFilters();
 applyFilter();
+initDeepLink();
 
 /* ---------- page loader ---------- */
 (function initPageLoader() {
