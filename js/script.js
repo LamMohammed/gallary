@@ -441,20 +441,28 @@ function quantityControlMarkup(product) {
       <span class="quantity-control__label">الكمية</span>
       <div class="quantity-control__stepper">
         <button class="quantity-control__button" type="button" data-quantity-change="-1" data-product-id="${product.id}" aria-label="تقليل كمية ${product.name}">−</button>
-        <output class="quantity-control__value" data-quantity-value="${product.id}" aria-live="polite">${toArabicNumber(productQuantities.get(product.id) ?? 1)}</output>
+        <input class="quantity-control__value" type="text" inputmode="numeric" pattern="[0-9٠-٩۰-۹]*" autocomplete="off" aria-label="الكمية: ${product.name}" data-quantity-value="${product.id}" value="${toArabicNumber(productQuantities.get(product.id) ?? 1)}">
         <button class="quantity-control__button" type="button" data-quantity-change="1" data-product-id="${product.id}" aria-label="زيادة كمية ${product.name}">+</button>
       </div>
     </div>`;
 }
 
-function updateProductQuantity(id, change) {
-  const currentQuantity = productQuantities.get(id);
-  if (currentQuantity === undefined) return;
+function parseQuantity(value) {
+  const normalized = String(value)
+    .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 0x0660))
+    .replace(/[۰-۹]/g, (digit) => String(digit.charCodeAt(0) - 0x06f0));
+  if (!/^\d+$/.test(normalized)) return null;
 
-  const quantity = Math.max(1, currentQuantity + change);
+  const quantity = Number(normalized);
+  return Number.isSafeInteger(quantity) ? Math.max(1, quantity) : null;
+}
+
+function updateProductQuantity(id, quantity, sourceInput = null) {
+  if (!Number.isSafeInteger(quantity)) return;
+  quantity = Math.max(1, quantity);
   productQuantities.set(id, quantity);
-  grid.querySelectorAll(`[data-quantity-value="${id}"]`).forEach((output) => {
-    output.textContent = toArabicNumber(quantity);
+  document.querySelectorAll(`[data-quantity-value="${id}"]`).forEach((input) => {
+    if (input !== sourceInput) input.value = toArabicNumber(quantity);
   });
 
   const product = SHIELDS.find((item) => item.id === id);
@@ -464,8 +472,6 @@ function updateProductQuantity(id, change) {
   }
 
   if (modalSelectToggle.dataset.productId === id) {
-    const modalValue = modalQuantityControl.querySelector("[data-quantity-value]");
-    if (modalValue) modalValue.textContent = toArabicNumber(quantity);
     if (product) modalWhatsapp.href = whatsappUrl(product, quantity);
   }
 }
@@ -611,14 +617,48 @@ grid.addEventListener("click", (event) => {
   const button = event.target.closest("[data-quantity-change]");
   if (!button) return;
   event.stopPropagation();
-  updateProductQuantity(button.dataset.productId, Number(button.dataset.quantityChange));
+  const currentQuantity = productQuantities.get(button.dataset.productId);
+  if (currentQuantity !== undefined) {
+    updateProductQuantity(
+      button.dataset.productId,
+      currentQuantity + Number(button.dataset.quantityChange),
+    );
+  }
 });
 
 modalQuantityControl.addEventListener("click", (event) => {
   const button = event.target.closest("[data-quantity-change]");
   if (!button) return;
-  updateProductQuantity(button.dataset.productId, Number(button.dataset.quantityChange));
+  const currentQuantity = productQuantities.get(button.dataset.productId);
+  if (currentQuantity !== undefined) {
+    updateProductQuantity(
+      button.dataset.productId,
+      currentQuantity + Number(button.dataset.quantityChange),
+    );
+  }
 });
+
+function handleQuantityInput(event) {
+  const input = event.target.closest("[data-quantity-value]");
+  if (!input) return;
+
+  const quantity = parseQuantity(input.value);
+  if (quantity === null) {
+    if (event.type === "change") {
+      const currentQuantity = productQuantities.get(input.dataset.quantityValue);
+      if (currentQuantity !== undefined) input.value = toArabicNumber(currentQuantity);
+    }
+    return;
+  }
+
+  updateProductQuantity(input.dataset.quantityValue, quantity, input);
+  if (event.type === "change") input.value = toArabicNumber(quantity);
+}
+
+grid.addEventListener("input", handleQuantityInput);
+grid.addEventListener("change", handleQuantityInput);
+modalQuantityControl.addEventListener("input", handleQuantityInput);
+modalQuantityControl.addEventListener("change", handleQuantityInput);
 
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
