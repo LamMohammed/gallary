@@ -65,30 +65,36 @@
 
   <section class="hero" id="top">
     <div class="hero-copy">
-      <p class="kicker">مجموعة الدروع الفاخرة</p>
+      <p class="kicker">تفاصيل تليق بلحظة الإنجاز</p>
       <h1>نحتفي<br><span>بكل إنجاز</span></h1>
-      <p class="hero-description">مجموعة مختارة من دروع التكريم الفاخرة، صُمّمت لتمنح كل لحظة إنجاز حضورًا يليق بها.</p>
+      <p class="hero-description">اكتشف مجموعة متنوعة من دروع التكريم، واختر التصميم والخامة المناسبة لمناسبتك.</p>
       <div class="hero-actions">
         <a class="hero-cta" href="#grid">استكشف المجموعة <span aria-hidden="true">←</span></a>
-        <a class="hero-secondary" href="#grid">اكتشف تصاميمنا</a>
+        <a class="hero-secondary" href="#filters">تصفّح الخامات</a>
       </div>
+      <ul class="hero-highlights" aria-label="تفاصيل المجموعة">
+        <li><strong>٣٨</strong><span>تصميمًا</span></li>
+        <li><strong>٣</strong><span>خامات</span></li>
+        <li><strong>مباشر</strong><span>استفسار واتساب</span></li>
+      </ul>
+      <p class="hero-note"><span aria-hidden="true">✦</span> اختر التصميم وحدد الكمية، ثم استفسر عن السعر مباشرةً عبر واتساب.</p>
     </div>
     <div class="hero-stack" aria-label="نماذج من مجموعة الدروع التكريمية">
-      <figure class="hero-card hero-card--back-left" tabindex="0">
-        <img src="images/acrylic-2.webp" alt="درع أكريليك محفور" loading="lazy" decoding="async">
+      <figure class="hero-card hero-card--back-left" tabindex="0" aria-label="درع ذهبي - تصميم ٤">
+        <img src="images/gold-4.webp" alt="درع ذهبي مزخرف" loading="lazy" decoding="async">
       </figure>
-      <figure class="hero-card hero-card--back-right" tabindex="0">
-        <img src="images/gold-4.webp" alt="درع ذهبي ملكي" loading="lazy" decoding="async">
+      <figure class="hero-card hero-card--back-right" tabindex="0" aria-label="قطعة كريستال - تصميم ٧">
+        <img src="images/crystal-7.webp" alt="قطعة كريستال بتصميم هندسي" loading="lazy" decoding="async">
       </figure>
-      <figure class="hero-card hero-card--middle-left" tabindex="0">
-        <img src="images/crystal-7.webp" alt="درع كريستالي" loading="lazy" decoding="async">
+      <figure class="hero-card hero-card--middle-left" tabindex="0" aria-label="قطعة كريستال - تصميم ١">
+        <img src="images/crystal-1.webp" alt="قطعة كريستال بقاعدة خشبية" loading="lazy" decoding="async">
       </figure>
-      <figure class="hero-card hero-card--middle-right" tabindex="0">
-        <img src="images/acrylic-4.webp" alt="لوحة أكريليك للتقدير" loading="lazy" decoding="async">
+      <figure class="hero-card hero-card--middle-right" tabindex="0" aria-label="لوحة أكريليك - تصميم ٢">
+        <img src="images/acrylic-2.webp" alt="لوحة أكريليك محفورة" loading="lazy" decoding="async">
       </figure>
-      <figure class="hero-card hero-card--front" tabindex="0">
-        <span class="hero-featured__label">FEATURED PIECE</span>
-        <img src="images/crystal-1.webp" alt="درع تكريمي كريستالي مميز" fetchpriority="high" decoding="async">
+      <figure class="hero-card hero-card--front" tabindex="0" aria-label="درع ذهبي - تصميم ١">
+        <span class="hero-featured__label">قطعة مميزة</span>
+        <img src="images/gold-1.webp" alt="درع ذهبي فاخر مزخرف" fetchpriority="high" decoding="async">
       </figure>
     </div>
   </section>
@@ -119,6 +125,7 @@
         <p class="product-modal__counter" id="modal-product-counter"></p>
         <h2 id="modal-product-name"></h2>
         <p class="product-modal__code" id="modal-product-code"></p>
+        <p class="product-modal__size" id="modal-product-size"></p>
         <div id="modal-quantity-control"></div>
         <a class="product-modal__whatsapp" id="modal-product-whatsapp" target="_blank" rel="noopener noreferrer">
           تواصل عبر WhatsApp
@@ -143,7 +150,19 @@
   </div>
 
   <footer>
-    <p>© جميع الحقوق محفوظة لـ <span id="account-name">محمد رضا شركه ميم </span></p>
+    <div class="footer-content">
+      <div class="footer-copy">
+        <strong>شركة ميم للدروع</strong>
+        <p>نساعدك تختار درعًا يليق بلحظة الإنجاز.</p>
+      </div>
+      <a class="footer-contact" id="footer-whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20.52 3.48A11.92 11.92 0 0 0 12.09 0C5.5 0 .12 5.38.12 12.02c0 2.12.55 4.18 1.6 5.99L0 24l6.15-1.61a11.98 11.98 0 0 0 5.94 1.8h.01c6.58 0 11.97-5.38 11.97-12.02 0-3.2-1.24-6.21-3.48-8.49Zm-8.43 18.46h-.01c-1.91 0-3.78-.51-5.41-1.48l-.39-.23-3.65.96.98-3.55-.25-.39A9.48 9.48 0 0 1 2.1 12.02c0-5.23 4.26-9.48 9.49-9.48a9.42 9.42 0 0 1 6.7 2.78 9.46 9.46 0 0 1 2.78 6.7c0 5.24-4.26 9.48-9.49 9.48Zm5.21-7.1c-.28-.14-1.67-.82-1.93-.92-.26-.1-.45-.14-.63.14-.18.28-.71.92-.87 1.11-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.39-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.63-1.52-.86-2.08-.22-.55-.45-.47-.63-.48l-.54-.01c-.18 0-.48.07-.73.36-.25.29-1 1-1 2.45s1.03 2.84 1.17 3.04c.14.2 2.02 3.08 4.9 4.32.68.29 1.22.46 1.64.59.69.22 1.32.19 1.81.11.55-.08 1.67-.68 1.9-1.34.23-.66.23-1.23.16-1.35-.07-.12-.26-.2-.54-.34Z" fill="currentColor"/>
+        </svg>
+        <span>تواصل معنا على واتساب</span>
+      </a>
+    </div>
+    <p class="footer-legal">© جميع الحقوق محفوظة لـ <span id="account-name">محمد رضا شركه ميم </span></p>
   </footer>
   <script src="js/script.js"></script>
 </body>

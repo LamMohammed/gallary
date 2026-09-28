@@ -14,7 +14,7 @@ const SHIELDS = [
     id: "g1",
     code: "GO-001",
     cat: "gold",
-    name: " `ذهبي `",
+    name: "درع ذهبي - تصميم ١",
     era: "  ذهبي ملكي  بتصميم  عصري ·  ",
     size: "176×230",
     image: "images/gold-1.webp",
@@ -23,7 +23,7 @@ const SHIELDS = [
     id: "g2",
     code: "GO-002",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٢",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-2.webp",
@@ -33,7 +33,7 @@ const SHIELDS = [
     id: "g3",
     code: "GO-003",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٣",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-3.webp",
@@ -43,7 +43,7 @@ const SHIELDS = [
     id: "g4",
     code: "GO-004",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٤",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-4.webp",
@@ -52,7 +52,7 @@ const SHIELDS = [
     id: "g5",
     code: "GO-005",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٥",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-5.webp",
@@ -61,7 +61,7 @@ const SHIELDS = [
     id: "g6",
     code: "GO-006",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٦",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-6.webp",
@@ -70,7 +70,7 @@ const SHIELDS = [
     id: "g7",
     code: "GO-007",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٧",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-7.webp",
@@ -79,7 +79,7 @@ const SHIELDS = [
     id: "g8",
     code: "GO-008",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٨",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-8.webp",
@@ -88,7 +88,7 @@ const SHIELDS = [
     id: "g9",
     code: "GO-009",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ٩",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-9.webp",
@@ -97,7 +97,7 @@ const SHIELDS = [
     id: "g10",
     code: "GO-010",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ١٠",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-10.webp",
@@ -106,7 +106,7 @@ const SHIELDS = [
     id: "g11",
     code: "GO-011",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ١١",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-11.webp",
@@ -115,7 +115,7 @@ const SHIELDS = [
     id: "g12",
     code: "GO-012",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ١٢",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-12.webp",
@@ -124,7 +124,7 @@ const SHIELDS = [
     id: "g13",
     code: "GO-013",
     cat: "gold",
-    name: "ذهبي ",
+    name: "درع ذهبي - تصميم ١٣",
     era: "  ذهبي ملكي  بتصميم  عصري ·  L",
     size: "220×280",
     image: "images/gold-13.webp",
@@ -137,7 +137,7 @@ const SHIELDS = [
     id: "c1",
     code: "CR-001",
     cat: "crystal",
-    name: "المسلة الكريستالية",
+    name: "قطعة كريستال - تصميم ١",
     era: "كريستال شفاف · قاعدة خشبية",
     size: "ارتفاع 25سم",
     image: "images/crystal-1.webp",
@@ -146,7 +146,7 @@ const SHIELDS = [
     id: "c2",
     code: "CR-002",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٢",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-2.webp",
@@ -155,7 +155,7 @@ const SHIELDS = [
     id: "c3",
     code: "CR-003",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٣",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-3.webp",
@@ -164,7 +164,7 @@ const SHIELDS = [
     id: "c4",
     code: "CR-004",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٤",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-4.webp",
@@ -173,7 +173,7 @@ const SHIELDS = [
     id: "c5",
     code: "CR-005",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٥",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-5.webp",
@@ -182,7 +182,7 @@ const SHIELDS = [
     id: "c6",
     code: "CR-006",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٦",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-6.webp",
@@ -192,7 +192,7 @@ const SHIELDS = [
     id: "c7",
     code: "CR-007",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٧",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-7.webp",
@@ -201,7 +201,7 @@ const SHIELDS = [
     id: "c8",
     code: "CR-008",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٨",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-8.webp",
@@ -210,7 +210,7 @@ const SHIELDS = [
     id: "c9",
     code: "CR-009",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٩",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-9.webp",
@@ -219,7 +219,7 @@ const SHIELDS = [
     id: "c10",
     code: "CR-010",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٠",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-10.webp",
@@ -228,7 +228,7 @@ const SHIELDS = [
     id: "c11",
     code: "CR-011",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١١",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-11.webp",
@@ -237,7 +237,7 @@ const SHIELDS = [
     id: "c12",
     code: "CR-012",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٢",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-12.webp",
@@ -246,7 +246,7 @@ const SHIELDS = [
     id: "c13",
     code: "CR-013",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٣",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-13.webp",
@@ -255,7 +255,7 @@ const SHIELDS = [
     id: "c14",
     code: "CR-014",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٤",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-14.webp",
@@ -264,7 +264,7 @@ const SHIELDS = [
     id: "c15",
     code: "CR-015",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٥",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-15.webp",
@@ -273,7 +273,7 @@ const SHIELDS = [
     id: "c16",
     code: "CR-016",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٦",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-16.webp",
@@ -282,7 +282,7 @@ const SHIELDS = [
     id: "c17",
     code: "CR-017",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٧",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-17.webp",
@@ -291,7 +291,7 @@ const SHIELDS = [
     id: "c18",
     code: "CR-018",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٨",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-18.webp",
@@ -300,7 +300,7 @@ const SHIELDS = [
     id: "c19",
     code: "CR-019",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ١٩",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-19.webp",
@@ -309,7 +309,7 @@ const SHIELDS = [
     id: "c20",
     code: "CR-020",
     cat: "crystal",
-    name: "الشفرة الزجاجية",
+    name: "قطعة كريستال - تصميم ٢٠",
     era: "زجاج مقصوص · خشب زان",
     size: "ارتفاع 18سم",
     image: "images/crystal-20.webp",
@@ -320,7 +320,7 @@ const SHIELDS = [
     id: "a1",
     code: "AC-001",
     cat: "acrylic",
-    name: "لوحة الشكر",
+    name: "لوحة أكريليك - تصميم ١",
     era: "أكريليك فاتح · حفر ليزر",
     size: "أفقي 30×22سم",
     image: "images/acrylic-1.webp",
@@ -329,7 +329,7 @@ const SHIELDS = [
     id: "a2",
     code: "AC-002",
     cat: "acrylic",
-    name: "لوحة التقدير",
+    name: "لوحة أكريليك - تصميم ٢",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
     image: "images/acrylic-2.webp",
@@ -338,7 +338,7 @@ const SHIELDS = [
     id: "a3",
     code: "AC-003",
     cat: "acrylic",
-    name: "لوحة التقدير",
+    name: "لوحة أكريليك - تصميم ٣",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
     image: "images/acrylic-3.webp",
@@ -347,7 +347,7 @@ const SHIELDS = [
     id: "a4",
     code: "AC-004",
     cat: "acrylic",
-    name: "لوحة التقدير",
+    name: "لوحة أكريليك - تصميم ٤",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
     image: "images/acrylic-4.webp",
@@ -356,7 +356,7 @@ const SHIELDS = [
     id: "a5",
     code: "AC-005",
     cat: "acrylic",
-    name: "لوحة التقدير",
+    name: "لوحة أكريليك - تصميم ٥",
     era: "أكريليك فاتح · نجمة محفورة",
     size: "أفقي 30×22سم",
     image: "images/acrylic-5.webp",
@@ -383,6 +383,7 @@ const filterBarSlot = document.querySelector(".filter-bar-slot");
 const productModal = document.getElementById("product-modal");
 const modalImage = document.getElementById("modal-product-image");
 const modalMaterial = document.getElementById("modal-product-material");
+const modalSize = document.getElementById("modal-product-size");
 const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
 const modalCounter = document.getElementById("modal-product-counter");
@@ -574,6 +575,7 @@ function renderModalProduct() {
   modalImage.alt = product.name;
 
   modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
+  modalSize.textContent = `المقاس: ${product.size}`;
   modalName.textContent = product.name;
   modalCode.textContent = `كود المنتج: ${product.code}`;
   const quantity = productQuantities.get(product.id) ?? 1;
@@ -682,9 +684,12 @@ function renderGrid() {
       </div>
       <p class="era">${s.era}</p>
       <h3>${s.name}</h3>
+      <div class="card-specs" aria-label="مواصفات المنتج">
+        <span class="card-specs__material">${catLabel(s.cat)}</span>
+        <span class="card-specs__size">${s.size}</span>
+      </div>
       ${quantityControlMarkup(s)}
       <div class="card-meta">
-        <p class="cat">${catLabel(s.cat)} · ${s.size}</p>
         <a
           class="wa-button"
           href="${whatsappUrl(s)}"
@@ -859,6 +864,12 @@ document.addEventListener("keydown", (event) => {
 const accountNameEl = document.getElementById("account-name");
 if (accountNameEl) {
   accountNameEl.textContent = ACCOUNT_NAME;
+}
+
+const footerWhatsappLink = document.getElementById("footer-whatsapp");
+if (footerWhatsappLink) {
+  const message = "مرحبًا، أود الاستفسار عن دروع التكريم.";
+  footerWhatsappLink.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
 /* header contact: name + formatted phone number, built from WHATSAPP_NUMBER */
