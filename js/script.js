@@ -387,6 +387,7 @@ const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
 const modalCounter = document.getElementById("modal-product-counter");
 const modalWhatsapp = document.getElementById("modal-product-whatsapp");
+const modalQuantityControl = document.getElementById("modal-quantity-control");
 const modalPrevBtn = document.getElementById("modal-prev");
 const modalNextBtn = document.getElementById("modal-next");
 const modalSelectToggle = document.getElementById("modal-select-toggle");
@@ -405,12 +406,13 @@ function catLabel(id) {
   return CATS.find((c) => c.id === id).label;
 }
 
-function whatsappUrl(product) {
+function whatsappUrl(product, quantity = 1) {
   const message = `👋 مرحبًا، أريد الاستفسار عن هذا المنتج:
 
 🏆 اسم المنتج: ${product.name}
 📌 كود المنتج: ${product.code}
 ✨ الخامة: ${catLabel(product.cat)}
+🔢 الكمية: ${toArabicNumber(quantity)}
 
 أريد معرفة السعر والتفاصيل المتاحة.`;
 
@@ -419,6 +421,7 @@ function whatsappUrl(product) {
 
 /* ---------- bulk selection + multi-product WhatsApp send ---------- */
 const selectedIds = new Set();
+const productQuantities = new Map(SHIELDS.map((product) => [product.id, 1]));
 const bulkBar = document.getElementById("bulk-bar");
 const bulkCount = document.getElementById("bulk-bar-count");
 const bulkSend = document.getElementById("bulk-bar-send");
@@ -430,6 +433,41 @@ function toArabicNumber(n) {
     .split("")
     .map((d) => arabicDigits[d] ?? d)
     .join("");
+}
+
+function quantityControlMarkup(product) {
+  return `
+    <div class="quantity-control" aria-label="تحديد كمية ${product.name}">
+      <span class="quantity-control__label">الكمية</span>
+      <div class="quantity-control__stepper">
+        <button class="quantity-control__button" type="button" data-quantity-change="-1" data-product-id="${product.id}" aria-label="تقليل كمية ${product.name}">−</button>
+        <output class="quantity-control__value" data-quantity-value="${product.id}" aria-live="polite">${toArabicNumber(productQuantities.get(product.id) ?? 1)}</output>
+        <button class="quantity-control__button" type="button" data-quantity-change="1" data-product-id="${product.id}" aria-label="زيادة كمية ${product.name}">+</button>
+      </div>
+    </div>`;
+}
+
+function updateProductQuantity(id, change) {
+  const currentQuantity = productQuantities.get(id);
+  if (currentQuantity === undefined) return;
+
+  const quantity = Math.max(1, currentQuantity + change);
+  productQuantities.set(id, quantity);
+  grid.querySelectorAll(`[data-quantity-value="${id}"]`).forEach((output) => {
+    output.textContent = toArabicNumber(quantity);
+  });
+
+  const product = SHIELDS.find((item) => item.id === id);
+  if (product) {
+    const whatsappButton = grid.querySelector(`.wa-button[data-product-id="${id}"]`);
+    if (whatsappButton) whatsappButton.href = whatsappUrl(product, quantity);
+  }
+
+  if (modalSelectToggle.dataset.productId === id) {
+    const modalValue = modalQuantityControl.querySelector("[data-quantity-value]");
+    if (modalValue) modalValue.textContent = toArabicNumber(quantity);
+    if (product) modalWhatsapp.href = whatsappUrl(product, quantity);
+  }
 }
 
 function updateBulkBar() {
@@ -482,7 +520,7 @@ bulkSend.addEventListener("click", () => {
 
   const lines = items.map(
     (p, i) =>
-      `${i + 1}-\n🏆 اسم المنتج: ${p.name}\n📌 كود المنتج: ${p.code}\n✨ الخامة: ${catLabel(p.cat)}`,
+      `${toArabicNumber(i + 1)}-\n🏆 اسم المنتج: ${p.name}\n📌 كود المنتج: ${p.code}\n✨ الخامة: ${catLabel(p.cat)}\n🔢 الكمية: ${toArabicNumber(productQuantities.get(p.id) ?? 1)}`,
   );
   const message = `👋 مرحبًا، أريد الاستفسار عن هذه المنتجات:\n\n${lines.join("\n\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
 
@@ -532,7 +570,9 @@ function renderModalProduct() {
   modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
   modalName.textContent = product.name;
   modalCode.textContent = `كود المنتج: ${product.code}`;
-  modalWhatsapp.href = whatsappUrl(product);
+  const quantity = productQuantities.get(product.id) ?? 1;
+  modalWhatsapp.href = whatsappUrl(product, quantity);
+  modalQuantityControl.innerHTML = quantityControlMarkup(product);
 
   modalSelectToggle.dataset.productId = product.id;
   modalSelectToggle.classList.toggle("is-selected", selectedIds.has(product.id));
@@ -567,6 +607,19 @@ modalSelectToggle.addEventListener("click", () => {
   modalSelectToggle.classList.toggle("is-selected", selectedIds.has(id));
 });
 
+grid.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-quantity-change]");
+  if (!button) return;
+  event.stopPropagation();
+  updateProductQuantity(button.dataset.productId, Number(button.dataset.quantityChange));
+});
+
+modalQuantityControl.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-quantity-change]");
+  if (!button) return;
+  updateProductQuantity(button.dataset.productId, Number(button.dataset.quantityChange));
+});
+
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
     (s, i) => `
@@ -589,6 +642,7 @@ function renderGrid() {
       </div>
       <p class="era">${s.era}</p>
       <h3>${s.name}</h3>
+      ${quantityControlMarkup(s)}
       <div class="card-meta">
         <p class="cat">${catLabel(s.cat)} · ${s.size}</p>
         <a
