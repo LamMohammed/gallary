@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة التحكم - شركة ميم</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="images/logo.svg" type="image/svg+xml">
+<style>
+:root{--bg:#f6f5fb;--card:#fff;--ink:#1e1b3a;--mute:#6b6a80;--line:#e6e4f2;--p:#4f46e5;--p2:#7c3aed;--gold:#c9a227;--danger:#c0392b;--ok:#1e8e5a}
+@media(prefers-color-scheme:dark){:root{--bg:#14122a;--card:#1e1b3a;--ink:#f1f0fa;--mute:#a09fba;--line:#2f2b55}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,sans-serif;line-height:1.6}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;flex-wrap:wrap}
+header h1{margin:0;font-size:1.3rem}
+header a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.5);padding:6px 14px;border-radius:999px;font-size:.9rem}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px;display:grid;gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.card h2{margin:0 0 12px;font-size:1.1rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi span{display:block;color:var(--mute);font-size:.85rem}
+.kpi strong{font-size:1.6rem;color:var(--p)}
+.kpi strong.sm{font-size:1.05rem}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:none;padding:6px 14px;font:inherit;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--p);color:#fff}
+.rank{display:grid;gap:10px;margin-top:10px}
+.rank-item{display:grid;grid-template-columns:28px 52px 1fr;gap:10px;align-items:center}
+.rank-item .n{font-weight:900;color:var(--gold);text-align:center}
+.rank-item img{width:52px;height:52px;object-fit:cover;border-radius:10px;background:var(--line)}
+.bar{height:8px;background:var(--line);border-radius:99px;margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--p2));border-radius:99px}
+.rank-item small,.muted{color:var(--mute)}
+.empty{padding:18px;text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:800px){.two{grid-template-columns:1fr}}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+form .w{grid-column:1/-1}
+@media(max-width:600px){form{grid-template-columns:1fr}}
+label{display:grid;gap:4px;font-size:.88rem;color:var(--mute)}
+input,select{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.btn{font:inherit;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;background:var(--p);color:#fff;font-weight:700}
+.btn.q{background:none;color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.d{background:none;color:var(--danger);border:1px solid var(--line);font-weight:500}
+#newCat{display:none;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:12px;padding:12px;border:1px dashed var(--gold);border-radius:12px}
+#newCat.show{display:grid}
+#prev{max-width:140px;border-radius:10px;display:none}
+.msg{padding:10px 14px;border-radius:10px;font-size:.92rem;display:none}
+.msg.ok{display:block;background:#e6f6ee;color:var(--ok)}
+.msg.err{display:block;background:#fdeceb;color:var(--danger)}
+.plist{display:grid;gap:8px;margin-top:12px;max-height:520px;overflow:auto}
+.p{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:12px}
+.p img{width:48px;height:48px;object-fit:cover;border-radius:8px}
+.p b{font-size:.95rem}
+.acts{display:flex;gap:6px}
+.acts .btn{padding:5px 10px;font-size:.82rem}
+.chart{display:flex;align-items:flex-end;gap:3px;height:160px;margin-top:14px;direction:ltr}
+.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.chart i{width:100%;background:linear-gradient(180deg,var(--p2),var(--p));border-radius:4px 4px 0 0;min-height:2px}
+.chart small{font-size:.62rem;color:var(--mute);margin-top:3px}
+.acts{flex-wrap:wrap}
+.note{font-size:.85rem;color:var(--mute);background:var(--bg);border-radius:10px;padding:10px 12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>لوحة التحكم — شركة ميم</h1>
+  <span><button id="logout" class="btn q" style="color:#fff;border-color:rgba(255,255,255,.5);display:none">تسجيل خروج</button> <a href="index.html">← رجوع للموقع</a></span>
+</header>
+<main id="login" style="max-width:420px">
+  <section class="card"><h2>تسجيل الدخول</h2>
+    <div class="msg" id="lmsg"></div>
+    <form id="lf" style="grid-template-columns:1fr">
+      <label>الإيميل<input name="email" type="email" required autocomplete="username" dir="ltr"></label>
+      <label>كلمة السر<input name="password" type="password" required autocomplete="current-password" dir="ltr"></label>
+      <button class="btn" type="submit">دخول</button>
+    </form>
+  </section>
+</main>
+<main id="app" style="display:none">
+  <div class="kpis">
+    <div class="kpi"><span>إجمالي المنتجات</span><strong id="kProducts">0</strong></div>
+    <div class="kpi"><span>الأنواع</span><strong id="kCats">0</strong></div>
+    <div class="kpi"><span>الاستفسارات</span><strong id="kInq">0</strong></div>
+    <div class="kpi"><span>الأكثر طلبًا</span><strong class="sm" id="kTop">—</strong></div>
+    <div class="kpi"><span>الزيارات</span><strong id="kVisits">0</strong></div>
+    <div class="kpi"><span>الزوار (أشخاص)</span><strong id="kVisitors">0</strong></div>
+    <div class="kpi"><span>زوار النهاردة</span><strong id="kToday">0</strong></div>
+  </div>
+
+  <section class="card">
+    <div class="row">
+      <h2>الأكثر استفسارًا</h2>
+      <div class="seg" id="period">
+        <button data-d="7">٧ أيام</button><button data-d="30">٣٠ يوم</button><button data-d="0" class="on">الكل</button>
+      </div>
+    </div>
+    <div class="two">
+      <div><p class="muted" style="margin:0">أفضل ١٠ منتجات (عدد مرات الضغط على واتساب)</p><div class="rank" id="topList"></div></div>
+      <div><p class="muted" style="margin:0">الاستفسارات حسب النوع</p><div class="rank" id="catList"></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>زوار الموقع</h2>
+    <p class="muted" style="margin:6px 0 0">بنفس الفترة المختارة فوق. الزيارة بتتحسب مرة لكل جلسة، والزائر بيتعرف من متصفحه. زياراتك إنت وإنت مسجل دخول مش بتتحسب. الرسم يعرض آخر ٣٠ يوم كحد أقصى.</p>
+    <div class="chart" id="chart"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="formTitle">إضافة منتج</h2>
+    <div class="msg" id="msg"></div>
+    <form id="pf" autocomplete="off">
+      <label>النوع
+        <select name="cat" id="catSel"></select>
+      </label>
+      <label>كود المنتج (تلقائي ويمكن تعديله)
+        <input name="code" required maxlength="30" autocomplete="off">
+      </label>
+      <div id="newCat">
+        <label>اسم النوع الجديد<input id="ncLabel" maxlength="40" placeholder="مثال: رخام"></label>
+        <label>بادئة الكود (حروف إنجليزية)<input id="ncPrefix" maxlength="4" placeholder="MR" dir="ltr"></label>
+      </div>
+      <label class="w">اسم المنتج<input name="name" required maxlength="100" autocomplete="off"></label>
+      <label>اللون<input name="color" required maxlength="50" autocomplete="off"></label>
+      <label>المقاس<input name="size" required maxlength="60" autocomplete="off"></label>
+      <label class="w">وصف مختصر<input name="era" required maxlength="120" autocomplete="off"></label>
+      <label class="w">صورة المنتج<input type="file" id="img" accept="image/png,image/jpeg,image/webp"></label>
+      <img id="prev" alt="">
+      <div class="w acts"><button class="btn" type="submit">حفظ</button><button class="btn q" type="button" id="cancel">إلغاء / جديد</button></div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="row"><h2>كل المنتجات</h2>
+      <div class="acts"><input id="q" type="search" placeholder="بحث بالاسم أو الكود"><select id="f"></select></div></div>
+    <div class="plist" id="plist"></div>
+  </section>
+
+  <section class="card">
+    <h2>نسخة احتياطية</h2>
+    <p class="note">البيانات محفوظة على السيرفر (Supabase). صدّر نسخة بشكل دوري للاحتياط.</p>
+    <div class="acts" style="margin-top:10px"><button class="btn q" id="exp">تصدير نسخة</button><button class="btn d" id="clr">مسح الاستفسارات</button><button class="btn d" id="clrv">مسح سجل الزيارات</button></div>
+  </section>
+</main>
+<script src="js/catalog-data.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

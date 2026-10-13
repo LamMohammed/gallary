@@ -1,379 +1,4 @@
-/* ============================================================
-   بيانات الدروع — عشان تضيف درع جديد:
-   1) ضيف صورة المنتج جوه فولدر images/
-   2) انسخ سطر من اللي تحت وغيّر: id (فريد)، code (كود المنتج)، cat (خامة)،
-      name (اسم الدرع)، era (وصف قصير)، size (المقاس)،
-      image (مسار الصورة جوه images/)
-   الخامات المتاحة (cat): wood, leather, crystal, acrylic, metal
-   ============================================================ */
-const ACCOUNT_NAME = "شركة ميم  ";
-const WHATSAPP_NUMBER = "201000082027";
-
-const SHIELDS = [
-  {
-    id: "g1",
-    code: "GO-001",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ١",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  ",
-    size: "176×230",
-    image: "images/gold-1.webp",
-  },
-  {
-    id: "g2",
-    code: "GO-002",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٢",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-2.webp",
-  },
-
-  {
-    id: "g3",
-    code: "GO-003",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٣",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-3.webp",
-  },
-
-  {
-    id: "g4",
-    code: "GO-004",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٤",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-4.webp",
-  },
-  {
-    id: "g5",
-    code: "GO-005",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٥",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-5.webp",
-  },
-  {
-    id: "g6",
-    code: "GO-006",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٦",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-6.webp",
-  },
-  {
-    id: "g7",
-    code: "GO-007",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٧",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-7.webp",
-  },
-  {
-    id: "g8",
-    code: "GO-008",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٨",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-8.webp",
-  },
-  {
-    id: "g9",
-    code: "GO-009",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ٩",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-9.webp",
-  },
-  {
-    id: "g10",
-    code: "GO-010",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ١٠",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-10.webp",
-  },
-  {
-    id: "g11",
-    code: "GO-011",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ١١",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-11.webp",
-  },
-  {
-    id: "g12",
-    code: "GO-012",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ١٢",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-12.webp",
-  },
-  {
-    id: "g13",
-    code: "GO-013",
-    cat: "gold",
-    name: "درع ذهبي - تصميم ١٣",
-    era: "  ذهبي ملكي  بتصميم  عصري ·  L",
-    size: "220×280",
-    image: "images/gold-13.webp",
-  },
-
-  // {id:'l1', cat:'leather', name:'الإطار الأسود الأنيق', era:'جلد طبيعي · دبل فريم', size:'قياس مزدوج', image:'images/leather-1.webp'},
-  // {id:'l2', cat:'leather', name:'الإطار الكريمي الفاخر', era:'جلد فاخر · دبل فريم', size:'قياس مزدوج', image:'images/leather-2.webp'},
-
-  {
-    id: "c1",
-    code: "CR-001",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١",
-    era: "كريستال شفاف · قاعدة خشبية",
-    size: "ارتفاع 25سم",
-    image: "images/crystal-1.webp",
-  },
-  {
-    id: "c2",
-    code: "CR-002",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٢",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-2.webp",
-  },
-  {
-    id: "c3",
-    code: "CR-003",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٣",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-3.webp",
-  },
-  {
-    id: "c4",
-    code: "CR-004",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٤",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-4.webp",
-  },
-  {
-    id: "c5",
-    code: "CR-005",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٥",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-5.webp",
-  },
-  {
-    id: "c6",
-    code: "CR-006",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٦",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-6.webp",
-  },
-
-  {
-    id: "c7",
-    code: "CR-007",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٧",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-7.webp",
-  },
-  {
-    id: "c8",
-    code: "CR-008",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٨",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-8.webp",
-  },
-  {
-    id: "c9",
-    code: "CR-009",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٩",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-9.webp",
-  },
-  {
-    id: "c10",
-    code: "CR-010",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٠",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-10.webp",
-  },
-  {
-    id: "c11",
-    code: "CR-011",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١١",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-11.webp",
-  },
-  {
-    id: "c12",
-    code: "CR-012",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٢",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-12.webp",
-  },
-  {
-    id: "c13",
-    code: "CR-013",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٣",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-13.webp",
-  },
-  {
-    id: "c14",
-    code: "CR-014",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٤",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-14.webp",
-  },
-  {
-    id: "c15",
-    code: "CR-015",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٥",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-15.webp",
-  },
-  {
-    id: "c16",
-    code: "CR-016",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٦",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-16.webp",
-  },
-{
-    id: "c17",
-    code: "CR-017",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٧",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-17.webp",
-  },
-{
-    id: "c18",
-    code: "CR-018",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٨",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-18.webp",
-  },
-{
-    id: "c19",
-    code: "CR-019",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ١٩",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-19.webp",
-  },
-{
-    id: "c20",
-    code: "CR-020",
-    cat: "crystal",
-    name: "قطعة كريستال - تصميم ٢٠",
-    era: "زجاج مقصوص · خشب زان",
-    size: "ارتفاع 18سم",
-    image: "images/crystal-20.webp",
-  },
-
-
-  {
-    id: "a1",
-    code: "AC-001",
-    cat: "acrylic",
-    name: "لوحة أكريليك - تصميم ١",
-    era: "أكريليك فاتح · حفر ليزر",
-    size: "أفقي 30×22سم",
-    image: "images/acrylic-1.webp",
-  },
-  {
-    id: "a2",
-    code: "AC-002",
-    cat: "acrylic",
-    name: "لوحة أكريليك - تصميم ٢",
-    era: "أكريليك فاتح · نجمة محفورة",
-    size: "أفقي 30×22سم",
-    image: "images/acrylic-2.webp",
-  },
-  {
-    id: "a3",
-    code: "AC-003",
-    cat: "acrylic",
-    name: "لوحة أكريليك - تصميم ٣",
-    era: "أكريليك فاتح · نجمة محفورة",
-    size: "أفقي 30×22سم",
-    image: "images/acrylic-3.webp",
-  },
-  {
-    id: "a4",
-    code: "AC-004",
-    cat: "acrylic",
-    name: "لوحة أكريليك - تصميم ٤",
-    era: "أكريليك فاتح · نجمة محفورة",
-    size: "أفقي 30×22سم",
-    image: "images/acrylic-4.webp",
-  },
-  {
-    id: "a5",
-    code: "AC-005",
-    cat: "acrylic",
-    name: "لوحة أكريليك - تصميم ٥",
-    era: "أكريليك فاتح · نجمة محفورة",
-    size: "أفقي 30×22سم",
-    image: "images/acrylic-5.webp",
-  },
-
-  // {id:'m1', cat:'metal', name:'العرش الفضي', era:'معدن مصقول · أعمدة ملكية', size:'ارتفاع 28سم', image:'images/metal-1.webp'},
-  // {id:'m2', cat:'metal', name:'الصولجان الملكي', era:'معدن مصقول · نقش متعرج', size:'ارتفاع 30سم', image:'images/metal-2.webp'},
-];
-
-const CATS = [
-  { id: "all", label: "الكل" },
-  { id: "gold", label: "ذهبي" },
-  // {id:'leather', label:'جلدي'},
-  { id: "crystal", label: "كريستال" },
-  { id: "acrylic", label: "أكريليك منقوش" },
-  // {id:'metal', label:'معدني فضي'},
-];
+let SHIELDS = initialCatalog();
 
 const grid = document.getElementById("grid");
 const filtersEl = document.getElementById("filters");
@@ -383,6 +8,7 @@ const filterBarSlot = document.querySelector(".filter-bar-slot");
 const productModal = document.getElementById("product-modal");
 const modalImage = document.getElementById("modal-product-image");
 const modalMaterial = document.getElementById("modal-product-material");
+const modalColor = document.getElementById("modal-product-color");
 const modalSize = document.getElementById("modal-product-size");
 const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
@@ -395,8 +21,49 @@ const modalSelectToggle = document.getElementById("modal-select-toggle");
 let modalList = [];
 let modalIndex = -1;
 const scrollTopButton = document.getElementById("scroll-top");
+const adminPanel = document.getElementById("admin-panel");
+const adminDialog = adminPanel.querySelector(".admin-panel__dialog");
+const adminOpenButton = document.getElementById("admin-open");
+const adminProductForm = document.getElementById("admin-product-form");
+const adminProductList = document.getElementById("admin-product-list");
+const adminStatus = document.getElementById("admin-status");
+const adminSearch = document.getElementById("admin-search");
+const adminCategoryFilter = document.getElementById("admin-category-filter");
+const adminImageInput = document.getElementById("admin-product-image");
+const adminImagePreview = document.getElementById("admin-image-preview");
+let adminEditingId = null;
+let adminImagePreviewUrl = null;
 let active = "all";
 let currentCount = 0;
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[character]);
+}
+
+function setAdminStatus(message, type = "success") {
+  adminStatus.textContent = message;
+  adminStatus.className = `admin-status admin-status--${type}`;
+  adminStatus.hidden = false;
+}
+
+function saveCatalog(products) {
+  try {
+    localStorage.setItem(SHIELDS_STORAGE_KEY, JSON.stringify(products));
+    return true;
+  } catch (error) {
+    setAdminStatus(
+      `تعذر حفظ التغييرات في هذا المتصفح: ${error.message}. جرّب صورة أصغر أو صدّر نسخة احتياطية.`,
+      "error",
+    );
+    return false;
+  }
+}
 
 const cameraIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
   <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
@@ -413,6 +80,7 @@ function whatsappUrl(product, quantity = 1) {
 🏆 اسم المنتج: ${product.name}
 📌 كود المنتج: ${product.code}
 ✨ الخامة: ${catLabel(product.cat)}
+🎨 اللون: ${product.color}
 🔢 الكمية: ${toArabicNumber(quantity)}
 
 أريد معرفة السعر والتفاصيل المتاحة.`;
@@ -437,13 +105,15 @@ function toArabicNumber(n) {
 }
 
 function quantityControlMarkup(product) {
+  const productName = escapeHtml(product.name);
+  const productId = escapeHtml(product.id);
   return `
-    <div class="quantity-control" aria-label="تحديد كمية ${product.name}">
+    <div class="quantity-control" aria-label="تحديد كمية ${productName}">
       <span class="quantity-control__label">الكمية</span>
       <div class="quantity-control__stepper">
-        <button class="quantity-control__button" type="button" data-quantity-change="-1" data-product-id="${product.id}" aria-label="تقليل كمية ${product.name}">−</button>
-        <input class="quantity-control__value" type="text" inputmode="numeric" pattern="[0-9٠-٩۰-۹]*" autocomplete="off" aria-label="الكمية: ${product.name}" data-quantity-value="${product.id}" value="${toArabicNumber(productQuantities.get(product.id) ?? 1)}">
-        <button class="quantity-control__button" type="button" data-quantity-change="1" data-product-id="${product.id}" aria-label="زيادة كمية ${product.name}">+</button>
+        <button class="quantity-control__button" type="button" data-quantity-change="-1" data-product-id="${productId}" aria-label="تقليل كمية ${productName}">−</button>
+        <input class="quantity-control__value" type="text" inputmode="numeric" pattern="[0-9٠-٩۰-۹]*" autocomplete="off" aria-label="الكمية: ${productName}" data-quantity-value="${productId}" value="${toArabicNumber(productQuantities.get(product.id) ?? 1)}">
+        <button class="quantity-control__button" type="button" data-quantity-change="1" data-product-id="${productId}" aria-label="زيادة كمية ${productName}">+</button>
       </div>
     </div>`;
 }
@@ -527,7 +197,7 @@ bulkSend.addEventListener("click", () => {
 
   const lines = items.map(
     (p, i) =>
-      `${toArabicNumber(i + 1)}-\n🏆 اسم المنتج: ${p.name}\n📌 كود المنتج: ${p.code}\n✨ الخامة: ${catLabel(p.cat)}\n🔢 الكمية: ${toArabicNumber(productQuantities.get(p.id) ?? 1)}`,
+      `${toArabicNumber(i + 1)}-\n🏆 اسم المنتج: ${p.name}\n📌 كود المنتج: ${p.code}\n✨ الخامة: ${catLabel(p.cat)}\n🎨 اللون: ${p.color}\n🔢 الكمية: ${toArabicNumber(productQuantities.get(p.id) ?? 1)}`,
   );
   const message = `👋 مرحبًا، أريد الاستفسار عن هذه المنتجات:\n\n${lines.join("\n\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
 
@@ -575,6 +245,7 @@ function renderModalProduct() {
   modalImage.alt = product.name;
 
   modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
+  modalColor.textContent = `اللون: ${product.color}`;
   modalSize.textContent = `المقاس: ${product.size}`;
   modalName.textContent = product.name;
   modalCode.textContent = `كود المنتج: ${product.code}`;
@@ -664,29 +335,38 @@ modalQuantityControl.addEventListener("change", handleQuantityInput);
 
 function renderGrid() {
   grid.innerHTML = SHIELDS.map(
-    (s, i) => `
-    <div class="card" data-cat="${s.cat}" data-product-id="${s.id}" style="--d:${(i % 8) * 0.06}s">
+    (s, i) => {
+      const name = escapeHtml(s.name);
+      const code = escapeHtml(s.code);
+      const image = escapeHtml(s.image);
+      const isSelected = selectedIds.has(s.id);
+      const imageLabel = /^(data:|https:)/.test(s.image)
+        ? "جاري تحميل الصورة"
+        : `ضيف صورة "${escapeHtml(s.image.split("/").pop())}" في فولدر images`;
+      return `
+    <div class="card${isSelected ? " is-selected" : ""}" data-cat="${escapeHtml(s.cat)}" data-product-id="${escapeHtml(s.id)}" style="--d:${(i % 8) * 0.06}s">
       <div class="thumb">
         <div class="placeholder">
           ${cameraIcon}
-          <span>ضيف صورة "${s.image.split("/").pop()}" في فولدر images</span>
+          <span>${imageLabel}</span>
         </div>
-        <img class="product-image" src="${s.image}" alt="${s.name}" loading="lazy" decoding="async"
-             data-product-id="${s.id}" tabindex="0" role="button"
+        <img class="product-image" src="${image}" alt="${name}" loading="lazy" decoding="async"
+             data-product-id="${escapeHtml(s.id)}" tabindex="0" role="button"
              onerror="this.remove()">
-        <span class="product-code-badge">${s.code}</span>
-        <button class="select-toggle" type="button" data-product-id="${s.id}" aria-label="تحديد ${s.name} للإرسال">
+        <span class="product-code-badge">${code}</span>
+        <button class="select-toggle${isSelected ? " is-selected" : ""}" type="button" data-product-id="${escapeHtml(s.id)}" aria-label="تحديد ${name} للإرسال">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
         </button>
         <div class="shine"></div>
       </div>
-      <p class="era">${s.era}</p>
-      <h3>${s.name}</h3>
+      <p class="era">${escapeHtml(s.era)}</p>
+      <h3>${name}</h3>
       <div class="card-specs" aria-label="مواصفات المنتج">
-        <span class="card-specs__material">${catLabel(s.cat)}</span>
-        <span class="card-specs__size">${s.size}</span>
+        <span class="card-specs__material">${escapeHtml(catLabel(s.cat))}</span>
+        <span class="card-specs__color">${escapeHtml(s.color)}</span>
+        <span class="card-specs__size">${escapeHtml(s.size)}</span>
       </div>
       ${quantityControlMarkup(s)}
       <div class="card-meta">
@@ -695,10 +375,10 @@ function renderGrid() {
           href="${whatsappUrl(s)}"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="تواصل عبر واتساب: ${s.name}"
+          aria-label="تواصل عبر واتساب: ${name}"
           title="WhatsApp"
-          data-product-id="${s.id}"
-          data-product-code="${s.code}"
+          data-product-id="${escapeHtml(s.id)}"
+          data-product-code="${code}"
         >
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M20.52 3.48A11.92 11.92 0 0 0 12.09 0C5.5 0 .12 5.38.12 12.02c0 2.12.55 4.18 1.6 5.99L0 24l6.15-1.61a11.98 11.98 0 0 0 5.94 1.8h.01c6.58 0 11.97-5.38 11.97-12.02 0-3.2-1.24-6.21-3.48-8.49Zm-8.43 18.46h-.01c-1.91 0-3.78-.51-5.41-1.48l-.39-.23-3.65.96.98-3.55-.25-.39A9.48 9.48 0 0 1 2.1 12.02c0-5.23 4.26-9.48 9.49-9.48a9.42 9.42 0 0 1 6.7 2.78 9.46 9.46 0 0 1 2.78 6.7c0 5.24-4.26 9.48-9.49 9.48Zm5.21-7.1c-.28-.14-1.67-.82-1.93-.92-.26-.1-.45-.14-.63.14-.18.28-.71.92-.87 1.11-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.39-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.33.42-.5.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.63-1.52-.86-2.08-.22-.55-.45-.47-.63-.48l-.54-.01c-.18 0-.48.07-.73.36-.25.29-1 1-1 2.45s1.03 2.84 1.17 3.04c.14.2 2.02 3.08 4.9 4.32.68.29 1.22.46 1.64.59.69.22 1.32.19 1.81.11.55-.08 1.67-.68 1.9-1.34.23-.66.23-1.23.16-1.35-.07-.12-.26-.2-.54-.34Z" fill="currentColor"/>
@@ -707,7 +387,8 @@ function renderGrid() {
         </a>
       </div>
     </div>
-  `,
+  `;
+    },
   ).join("");
 
   // mouse-follow shine per card
@@ -744,8 +425,328 @@ function renderGrid() {
   observeCards();
 }
 
+function updateCatalogSummary() {
+  const count = SHIELDS.length;
+  const categories = new Set(SHIELDS.map((product) => product.cat)).size;
+  document.getElementById("hero-product-count").textContent = toArabicNumber(count);
+  document.getElementById("hero-category-count").textContent = toArabicNumber(categories);
+  document.getElementById("admin-total").textContent = toArabicNumber(count);
+  document.getElementById("admin-categories").textContent = toArabicNumber(categories);
+}
+
+function renderAdminProducts() {
+  const query = adminSearch.value.trim().toLocaleLowerCase();
+  const category = adminCategoryFilter.value;
+  const products = SHIELDS.filter((product) => {
+    const matchesQuery = !query ||
+      `${product.name} ${product.code}`.toLocaleLowerCase().includes(query);
+    return matchesQuery && (category === "all" || product.cat === category);
+  });
+
+  if (products.length === 0) {
+    adminProductList.innerHTML = '<p class="admin-empty">لا توجد منتجات مطابقة للبحث.</p>';
+    return;
+  }
+
+  adminProductList.innerHTML = products.map((product) => `
+    <article class="admin-product" data-product-id="${escapeHtml(product.id)}">
+      <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy">
+      <div class="admin-product__info">
+        <h3>${escapeHtml(product.name)}</h3>
+        <p><b>${escapeHtml(product.code)}</b> · ${escapeHtml(catLabel(product.cat))}</p>
+        <p>${escapeHtml(product.color)} · ${escapeHtml(product.size)}</p>
+        <small>${escapeHtml(product.era)}</small>
+      </div>
+      <div class="admin-product__actions">
+        <button class="admin-button admin-button--quiet" type="button" data-admin-action="edit" data-product-id="${escapeHtml(product.id)}">تعديل</button>
+        <button class="admin-button admin-button--danger-quiet" type="button" data-admin-action="delete" data-product-id="${escapeHtml(product.id)}">حذف</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function updateCatalogView() {
+  if (active !== "all" && !SHIELDS.some((product) => product.cat === active)) {
+    active = "all";
+  }
+  const liveIds = new Set(SHIELDS.map((product) => product.id));
+  [...productQuantities.keys()].forEach((id) => {
+    if (!liveIds.has(id)) productQuantities.delete(id);
+  });
+  [...selectedIds].forEach((id) => {
+    if (!liveIds.has(id)) selectedIds.delete(id);
+  });
+  SHIELDS.forEach((product) => {
+    if (!productQuantities.has(product.id)) productQuantities.set(product.id, 1);
+  });
+
+  renderGrid();
+  renderFilters();
+  applyFilter();
+  updateCatalogSummary();
+  renderAdminProducts();
+  updateBulkBar();
+}
+
+function openAdminPanel() {
+  adminPanel.hidden = false;
+  document.body.classList.add("admin-open");
+  renderAdminProducts();
+  adminDialog.focus();
+  if (catalogLoadError) setAdminStatus(catalogLoadError, "error");
+}
+
+function closeAdminPanel() {
+  adminPanel.hidden = true;
+  document.body.classList.remove("admin-open");
+  adminOpenButton.focus();
+}
+
+function showAdminForm(product = null) {
+  if (adminImagePreviewUrl) {
+    URL.revokeObjectURL(adminImagePreviewUrl);
+    adminImagePreviewUrl = null;
+  }
+  adminEditingId = product?.id ?? null;
+  adminProductForm.reset();
+  adminImageInput.value = "";
+  adminProductForm.elements.namedItem("id").value = adminEditingId ?? "";
+  adminProductForm.elements.namedItem("name").value = product?.name ?? "";
+  adminProductForm.elements.namedItem("code").value = product?.code ?? "";
+  adminProductForm.elements.namedItem("cat").value = product?.cat ?? "gold";
+  adminProductForm.elements.namedItem("color").value =
+    product?.color ?? PRODUCT_COLOR_DEFAULTS.gold;
+  adminProductForm.elements.namedItem("era").value = product?.era ?? "";
+  adminProductForm.elements.namedItem("size").value = product?.size ?? "";
+  document.getElementById("admin-form-title").textContent =
+    product ? "تعديل بيانات المنتج" : "إضافة منتج جديد";
+
+  adminImagePreview.hidden = !product;
+  adminImagePreview.src = product?.image ?? "";
+  adminProductForm.hidden = false;
+  adminProductForm.scrollIntoView({ behavior: "smooth", block: "start" });
+  adminProductForm.elements.namedItem("name").focus({ preventScroll: true });
+}
+
+function hideAdminForm() {
+  if (adminImagePreviewUrl) {
+    URL.revokeObjectURL(adminImagePreviewUrl);
+    adminImagePreviewUrl = null;
+  }
+  adminProductForm.hidden = true;
+  adminProductForm.reset();
+  adminImageInput.value = "";
+  adminImagePreview.hidden = true;
+  adminImagePreview.removeAttribute("src");
+  adminEditingId = null;
+}
+
+function createProductId() {
+  if (typeof crypto.randomUUID === "function") return `product-${crypto.randomUUID()}`;
+  return `product-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+}
+
+function compressImageFile(file) {
+  return new Promise((resolve, reject) => {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      reject(new Error("اختر صورة بصيغة PNG أو JPG أو WebP."));
+      return;
+    }
+    if (file.size > 12 * 1024 * 1024) {
+      reject(new Error("حجم الصورة كبير. الحد الأقصى قبل الضغط هو ١٢ ميجابايت."));
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1, 1400 / image.naturalWidth, 1400 / image.naturalHeight);
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext("2d");
+      if (!context) {
+        reject(new Error("تعذر تجهيز الصورة في هذا المتصفح."));
+        return;
+      }
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("تعذر ضغط الصورة."));
+          return;
+        }
+        if (blob.size > 900 * 1024) {
+          reject(new Error("الصورة ما زالت كبيرة بعد الضغط. اختر صورة أصغر."));
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("تعذرت قراءة الصورة بعد ضغطها."));
+        reader.readAsDataURL(blob);
+      }, "image/webp", 0.8);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("تعذر فتح الصورة المختارة."));
+    };
+    image.src = objectUrl;
+  });
+}
+
+function initAdminPanel() {
+  const productCategory = adminProductForm.elements.namedItem("cat");
+  productCategory.innerHTML = CATS.filter((category) => category.id !== "all")
+    .map((category) => `<option value="${escapeHtml(category.id)}">${escapeHtml(category.label)}</option>`)
+    .join("");
+  adminCategoryFilter.innerHTML = [
+    '<option value="all">كل التصنيفات</option>',
+    ...CATS.filter((category) => category.id !== "all")
+      .map((category) => `<option value="${escapeHtml(category.id)}">${escapeHtml(category.label)}</option>`),
+  ].join("");
+
+  adminOpenButton.addEventListener("click", openAdminPanel);
+  adminPanel.querySelectorAll("[data-admin-close]").forEach((element) => {
+    element.addEventListener("click", closeAdminPanel);
+  });
+  document.getElementById("admin-add").addEventListener("click", () => showAdminForm());
+  document.getElementById("admin-cancel-edit").addEventListener("click", hideAdminForm);
+  adminSearch.addEventListener("input", renderAdminProducts);
+  adminCategoryFilter.addEventListener("change", renderAdminProducts);
+
+  adminImageInput.addEventListener("change", () => {
+    const [file] = adminImageInput.files;
+    if (!file) return;
+    if (adminImagePreviewUrl) URL.revokeObjectURL(adminImagePreviewUrl);
+    adminImagePreviewUrl = URL.createObjectURL(file);
+    adminImagePreview.src = adminImagePreviewUrl;
+    adminImagePreview.hidden = false;
+  });
+
+  adminProductForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submitButton = adminProductForm.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    try {
+      const formData = new FormData(adminProductForm);
+      const id = String(formData.get("id") || createProductId());
+      const editingProduct = SHIELDS.find((product) => product.id === id);
+      const code = String(formData.get("code")).trim().toUpperCase();
+      if (SHIELDS.some((product) => product.id !== id &&
+          product.code.toLocaleLowerCase() === code.toLocaleLowerCase())) {
+        throw new Error("كود المنتج مستخدم بالفعل. اختر كودًا مختلفًا.");
+      }
+
+      const [imageFile] = adminImageInput.files;
+      let image = editingProduct?.image ?? "";
+      if (imageFile) image = await compressImageFile(imageFile);
+      if (!image) throw new Error("اختر صورة للمنتج.");
+
+      const product = {
+        id,
+        code,
+        name: String(formData.get("name")).trim(),
+        cat: String(formData.get("cat")),
+        color: String(formData.get("color")).trim(),
+        era: String(formData.get("era")).trim(),
+        size: String(formData.get("size")).trim(),
+        image,
+      };
+      const nextCatalog = validateCatalog(editingProduct
+        ? SHIELDS.map((item) => item.id === id ? product : item)
+        : [...SHIELDS, product]);
+
+      if (!saveCatalog(nextCatalog)) return;
+      SHIELDS = nextCatalog;
+      hideAdminForm();
+      updateCatalogView();
+      setAdminStatus(editingProduct ? "تم حفظ تعديلات المنتج." : "تمت إضافة المنتج.");
+    } catch (error) {
+      setAdminStatus(error.message, "error");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  adminProductList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-admin-action]");
+    if (!button) return;
+    const product = SHIELDS.find((item) => item.id === button.dataset.productId);
+    if (!product) return;
+
+    if (button.dataset.adminAction === "edit") {
+      showAdminForm(product);
+      return;
+    }
+    if (button.dataset.adminAction === "delete" &&
+        window.confirm(`هل تريد حذف "${product.name}"؟`)) {
+      const nextCatalog = SHIELDS.filter((item) => item.id !== product.id);
+      if (!saveCatalog(nextCatalog)) return;
+      SHIELDS = nextCatalog;
+      updateCatalogView();
+      setAdminStatus("تم حذف المنتج.");
+    }
+  });
+
+  document.getElementById("admin-export").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(SHIELDS, null, 2)], { type: "application/json" });
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = "meem-products-backup.json";
+    link.click();
+    URL.revokeObjectURL(downloadUrl);
+    setAdminStatus("تم تنزيل نسخة احتياطية من المنتجات.");
+  });
+
+  const importInput = document.getElementById("admin-import-file");
+  document.getElementById("admin-import").addEventListener("click", () => importInput.click());
+  importInput.addEventListener("change", async () => {
+    const [file] = importInput.files;
+    if (!file) return;
+    try {
+      if (file.size > 20 * 1024 * 1024) {
+        throw new Error("ملف النسخة الاحتياطية أكبر من الحد المسموح (٢٠ ميجابايت).");
+      }
+      const importedCatalog = validateCatalog(JSON.parse(await file.text()));
+      if (!saveCatalog(importedCatalog)) return;
+      SHIELDS = importedCatalog;
+      hideAdminForm();
+      updateCatalogView();
+      setAdminStatus("تم استيراد النسخة الاحتياطية.");
+    } catch (error) {
+      setAdminStatus(`تعذر استيراد النسخة: ${error.message}`, "error");
+    } finally {
+      importInput.value = "";
+    }
+  });
+
+  document.getElementById("admin-reset").addEventListener("click", () => {
+    if (!window.confirm("سيتم حذف تعديلاتك المحلية والعودة إلى المنتجات الأصلية. هل تريد المتابعة؟")) {
+      return;
+    }
+    try {
+      localStorage.removeItem(SHIELDS_STORAGE_KEY);
+      SHIELDS = [...DEFAULT_SHIELDS];
+      hideAdminForm();
+      updateCatalogView();
+      setAdminStatus("تمت استعادة المنتجات الأصلية.");
+    } catch (error) {
+      setAdminStatus(`تعذرت استعادة المنتجات الأصلية: ${error.message}`, "error");
+    }
+  });
+
+  renderAdminProducts();
+  updateCatalogSummary();
+  if (catalogLoadError) setAdminStatus(catalogLoadError, "error");
+}
+
 function renderFilters() {
-  filtersEl.innerHTML = CATS.map(
+  const availableCategories = CATS.filter((category) =>
+    category.id === "all" || SHIELDS.some((product) => product.cat === category.id),
+  );
+  filtersEl.innerHTML = availableCategories.map(
     (c) =>
       `<button class="chip ${c.id === active ? "active" : ""}" data-cat="${c.id}">${c.label}</button>`,
   ).join("");
@@ -838,6 +839,10 @@ productModal.querySelectorAll("[data-modal-close]").forEach((element) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (!adminPanel.hidden) {
+    if (event.key === "Escape") closeAdminPanel();
+    return;
+  }
   if (productModal.hidden) return;
   if (event.key === "Escape") closeProductModal();
   if (event.key === "ArrowLeft") stepModal(1);
@@ -886,10 +891,17 @@ if (footerWhatsappLink) {
   link.href = `tel:+${WHATSAPP_NUMBER}`;
 })();
 
+initAdminPanel();
 renderGrid();
 renderFilters();
 applyFilter();
 initDeepLink();
+
+/* تحديث الكتالوج من قاعدة البيانات */
+loadRemoteCatalog().then(({ products }) => {
+  SHIELDS = products;
+  updateCatalogView();
+}).catch((err) => console.warn("تعذر تحميل الكتالوج من الخادم:", err.message));
 
 /* ---------- page loader ---------- */
 (function initPageLoader() {

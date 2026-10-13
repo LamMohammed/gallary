@@ -61,7 +61,96 @@
         <span id="header-contact-phone"></span>
       </span>
     </a>
+    <button class="admin-open-button" id="admin-open" type="button" hidden style="display:none">إدارة المنتجات</button>
   </header>
+
+  <section class="admin-panel" id="admin-panel" hidden aria-labelledby="admin-title">
+    <div class="admin-panel__backdrop" data-admin-close></div>
+    <div class="admin-panel__dialog" role="dialog" aria-modal="true" aria-labelledby="admin-title" tabindex="-1">
+      <header class="admin-header">
+        <div>
+          <p class="admin-eyebrow">إدارة المتجر</p>
+          <h2 id="admin-title">لوحة المنتجات</h2>
+          <p>أضف المنتجات وعدّل بياناتها وصورها وألوانها.</p>
+        </div>
+        <button class="admin-close" type="button" aria-label="إغلاق لوحة الإدارة" data-admin-close>&times;</button>
+      </header>
+
+      <p class="admin-local-notice">التغييرات محفوظة في هذا المتصفح فقط، ولا تظهر للزوار من أجهزة أخرى.</p>
+      <p class="admin-status" id="admin-status" role="status" aria-live="polite" hidden></p>
+
+      <div class="admin-stats" aria-label="ملخص المنتجات">
+        <div class="admin-stat"><span>إجمالي المنتجات</span><strong id="admin-total">٠</strong></div>
+        <div class="admin-stat"><span>التصنيفات المستخدمة</span><strong id="admin-categories">٠</strong></div>
+      </div>
+
+      <form class="admin-form" id="admin-product-form" hidden>
+        <div class="admin-form__heading">
+          <div>
+            <p class="admin-eyebrow">بيانات الكتالوج</p>
+            <h3 id="admin-form-title">إضافة منتج جديد</h3>
+          </div>
+        </div>
+        <input id="admin-product-id" name="id" type="hidden">
+        <div class="admin-form__grid">
+          <label class="admin-field">
+            <span>اسم المنتج</span>
+            <input name="name" required maxlength="100" autocomplete="off">
+          </label>
+          <label class="admin-field">
+            <span>كود المنتج</span>
+            <input name="code" required maxlength="30" autocomplete="off">
+          </label>
+          <label class="admin-field">
+            <span>الخامة / التصنيف</span>
+            <select name="cat" required></select>
+          </label>
+          <label class="admin-field">
+            <span>اللون</span>
+            <input name="color" required maxlength="50" autocomplete="off">
+          </label>
+          <label class="admin-field">
+            <span>المقاس</span>
+            <input name="size" required maxlength="60" autocomplete="off">
+          </label>
+          <label class="admin-field admin-field--wide">
+            <span>وصف مختصر</span>
+            <input name="era" required maxlength="120" autocomplete="off">
+          </label>
+          <label class="admin-field admin-field--wide">
+            <span>صورة المنتج (PNG أو JPG أو WebP)</span>
+            <input id="admin-product-image" name="imageFile" type="file" accept="image/png,image/jpeg,image/webp">
+            <small>سيتم تصغير الصورة وحفظها في هذا المتصفح.</small>
+          </label>
+        </div>
+        <img class="admin-image-preview" id="admin-image-preview" alt="معاينة صورة المنتج" hidden>
+        <div class="admin-form__actions">
+          <button class="admin-button admin-button--primary" type="submit">حفظ المنتج</button>
+          <button class="admin-button admin-button--quiet" id="admin-cancel-edit" type="button">إلغاء</button>
+        </div>
+      </form>
+
+      <div class="admin-toolbar">
+        <label class="admin-field admin-search">
+          <span>بحث بالاسم أو الكود</span>
+          <input id="admin-search" type="search" placeholder="مثال: GO-001">
+        </label>
+        <label class="admin-field admin-category-filter">
+          <span>التصنيف</span>
+          <select id="admin-category-filter"></select>
+        </label>
+        <div class="admin-toolbar__actions">
+          <button class="admin-button admin-button--primary" id="admin-add" type="button">+ إضافة منتج</button>
+          <button class="admin-button admin-button--quiet" id="admin-export" type="button">تصدير نسخة</button>
+          <button class="admin-button admin-button--quiet" id="admin-import" type="button">استيراد نسخة</button>
+          <button class="admin-button admin-button--danger-quiet" id="admin-reset" type="button">استعادة المنتجات الأصلية</button>
+          <input id="admin-import-file" type="file" accept="application/json,.json" hidden>
+        </div>
+      </div>
+
+      <div class="admin-product-list" id="admin-product-list"></div>
+    </div>
+  </section>
 
   <section class="hero" id="top">
     <div class="hero-copy">
@@ -73,8 +162,8 @@
         <a class="hero-secondary" href="#filters">تصفّح الخامات</a>
       </div>
       <ul class="hero-highlights" aria-label="تفاصيل المجموعة">
-        <li><strong>٣٨</strong><span>تصميمًا</span></li>
-        <li><strong>٣</strong><span>خامات</span></li>
+        <li><strong id="hero-product-count">٣٨</strong><span>تصميمًا</span></li>
+        <li><strong id="hero-category-count">٣</strong><span>خامات</span></li>
         <li><strong>مباشر</strong><span>استفسار واتساب</span></li>
       </ul>
       <p class="hero-note"><span aria-hidden="true">✦</span> اختر التصميم وحدد الكمية، ثم استفسر عن السعر مباشرةً عبر واتساب.</p>
@@ -122,6 +211,7 @@
       <img class="product-modal__image" id="modal-product-image" alt="">
       <div class="product-modal__content">
         <p class="product-modal__material" id="modal-product-material"></p>
+        <p class="product-modal__color" id="modal-product-color"></p>
         <p class="product-modal__counter" id="modal-product-counter"></p>
         <h2 id="modal-product-name"></h2>
         <p class="product-modal__code" id="modal-product-code"></p>
@@ -164,6 +254,7 @@
     </div>
     <p class="footer-legal">© جميع الحقوق محفوظة لـ <span id="account-name">محمد رضا شركه ميم </span></p>
   </footer>
+  <script src="js/catalog-data.js"></script>
   <script src="js/script.js"></script>
 </body>
 </html>
