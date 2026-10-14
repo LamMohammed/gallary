@@ -137,7 +137,7 @@
     const fv = $("f").value;
     $("f").innerHTML = `<option value="all">كل الأنواع</option>` + cats.map((c) => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join("");
     $("f").value = fv || "all";
-    syncNew(); suggest();
+    syncNew(); suggest(); fillBulkCat();
   }
   function prefixFor(id) {
     const c = cats.find((x) => x.id === id);
@@ -186,7 +186,7 @@
   async function uploadImage(id) {
     const ext = imageBlob.type === "image/webp" ? "webp" : "png";
     const name = `${id}-${Date.now().toString(36)}.${ext}`;
-    await api(`/storage/v1/object/product-images/${name}`, { method: "POST", body: imageBlob, raw: true, headers: { "Content-Type": imageBlob.type, "x-upsert": "true" } });
+    await api(`/storage/v1/object/product-images/${name}`, { method: "POST", body: imageBlob, raw: true, headers: { "Content-Type": imageBlob.type } }).catch((e) => { throw new Error("رفع الصورة: " + e.message); });
     return `${SUPABASE_URL}/storage/v1/object/public/product-images/${name}`;
   }
 
@@ -295,6 +295,144 @@
     if (!confirm("مسح سجل الزيارات نهائيًا؟")) return;
     try { await api("/rest/v1/visits?id=gt.0", { method: "DELETE" }); visits = []; renderVisits(); msg("اتمسح سجل الزيارات."); }
     catch (err) { msg(err.message, "err"); }
+  });
+
+  /* ---------- إضافة عدة صور ---------- */
+  let bItems = [], bBusy = false;
+  const bmsg = (t, type) => say($("bmsg"), t, type);
+  function fillBulkCat() {
+    const cur = $("bCat").value;
+    $("bCat").innerHTML = cats.map((c) => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join("") + `<option value="${NEW}">+ نوع جديد…</option>`;
+    if (cur && [...$("bCat").options].some((o) => o.value === cur)) $("bCat").value = cur;
+    syncB();
+  }
+  function syncB() { $("bNew").style.display = $("bCat").value === NEW ? "grid" : "none"; assignCodes(); }
+  function bPrefix() { return $("bCat").value === NEW ? $("bncPrefix").value.trim().toUpperCase() : prefixFor($("bCat").value); }
+  function assignCodes() {
+    const prefix = bPrefix();
+    let max = 0;
+    if (prefix) products.forEach((p) => { const m = p.code.match(new RegExp("^" + prefix + "-(\\d+)$", "i")); if (m) max = Math.max(max, Number(m[1])); });
+    let k = 0;
+    bItems.forEach((it) => {
+      if (it.codeEdited) return;
+      it.code = prefix ? `${prefix}-${String(max + 1 + k++).padStart(3, "0")}` : "";
+      const el = document.querySelector(`[data-b="${it.key}"] [data-f="code"]`);
+      if (el) el.value = it.code;
+    });
+  }
+  const guessName = (fn) => {
+    const n = fn.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+    return /^(img|dsc|image|whatsapp|photo|screenshot|pxl|\d)/i.test(n) ? "" : n.slice(0, 100);
+  };
+  async function thumbOf(file) {
+    try {
+      const bmp = await createImageBitmap(file, { resizeWidth: 160, resizeQuality: "low" });
+      const cv = document.createElement("canvas"); cv.width = bmp.width; cv.height = bmp.height;
+      cv.getContext("2d").drawImage(bmp, 0, 0); return cv.toDataURL("image/jpeg", 0.6);
+    } catch (e) { return URL.createObjectURL(file); }
+  }
+  async function addFiles(fileList) {
+    const files = [...fileList].filter((f) => /^image\/(png|jpeg|webp)$/.test(f.type))
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    if (!files.length) return bmsg("مفيش صور صالحة في الاختيار (png / jpg / webp).", "err");
+    bmsg(`جاري تجهيز ${ar(files.length)} صورة…`);
+    for (const f of files) {
+      const it = { key: "b" + Math.random().toString(36).slice(2, 9), file: f, code: "", name: guessName(f.name), color: "", size: "", era: "", codeEdited: false, thumb: "", err: "" };
+      bItems.push(it);
+    }
+    for (const it of bItems) if (!it.thumb) it.thumb = await thumbOf(it.file);
+    bmsg(`${ar(bItems.length)} صورة جاهزة. كمّلي بيانات كل صورة.`);
+    assignCodes(); renderBulk();
+  }
+  const FIELDS = [["code", "الكود"], ["name", "الاسم"], ["color", "اللون"], ["size", "المقاس"], ["era", "الوصف"]];
+  function renderBulk() {
+    $("bTools").style.display = bItems.length ? "" : "none";
+    $("bList").innerHTML = bItems.map((it) => `
+      <div class="bitem ${it.err ? "err" : ""}" data-b="${it.key}"><img src="${esc(it.thumb)}" alt="">
+        <div class="bf">${FIELDS.map(([k, l]) => `<label class="${k === "name" || k === "era" ? "w" : ""}">${l}<input data-f="${k}" value="${esc(it[k])}" maxlength="${k === "era" ? 120 : k === "name" ? 100 : 60}"></label>`).join("")}
+          ${it.err ? `<div class="bst">${esc(it.err)}</div>` : ""}
+          <div class="w"><button type="button" class="btn d" data-rm="${it.key}" style="padding:5px 10px;font-size:.8rem">إزالة</button></div></div></div>`).join("");
+    updateCount();
+  }
+  const complete = (it) => it.code.trim() && it.name.trim() && it.color.trim() && it.size.trim() && it.era.trim();
+  function updateCount() {
+    const ok = bItems.filter(complete).length;
+    $("bCount").textContent = bItems.length ? `${ar(ok)} مكتمل من ${ar(bItems.length)}` : "";
+  }
+  $("bList").addEventListener("input", (e) => {
+    const f = e.target.dataset.f, card = e.target.closest("[data-b]"); if (!f || !card) return;
+    const it = bItems.find((x) => x.key === card.dataset.b); it[f] = e.target.value;
+    if (f === "code") it.codeEdited = true;
+    updateCount();
+  });
+  $("bList").addEventListener("click", (e) => {
+    const k = e.target.dataset.rm; if (!k) return;
+    bItems = bItems.filter((x) => x.key !== k); assignCodes(); renderBulk();
+  });
+  $("bFiles").addEventListener("change", (e) => { addFiles(e.target.files); e.target.value = ""; });
+  $("bFolder").addEventListener("change", (e) => { addFiles(e.target.files); e.target.value = ""; });
+  $("bCat").addEventListener("change", syncB);
+  $("bncPrefix").addEventListener("input", assignCodes);
+  $("aApply").addEventListener("click", () => {
+    const v = { color: $("aColor").value.trim(), size: $("aSize").value.trim(), era: $("aEra").value.trim() };
+    bItems.forEach((it) => Object.keys(v).forEach((k) => { if (!it[k].trim()) it[k] = v[k]; }));
+    renderBulk();
+  });
+  $("bClear").addEventListener("click", () => { if (!bBusy && (!bItems.length || confirm("مسح كل الصور المختارة من القايمة؟"))) { bItems = []; renderBulk(); bmsg(""); $("bmsg").className = "msg"; } });
+
+  async function resizeToBlob(file) {
+    const url = URL.createObjectURL(file);
+    try {
+      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error("صورة غير صالحة")); i.src = url; });
+      const s = Math.min(1, 900 / Math.max(im.width, im.height));
+      const cv = document.createElement("canvas");
+      cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s);
+      cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+      return await new Promise((res) => cv.toBlob(res, "image/webp", 0.82));
+    } finally { URL.revokeObjectURL(url); }
+  }
+  $("bSave").addEventListener("click", async () => {
+    if (bBusy) return;
+    const todo = bItems.filter(complete);
+    if (!todo.length) return bmsg("مفيش صور مكتملة البيانات لسه (الكود والاسم واللون والمقاس والوصف).", "err");
+    const seen = new Map(); let dup = false;
+    todo.forEach((it) => { it.err = ""; const c = it.code.trim().toLowerCase(); if (seen.has(c)) { it.err = "الكود متكرر في القايمة"; dup = true; } seen.set(c, 1); });
+    if (dup) { renderBulk(); return bmsg("فيه أكواد متكررة، عدّليها.", "err"); }
+    bBusy = true; $("bSave").disabled = true;
+    try {
+      let catId = $("bCat").value;
+      if (catId === NEW) {
+        const lbl = $("bncLabel").value.trim(), prefix = $("bncPrefix").value.trim().toUpperCase();
+        if (!lbl || !/^[A-Z]{1,4}$/.test(prefix)) throw new Error("اكتبي اسم النوع الجديد وبادئة كود بحروف إنجليزية (مثال: GK).");
+        if (cats.some((c) => c.label === lbl)) throw new Error("النوع ده موجود بالفعل، اختاريه من القايمة.");
+        const nc = { id: "c" + Date.now().toString(36), label: lbl, prefix };
+        await api("/rest/v1/categories", { method: "POST", body: nc, headers: { Prefer: "return=minimal" } });
+        cats.push(nc); catId = nc.id; fillCatSelect(); $("bCat").value = catId; $("bncLabel").value = ""; $("bncPrefix").value = ""; syncB();
+      }
+      let base = Math.max(0, ...products.map((x) => x.sort_order || 0)), done = 0, failed = 0, next = 0;
+      const jobs = todo.map((it, i) => ({ it, so: base + i + 1 }));
+      const total = jobs.length;
+      const worker = async () => {
+        while (next < jobs.length) {
+          const { it, so } = jobs[next++];
+          try {
+            const blob = await resizeToBlob(it.file);
+            const id = "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+            const name = `${id}.webp`;
+            await api(`/storage/v1/object/product-images/${name}`, { method: "POST", body: blob, raw: true, headers: { "Content-Type": blob.type || "image/webp" } }).catch((e) => { throw new Error("رفع الصورة: " + e.message); });
+            const row = { id, code: it.code.trim(), name: it.name.trim(), cat: catId, color: it.color.trim(), size: it.size.trim(), era: it.era.trim(), image: `${SUPABASE_URL}/storage/v1/object/public/product-images/${name}` };
+            await api("/rest/v1/products", { method: "POST", body: hasSort ? { ...row, sort_order: so } : row, headers: { Prefer: "return=minimal" } }).catch((e) => { throw new Error("حفظ المنتج: " + e.message); });
+            bItems = bItems.filter((x) => x.key !== it.key); done++;
+          } catch (err) { it.err = friendly(err); failed++; }
+          $("bProg").style.width = ((done + failed) / total) * 100 + "%";
+          bmsg(`جاري الحفظ… ${ar(done + failed)} من ${ar(total)}`);
+        }
+      };
+      await Promise.all([worker(), worker(), worker()]);
+      await loadAll(); assignCodes(); renderBulk();
+      bmsg(`اتحفظ ${ar(done)} منتج${failed ? ` وفشل ${ar(failed)} (ظاهرين في القايمة بعلامة الخطأ، جربي حفظهم تاني)` : ""}.`, failed ? "err" : "ok");
+    } catch (err) { bmsg(friendly(err), "err"); }
+    bBusy = false; $("bSave").disabled = false;
   });
 
   if (session) start();
