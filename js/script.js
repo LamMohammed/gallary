@@ -917,3 +917,10 @@ loadRemoteCatalog().then(({ products }) => {
     setTimeout(() => loader.remove(), 600);
   });
 })();
+
+/* Expose gallery data and modal behavior to gallery-features.js. */
+window.openProductModal = openProductModal;
+Object.defineProperty(window, "SHIELDS", {
+  get: () => SHIELDS,
+  configurable: true,
+});

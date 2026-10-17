@@ -80,7 +80,7 @@
     renderStats();
   }
   async function start() {
-    $("login").style.display = "none"; $("app").style.display = ""; $("logout").style.display = "";
+    $("login").style.display = "none"; $("app").style.display = "block"; $("logout").style.display = "";
     try { resetForm(); await loadAll(); }
     catch (e) { if (session) msg("تعذر تحميل البيانات: " + e.message, "err"); }
   }

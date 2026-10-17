@@ -1908,3 +1908,787 @@ body.modal-open{
 /* المودال فوق شريط الفلاتر الثابت (z-index:999) */
 .product-modal{z-index:1200}
 @media (max-width:760px){.product-modal__dialog{z-index:1201}}
+
+
+/* ============================================================
+   إضافات الجاليري — الميزات الجديدة
+   (أضف هذا في نهاية css/style.css)
+   ============================================================ */
+
+/* ---------- الثيم الليلي ---------- */
+html[data-theme="dark"] {
+  --stage: #0d0b1a;
+  --panel: #1a1730;
+  --panel-edge: #2c2850;
+  --ink: #f1f0fa;
+  --muted: #a09fba;
+  --metal-hi: #2a2645;
+  --metal: #3d3760;
+  --metal-lo: #5c5680;
+}
+
+html[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse 900px 460px at 50% -8%, rgba(124, 58, 237, .15), transparent 62%),
+    radial-gradient(ellipse 700px 380px at 95% 6%, rgba(79, 70, 229, .12), transparent 58%),
+    var(--stage);
+}
+
+html[data-theme="dark"] .hero .kicker {
+  color: #c4b5fd;
+  border-color: rgba(196, 181, 253, .24);
+  background: rgba(124, 58, 237, .16);
+}
+
+html[data-theme="dark"] .hero h1,
+html[data-theme="dark"] .hero-secondary {
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .hero h1 span,
+html[data-theme="dark"] .hero-secondary:hover,
+html[data-theme="dark"] .hero-secondary:focus-visible {
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .hero-secondary {
+  border-bottom-color: rgba(241, 240, 250, .3);
+}
+
+html[data-theme="dark"] .hero-highlights li {
+  background: rgba(26, 23, 48, .82);
+  border-color: var(--panel-edge);
+}
+
+html[data-theme="dark"] .hero-cta {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+html[data-theme="dark"] .card {
+  background: linear-gradient(160deg, #1c1936 0%, #1a1730 100%);
+  border-color: var(--panel-edge);
+}
+
+html[data-theme="dark"] .card:hover {
+  border-color: rgba(201, 162, 39, .6);
+}
+
+html[data-theme="dark"] .header-contact,
+html[data-theme="dark"] .admin-open-button,
+html[data-theme="dark"] .footer-content {
+  background: var(--panel);
+  border-color: var(--panel-edge);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .admin-open-button:hover,
+html[data-theme="dark"] .admin-open-button:focus-visible {
+  background: #2a2645;
+}
+
+html[data-theme="dark"] .chip {
+  background: var(--panel);
+  border-color: var(--panel-edge);
+  color: var(--muted);
+}
+
+html[data-theme="dark"] .chip:hover {
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .filter-bar.is-fixed {
+  background: rgba(26, 23, 48, .94);
+  border-bottom-color: rgba(201, 162, 39, .25);
+}
+
+html[data-theme="dark"] .thumb {
+  background: linear-gradient(145deg, #2a2645, #1f1c38);
+}
+
+html[data-theme="dark"] .product-modal__dialog {
+  background: linear-gradient(155deg, #1c1936 0%, #1a1730 72%, #2a2645 100%);
+  border-color: rgba(201, 162, 39, .38);
+}
+
+html[data-theme="dark"] .product-modal__close,
+html[data-theme="dark"] .product-modal__nav {
+  background: #f1f0fa;
+  color: #1e1b3a;
+}
+
+html[data-theme="dark"] .product-modal__close:hover,
+html[data-theme="dark"] .product-modal__close:focus-visible,
+html[data-theme="dark"] .product-modal__nav:hover,
+html[data-theme="dark"] .product-modal__nav:focus-visible {
+  background: #ddd9f2;
+  color: #1e1b3a;
+}
+
+html[data-theme="dark"] .product-modal__code {
+  background: #39345c;
+  border-color: rgba(201, 162, 39, .5);
+  color: #fff;
+}
+
+html[data-theme="dark"] .product-modal__size {
+  background: #302b4d;
+  border-color: #514a73;
+  color: #f1f0fa;
+}
+
+html[data-theme="dark"] .product-modal__counter {
+  color: #e8c75a;
+}
+
+html[data-theme="dark"] .quantity-control__stepper {
+  background: var(--panel);
+  border-color: var(--panel-edge);
+}
+
+html[data-theme="dark"] .quantity-control__button {
+  background: var(--panel-edge);
+  color: var(--ink);
+}
+
+html[data-theme="dark"] .footer-contact {
+  background: var(--panel);
+}
+
+html[data-theme="dark"] .footer-contact:hover {
+  background: #2a2645;
+}
+
+/* ---------- أزرار الهيدر (ثيم + مفضلة) ---------- */
+.header-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--panel-edge);
+  background: var(--panel);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ink);
+  position: relative;
+  transition: all .2s ease;
+}
+
+.icon-btn:hover,
+.icon-btn:focus-visible {
+  border-color: var(--teal);
+  color: var(--teal);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.fav-count {
+  position: absolute;
+  top: -4px;
+  inset-inline-end: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--stage);
+}
+
+/* ---------- شريط البحث + الترتيب ---------- */
+.filter-bar__top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 1180px;
+  margin: 0 auto 12px;
+  padding: 0 28px;
+  flex-wrap: wrap;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 500px;
+}
+
+.search-wrap__icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  opacity: .55;
+  pointer-events: none;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 11px 40px 11px 40px;
+  border: 1.5px solid var(--panel-edge);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, .12);
+}
+
+.search-clear {
+  position: absolute;
+  inset-inline-end: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border: 0;
+  background: rgba(0, 0, 0, .08);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 12px;
+  display: grid;
+  place-items: center;
+  transition: background .2s;
+}
+
+.search-clear:hover {
+  background: rgba(0, 0, 0, .16);
+}
+
+html[data-theme="dark"] .search-clear {
+  background: rgba(255, 255, 255, .1);
+}
+
+.sort-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.sort-wrap__label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.sort-select {
+  padding: 9px 32px 9px 14px;
+  border: 1.5px solid var(--panel-edge);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.search-count {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 4px 28px 0;
+  color: var(--teal);
+  font-size: 13px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---------- كارت: تحسينات ---------- */
+.card {
+  position: relative;
+}
+
+/* زر المفضلة على الكارت */
+.fav-btn {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 48px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, .8);
+  background: rgba(11, 31, 58, .35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  padding: 0;
+  transition: background .2s, border-color .2s, transform .15s;
+}
+
+.fav-btn:hover {
+  transform: scale(1.1);
+  border-color: #fff;
+}
+
+.fav-btn svg {
+  transition: fill .2s, stroke .2s;
+}
+
+.fav-btn.is-fav {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.fav-btn.is-fav svg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+/* شارة "جديد" */
+.card[data-new="true"]::before {
+  content: "جديد";
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 10px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2ec76d, #1aa854);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  box-shadow: 0 4px 10px rgba(30, 199, 109, .3);
+}
+
+.card[data-new="true"] .product-code-badge {
+  top: 44px;
+}
+
+/* Quick view (tooltip) */
+.card .thumb {
+  position: relative;
+}
+
+.card .thumb::after {
+  content: attr(data-preview);
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(11, 31, 58, .88);
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 3;
+}
+
+.card:hover .thumb::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* خلفية حسب التصنيف */
+.thumb[data-cat="gold"] {
+  background: linear-gradient(145deg, #fdf6e3, #f5e6c8);
+}
+
+.thumb[data-cat="crystal"] {
+  background: linear-gradient(145deg, #eef4ff, #dde7fa);
+}
+
+.thumb[data-cat="acrylic"] {
+  background: linear-gradient(145deg, #f3eaff, #e6d9fa);
+}
+
+html[data-theme="dark"] .thumb[data-cat="gold"] {
+  background: linear-gradient(145deg, #3a3020, #2a2418);
+}
+
+html[data-theme="dark"] .thumb[data-cat="crystal"] {
+  background: linear-gradient(145deg, #1f2a40, #16202e);
+}
+
+html[data-theme="dark"] .thumb[data-cat="acrylic"] {
+  background: linear-gradient(145deg, #2a1f40, #1e162e);
+}
+
+/* Skeleton أثناء تحميل الصورة */
+.thumb .skeleton {
+  position: absolute;
+  inset: 8px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(200, 200, 200, .2) 25%, rgba(220, 220, 220, .4) 50%, rgba(200, 200, 200, .2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  z-index: 0;
+}
+
+.thumb img.is-loaded + .skeleton,
+.thumb img.is-loaded ~ .skeleton {
+  display: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ---------- Recently viewed ---------- */
+.recently-viewed {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 28px 0;
+}
+
+.recently-viewed__title {
+  font-family: 'Amiri', serif;
+  font-size: 20px;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.recently-viewed__track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.recently-viewed__track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.recently-viewed__track::-webkit-scrollbar-thumb {
+  background: var(--panel-edge);
+  border-radius: 3px;
+}
+
+.recently-viewed__item {
+  flex: 0 0 auto;
+  width: 90px;
+  height: 110px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--panel-edge);
+  background: var(--panel);
+  cursor: pointer;
+  transition: transform .2s, border-color .2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recently-viewed__item:hover {
+  border-color: var(--teal);
+  transform: translateY(-3px);
+}
+
+.recently-viewed__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+/* ---------- مودال: أزرار إضافية ---------- */
+.product-modal__actions {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.product-modal__whatsapp {
+  flex: 1 1 auto;
+}
+
+.product-modal__btn {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  border: 1.5px solid var(--panel-edge);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.product-modal__btn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+  transform: translateY(-2px);
+}
+
+.product-modal__btn.is-fav {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: #fff;
+}
+
+.product-modal__btn.is-fav svg {
+  fill: #fff;
+  stroke: #fff;
+}
+
+/* ---------- Drawer المفضلة ---------- */
+.fav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+}
+
+.fav-drawer[hidden] {
+  display: none;
+}
+
+.fav-drawer__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 31, 58, .55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.fav-drawer__panel {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  height: 100%;
+  width: min(420px, 100%);
+  background: var(--panel);
+  border-inline-start: 1px solid var(--panel-edge);
+  box-shadow: -20px 0 60px rgba(11, 31, 58, .3);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight .3s ease;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.fav-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--panel-edge);
+}
+
+.fav-drawer__head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-family: 'Amiri', serif;
+}
+
+.fav-drawer__close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--panel-edge);
+  background: var(--panel);
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.fav-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.fav-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1.5px solid var(--panel-edge);
+  border-radius: 12px;
+  background: var(--stage);
+}
+
+.fav-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.fav-item b {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 3px;
+}
+
+.fav-item small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.fav-item__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.fav-item__actions button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--panel-edge);
+  background: var(--panel);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  transition: all .2s;
+}
+
+.fav-item__actions button:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.fav-item__actions button.del:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  z-index: 2000;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--panel);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .3s ease, opacity .3s ease;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast.ok {
+  background: linear-gradient(135deg, #2ec76d, #1aa854);
+  color: #fff;
+}
+
+.toast.err {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+}
+
+/* ---------- جوال ---------- */
+@media (max-width: 600px) {
+  .header-tools {
+    order: 3;
+    margin-inline-start: auto;
+  }
+
+  .filter-bar__top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 0 18px;
+  }
+
+  .search-wrap {
+    max-width: none;
+  }
+
+  .sort-wrap {
+    justify-content: space-between;
+  }
+
+  .sort-select {
+    flex: 1;
+  }
+
+  .recently-viewed {
+    padding: 18px 18px 0;
+  }
+
+  .recently-viewed__item {
+    width: 78px;
+    height: 96px;
+  }
+
+  .fav-btn {
+    inset-inline-end: 46px;
+  }
+
+  .product-modal__actions {
+    flex-wrap: nowrap;
+  }
+
+  .product-modal__btn {
+    width: 42px;
+    height: 42px;
+  }
+
+  .fav-drawer__panel {
+    width: 100%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .toast,
+  .fav-drawer__panel {
+    animation: none !important;
+    transition: none !important;
+  }
+}
