@@ -208,9 +208,26 @@
             <option value="newest">الأحدث</option>
           </select>
         </div>
+        <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button" aria-label="فتح قائمة التصنيفات" title="التصنيفات" aria-expanded="false" aria-controls="mobileFilterDrawer">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+            <circle cx="9" cy="6" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="15" cy="12" r="2" fill="currentColor" stroke="none"/>
+            <circle cx="8" cy="18" r="2" fill="currentColor" stroke="none"/>
+          </svg>
+        </button>
       </div>
 
-      <nav class="filters" id="filters"></nav>
+      <div class="mobile-filter-drawer" id="mobileFilterDrawer">
+        <div class="mobile-filter-backdrop" data-filter-close></div>
+        <aside class="mobile-filter-panel" role="dialog" aria-modal="true" aria-labelledby="mobileFilterTitle" aria-hidden="true" tabindex="-1">
+          <div class="mobile-filter-header">
+            <h2 id="mobileFilterTitle">تصفية حسب النوع</h2>
+            <button class="mobile-filter-close" type="button" aria-label="إغلاق التصنيفات" data-filter-close>&times;</button>
+          </div>
+          <nav class="filters" id="filters" aria-label="تصفية حسب نوع المنتج"></nav>
+        </aside>
+      </div>
       <p class="count" id="count"></p>
       <p class="search-count" id="searchCount" hidden></p>
     </div>
