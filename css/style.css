@@ -2638,22 +2638,69 @@ html[data-theme="dark"] .thumb[data-cat="acrylic"] {
   }
 
   .filter-bar__top {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 0 18px;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 0 14px;
   }
 
   .search-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
     max-width: none;
   }
 
   .sort-wrap {
-    justify-content: space-between;
+    flex: 0 0 auto;
+    gap: 4px;
+  }
+
+  .sort-wrap__label {
+    font-size: 12px;
   }
 
   .sort-select {
-    flex: 1;
+    flex: 0 0 104px;
+    min-width: 0;
+    padding: 9px 24px 9px 8px;
+    font-size: 12px;
+  }
+
+  #searchInput {
+    min-width: 0;
+    padding: 10px 34px;
+    font-size: 13px;
+  }
+
+  .search-wrap__icon {
+    inset-inline-start: 11px;
+    font-size: 13px;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: 100%;
+    gap: 6px;
+    padding: 0 14px;
+  }
+
+  .chip {
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    padding: 7px 5px;
+    font-size: 11.5px;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .count,
+  .search-count {
+    padding-inline: 14px;
   }
 
   .recently-viewed {
@@ -2680,6 +2727,24 @@ html[data-theme="dark"] .thumb[data-cat="acrylic"] {
 
   .fav-drawer__panel {
     width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .sort-wrap__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .sort-select {
+    flex-basis: 92px;
   }
 }
 
