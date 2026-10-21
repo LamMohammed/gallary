@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>لوحة التحكم — شركة ميم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="../images/brand/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <main id="login">
+    <div class="login-card">
+      <img class="login-logo-img" src="../images/brand/logo-mark.svg" width="64" height="72" alt="ميم">
+      <h1>لوحة التحكم</h1>
+      <p>شركة ميم — تسجيل الدخول للمسؤولين</p>
+      <div class="msg" id="lmsg"></div>
+      <form id="lf" class="login-form">
+        <label>الإيميل
+          <input name="email" type="email" required autocomplete="username" dir="ltr" placeholder="admin@example.com">
+        </label>
+        <label>كلمة السر
+          <input name="password" type="password" required autocomplete="current-password" dir="ltr" placeholder="••••••••">
+        </label>
+        <button class="btn btn--full" type="submit">دخول</button>
+      </form>
+      <p class="login-back">
+        <a href="../">← رجوع للموقع</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- ===== APP ===== -->
+  <div id="app">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar__start">
+        <button class="icon-btn mobile-menu-btn" id="menuToggle" aria-label="القائمة">☰</button>
+        <div class="topbar-brand">
+          <img class="topbar-brand-mark" src="../images/brand/logo-mark.svg" width="26" height="29" alt="">
+          <span>لوحة التحكم</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="تبديل الوضع" title="الوضع الليلي/النهاري">🌙</button>
+        <a class="icon-btn" href="../" title="رجوع للموقع" aria-label="رجوع للموقع">↗</a>
+        <button class="icon-btn" id="logout" aria-label="تسجيل الخروج" title="تسجيل الخروج" style="display:none">⏻</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <p class="nav-group-title">الرئيسية</p>
+        <button class="nav-item active" data-view="overview">
+          <span class="nav-ic">📊</span> النظرة العامة
+        </button>
+        <button class="nav-item" data-view="products">
+          <span class="nav-ic">📦</span> المنتجات
+        </button>
+        <button class="nav-item" data-view="add">
+          <span class="nav-ic">➕</span> إضافة منتج
+        </button>
+        <button class="nav-item" data-view="bulk">
+          <span class="nav-ic">🖼️</span> إضافة جماعية
+        </button>
+        <p class="nav-group-title">الموقع</p>
+        <button class="nav-item" data-view="settings">
+          <span class="nav-ic">⚙️</span> الاسم والرقم
+        </button>
+        <p class="nav-group-title">البيانات</p>
+        <button class="nav-item" data-view="backup">
+          <span class="nav-ic">💾</span> نسخة احتياطية
+        </button>
+      </aside>
+
+      <!-- Content -->
+      <main class="content">
+
+        <!-- ===== OVERVIEW ===== -->
+        <section class="view active" data-view="overview">
+          <div class="page-head">
+            <div>
+              <h2>النظرة العامة</h2>
+              <p>ملخص أداء المتجر والاستفسارات</p>
+            </div>
+            <div class="seg" id="period">
+              <button data-d="7">٧ أيام</button>
+              <button data-d="30">٣٠ يوم</button>
+              <button data-d="0" class="on">الكل</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-ic">📦</div><div class="kpi-label">إجمالي المنتجات</div><div class="kpi-value" id="kProducts">0</div></div>
+            <div class="kpi"><div class="kpi-ic">🏷️</div><div class="kpi-label">الأنواع</div><div class="kpi-value" id="kCats">0</div></div>
+            <div class="kpi"><div class="kpi-ic">💬</div><div class="kpi-label">الاستفسارات</div><div class="kpi-value" id="kInq">0</div></div>
+            <div class="kpi"><div class="kpi-ic">⭐</div><div class="kpi-label">الأكثر طلبًا</div><div class="kpi-value sm" id="kTop">—</div></div>
+            <div class="kpi"><div class="kpi-ic">👁️</div><div class="kpi-label">الزيارات</div><div class="kpi-value" id="kVisits">0</div></div>
+            <div class="kpi"><div class="kpi-ic">👥</div><div class="kpi-label">الزوار (أشخاص)</div><div class="kpi-value" id="kVisitors">0</div></div>
+            <div class="kpi"><div class="kpi-ic">📅</div><div class="kpi-label">زوار النهاردة</div><div class="kpi-value" id="kToday">0</div></div>
+          </div>
+
+          <div class="card">
+            <h3>📈 الأكثر استفسارًا</h3>
+            <div class="two">
+              <div>
+                <p class="muted section-note">أفضل ١٠ منتجات (عدد مرات الضغط على واتساب)</p>
+                <div class="rank" id="topList"></div>
+              </div>
+              <div>
+                <p class="muted section-note">الاستفسارات حسب النوع</p>
+                <div class="rank" id="catList"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>📊 زوار الموقع</h3>
+            <p class="muted section-note">
+              بنفس الفترة المختارة. الزيارة تُحسب مرة لكل جلسة. زياراتك وأنت مسجل دخول لا تُحسب. الرسم يعرض آخر ٣٠ يوم كحد أقصى.
+            </p>
+            <div class="chart" id="chart"></div>
+          </div>
+        </section>
+
+        <!-- ===== ADD PRODUCT ===== -->
+        <section class="view" data-view="add">
+          <div class="page-head">
+            <div>
+              <h2 id="formTitle">إضافة منتج</h2>
+              <p>أضف منتجًا جديدًا أو عدّل منتجًا موجودًا</p>
+            </div>
+            <button class="btn q sm" id="cancel" type="button">إلغاء / جديد</button>
+          </div>
+
+          <div class="card">
+            <div class="msg" id="msg"></div>
+            <form id="pf" autocomplete="off" class="grid-form">
+              <label>النوع
+                <select name="cat" id="catSel"></select>
+              </label>
+              <label>كود المنتج (تلقائي ويمكن تعديله)
+                <input name="code" required maxlength="30" autocomplete="off">
+              </label>
+              <div id="newCat">
+                <label>اسم النوع الجديد<input id="ncLabel" maxlength="40" placeholder="مثال: رخام"></label>
+                <label>بادئة الكود (حروف إنجليزية)<input id="ncPrefix" maxlength="4" placeholder="MR" dir="ltr"></label>
+              </div>
+              <label class="w">اسم المنتج<input name="name" required maxlength="100" autocomplete="off"></label>
+              <label>اللون (اختياري)<input name="color" maxlength="50" autocomplete="off" placeholder="سيبيه فاضي لو مش معروف"></label>
+              <label>المقاس (اختياري)<input name="size" maxlength="60" autocomplete="off" placeholder="مثال: 220×280 مم"></label>
+              <label class="w">وصف مختصر<input name="era" required maxlength="120" autocomplete="off"></label>
+              <div class="w variant-box">
+                <p class="variant-box__title">🎨 النسخ (ألوان / مقاسات) — اختياري</p>
+                <p class="muted">لو ده نفس درع موجود بلون أو مقاس تاني، اختاري الأصل هنا وهيظهروا في بطاقة واحدة للعميل.</p>
+                <div class="grid-form">
+                  <label class="w">نسخة من
+                    <select name="variantOf" id="variantOf"><option value="">— منتج مستقل —</option></select>
+                  </label>
+                  <label id="variantByWrap" style="display:none">الاختلاف بين النسخ
+                    <select name="variantBy" id="variantBy">
+                      <option value="color">اللون (كل لون بصورته)</option>
+                      <option value="size">المقاس (قائمة اختيار — الصور اختيارية)</option>
+                      <option value="both">لون ومقاس معًا</option>
+                    </select>
+                  </label>
+                  <label id="hexWrap" style="display:none">لون العينة (اختياري)
+                    <input name="colorHex" id="colorHex" maxlength="7" dir="ltr" placeholder="#C9A227" pattern="#[0-9A-Fa-f]{6}" autocomplete="off">
+                  </label>
+                </div>
+                <p class="muted" id="variantHint"></p>
+              </div>
+              <label class="w" id="imgLabel">صورة المنتج<input type="file" id="img" accept="image/png,image/jpeg,image/webp"></label>
+              <img id="prev" alt="">
+              <div class="w acts">
+                <button class="btn" type="submit">💾 حفظ</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== BULK ===== -->
+        <section class="view" data-view="bulk">
+          <div class="page-head">
+            <div>
+              <h2>إضافة عدة صور مرة واحدة</h2>
+              <p>ارفع مجموعة صور وأضف بياناتها بسرعة</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="msg" id="bmsg"></div>
+            <div class="bgrid bgrid--top">
+              <label>النوع<select id="bCat"></select></label>
+            </div>
+            <div id="bNew">
+              <label>اسم النوع الجديد<input id="bncLabel" maxlength="40"></label>
+              <label>بادئة الكود (حروف إنجليزية)<input id="bncPrefix" maxlength="4" dir="ltr" placeholder="GK"></label>
+            </div>
+            <div class="bfiles">
+              <label class="btn">📁 اختيار صور<input type="file" id="bFiles" accept="image/png,image/jpeg,image/webp" multiple hidden></label>
+              <label class="btn q" id="bFolderBtn">📂 اختيار فولدر<input type="file" id="bFolder" webkitdirectory multiple hidden></label>
+            </div>
+          </div>
+
+          <div class="card" id="bTools" style="display:none">
+            <h3>⚡ تعبئة سريعة</h3>
+            <p class="muted section-note">اكتب القيم المشتركة واضغط "تعبئة الفاضي" (تملأ الخانات الفاضية فقط).</p>
+            <div class="bgrid">
+              <label>لون<input id="aColor" maxlength="50"></label>
+              <label>مقاس<input id="aSize" maxlength="60"></label>
+              <label>وصف<input id="aEra" maxlength="120"></label>
+              <label>&nbsp;<button class="btn q" type="button" id="aApply">تعبئة الفاضي</button></label>
+            </div>
+            <div class="blist" id="bList"></div>
+            <div class="bar bar--progress"><i id="bProg" style="width:0"></i></div>
+            <div class="acts acts--mt">
+              <button class="btn" type="button" id="bSave">💾 حفظ المكتمل</button>
+              <button class="btn q" type="button" id="bClear">🗑️ مسح القائمة</button>
+              <span class="muted" id="bCount"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== PRODUCTS ===== -->
+        <section class="view" data-view="products">
+          <div class="page-head">
+            <div>
+              <h2>كل المنتجات</h2>
+              <p>تصفّح وعدّل المنتجات</p>
+            </div>
+            <div class="acts">
+              <input id="q" type="search" placeholder="🔍 بحث بالاسم أو الكود" class="input--search">
+              <select id="f" class="input--filter"></select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="plist" id="plist"></div>
+          </div>
+        </section>
+
+                <!-- ===== SETTINGS ===== -->
+        <section class="view" data-view="settings">
+          <div class="page-head">
+            <div>
+              <h2>الاسم والرقم</h2>
+              <p>بيظهروا في أعلى الموقع وفي رسائل واتساب اللي بتوصلك</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="msg" id="smsg"></div>
+            <form id="sf" autocomplete="off" class="grid-form">
+              <label>اسم التواصل
+                <input name="contact_name" id="sName" required maxlength="60" autocomplete="off">
+              </label>
+              <label>رقم واتساب (بصيغة دولية)
+                <input name="whatsapp_number" id="sPhone" required dir="ltr" inputmode="tel" maxlength="24" placeholder="+966 55 007 4405" autocomplete="off">
+              </label>
+              <p class="muted w" id="sPreview"></p>
+              <div class="w acts">
+                <button class="btn" type="submit">💾 حفظ</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== BACKUP ===== -->
+        <section class="view" data-view="backup">
+          <div class="page-head">
+            <div>
+              <h2>نسخة احتياطية</h2>
+              <p>صدّر نسخة من بياناتك أو امسح السجلات</p>
+            </div>
+          </div>
+          <div class="card">
+            <p class="note note--mb">
+              البيانات محفوظة على السيرفر (Supabase). صدّر نسخة بشكل دوري للاحتياط.
+            </p>
+            <div class="acts">
+              <button class="btn q" id="exp">📥 تصدير نسخة</button>
+            </div>
+            <div class="divider"></div>
+            <p class="muted danger-note">⚠️ إجراءات حذف نهائية — لا يمكن التراجع</p>
+            <div class="acts">
+              <button class="btn d" id="clr">🗑️ مسح الاستفسارات</button>
+              <button class="btn d" id="clrv">🗑️ مسح سجل الزيارات</button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="admin-ui.js"></script>
+</body>
+
+</html>
