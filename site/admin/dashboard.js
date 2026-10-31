@@ -332,6 +332,7 @@
       $("variantBy").value = p.variant_by || "color"; f.colorHex.value = p.color_hex || "";
       syncVariantUI();
       $("formTitle").textContent = "تعديل: " + p.name;
+      window.showView("add");
       $("pf").scrollIntoView({ behavior: "smooth" });
     }
   });
