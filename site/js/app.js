@@ -243,10 +243,35 @@ function renderModalProduct() {
   if (!group) return;
   const product = currentVariant(group);
 
+  const imageSources = [...new Set([
+    product.image,
+    thumbOf(product.image),
+    ...group.variants.map((variant) => variant.image),
+  ].filter(Boolean))];
+  let imageSourceIndex = 0;
+  const imageFallback = document.getElementById("modal-image-fallback");
   modalImage.classList.add("is-loading");
+  modalImage.classList.remove("is-unavailable");
+  if (imageFallback) imageFallback.hidden = true;
   modalImage.onload = () => modalImage.classList.remove("is-loading");
-  modalImage.onerror = () => modalImage.classList.remove("is-loading");
-  modalImage.src = product.image;
+  modalImage.onerror = () => {
+    imageSourceIndex += 1;
+    if (imageSourceIndex < imageSources.length) {
+      modalImage.src = imageSources[imageSourceIndex];
+      return;
+    }
+    modalImage.classList.remove("is-loading");
+    modalImage.classList.add("is-unavailable");
+    if (imageFallback) imageFallback.hidden = false;
+  };
+  if (imageSources.length) {
+    modalImage.src = imageSources[0];
+  } else {
+    modalImage.removeAttribute("src");
+    modalImage.classList.remove("is-loading");
+    modalImage.classList.add("is-unavailable");
+    if (imageFallback) imageFallback.hidden = false;
+  }
   modalImage.alt = product.name;
 
   modalMaterial.textContent = `الخامة: ${catLabel(product.cat)}`;
@@ -365,7 +390,7 @@ function variantPickerMarkup(group, current) {
   if (hasSizes) {
     const buttons = group.sizes.map((size) => {
       const isActive = size === current.size;
-      return `<button class="size-option${isActive ? " is-active" : ""}" type="button" role="radio" aria-checked="${isActive}" data-group-key="${key}" data-axis="size" data-value="${escapeHtml(size)}">${escapeHtml(isoSize(size))}</button>`;
+      return `<button class="size-option${isActive ? " is-active" : ""}" type="button" role="radio" aria-checked="${isActive}" aria-label="المقاس: ${escapeHtml(isoSize(size))}" data-group-key="${key}" data-axis="size" data-value="${escapeHtml(size)}">${escapeHtml(isoSize(size))}</button>`;
     }).join("");
     html += `<div class="variant-picker"><span class="variant-picker__label">المقاس</span><div class="size-options" role="radiogroup" aria-label="اختيار المقاس">${buttons}</div></div>`;
   }
@@ -386,6 +411,8 @@ function cardMarkup(group, i) {
   const code = escapeHtml(s.code);
   const image = escapeHtml(thumbOf(s.image));
   const isSelected = selectedIds.has(s.id);
+  const hasColorPicker = group.colors.length > 1;
+  const hasSizePicker = group.sizes.length > 1;
   return `
     <div class="card${isSelected ? " is-selected" : ""}" data-cat="${escapeHtml(s.cat)}" data-product-id="${escapeHtml(s.id)}" data-group-key="${escapeHtml(group.key)}" style="--d:${(i % 8) * 0.06}s">
       <div class="thumb">
@@ -407,8 +434,8 @@ function cardMarkup(group, i) {
       <h3>${name}</h3>
       <div class="card-specs" aria-label="مواصفات المنتج">
         <span class="card-specs__material">${escapeHtml(catLabel(s.cat))}</span>
-        ${colorShown(s) ? `<span class="card-specs__color">${escapeHtml(s.color)}</span>` : ""}
-        ${s.size ? `<span class="card-specs__size">${escapeHtml(isoSize(s.size))}</span>` : ""}
+        ${colorShown(s) && !hasColorPicker ? `<span class="card-specs__color">${escapeHtml(s.color)}</span>` : ""}
+        ${s.size && !hasSizePicker ? `<span class="card-specs__size">${escapeHtml(isoSize(s.size))}</span>` : ""}
       </div>
       ${variantPickerMarkup(group, s)}
       ${quantityControlMarkup(s)}
@@ -490,7 +517,7 @@ function renderModalVariants(group, current) {
   if (group.sizes.length > 1) {
     const buttons = group.sizes.map((size) => {
       const isActive = size === current.size;
-      return `<button class="size-option${isActive ? " is-active" : ""}" type="button" role="radio" aria-checked="${isActive}" data-axis="size" data-value="${escapeHtml(size)}">${escapeHtml(isoSize(size))}</button>`;
+      return `<button class="size-option${isActive ? " is-active" : ""}" type="button" role="radio" aria-checked="${isActive}" aria-label="المقاس: ${escapeHtml(isoSize(size))}" data-axis="size" data-value="${escapeHtml(size)}">${escapeHtml(isoSize(size))}</button>`;
     }).join("");
     html += `<div class="variant-picker"><span class="variant-picker__label">المقاس</span><div class="size-options" role="radiogroup" aria-label="اختيار المقاس">${buttons}</div></div>`;
   }

@@ -4,7 +4,7 @@
    - لوحة الإدارة وSupabase والخطوط: بدون تخزين
    غيّر CACHE_VERSION عند كل إصدار جديد.
    ============================================================ */
-const CACHE_VERSION = "meem-v5";
+const CACHE_VERSION = "meem-v6";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
