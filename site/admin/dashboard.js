@@ -57,6 +57,7 @@
     try { products = await api("/rest/v1/products?select=*&" + ORDER); hasSort = true; }
     catch (e) { hasSort = false; products = await api("/rest/v1/products?select=*&order=created_at.asc,code.asc"); }
     fillCatSelect(); renderList(); renderStats(); fillVariantOf(); loadSettings();
+    document.dispatchEvent(new Event("meem:loaded"));
     loadInquiries(); loadVisits();
   }
   async function loadVisits() {
@@ -290,13 +291,20 @@
   function renderList() {
     const list = visibleList();
     $("plist").innerHTML = list.length ? list.map((p, i) => `
-      <div class="p"><img src="${esc(imgSrc(imageOf(p)))}" alt="" loading="lazy">
+      <div class="p" data-id="${esc(p.id)}"><span class="drag-handle" title="اسحب لتغيير الترتيب" aria-label="اسحب لتغيير الترتيب">⋮⋮</span><img src="${esc(imgSrc(imageOf(p)))}" alt="" loading="lazy" draggable="false">
         <div><b>${esc(p.name)}</b><br><small class="muted">${esc(p.code)} · ${esc(label(p.cat))} · ${esc(p.color)} · ${esc(p.size)}${p.price ? " · 💰 " + esc(p.price) : ""}${p.group_id ? " · 🔗 " + (p.variant_by === "size" ? "مقاس" : "لون") + (isBase(p) ? " (أساسي)" : "") : ""}</small></div>
         <div class="acts">
           <button class="btn q" data-a="top" data-id="${esc(p.id)}" title="نقل لأول الصفحة" ${i === 0 ? "disabled" : ""}>⤒</button>
           <button class="btn q" data-a="up" data-id="${esc(p.id)}" title="لفوق" ${i === 0 ? "disabled" : ""}>▲</button>
           <button class="btn q" data-a="down" data-id="${esc(p.id)}" title="لتحت" ${i === list.length - 1 ? "disabled" : ""}>▼</button>
-          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn q" data-a="full" data-id="${esc(p.id)}" title="الفورم الكامل (ربط نسخ…)">⚙️</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
+          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn q" data-a="gen" data-id="${esc(p.id)}" title="إضافة ألوان / مقاسات دفعة واحدة">🎨</button><button class="btn q" data-a="full" data-id="${esc(p.id)}" title="الفورم الكامل (ربط نسخ…)">⚙️</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
+  }
+  /* حفظ ترتيب جديد (order = كل المنتجات بالترتيب الجديد) */
+  async function applyOrder(order) {
+    const next = order.map((p, k) => ({ ...p, sort_order: k + 1 }));
+    const changed = next.filter((p) => products.find((x) => x.id === p.id).sort_order !== p.sort_order);
+    if (changed.length) await api("/rest/v1/products?on_conflict=id", { method: "POST", body: changed, headers: { Prefer: "resolution=merge-duplicates,return=minimal" } });
+    products = next; renderList();
   }
   async function move(id, dir) {
     if (!hasSort) return msg("لازم تشغّل ملف update-1.sql في Supabase الأول عشان الترتيب يشتغل.", "err");
@@ -306,12 +314,25 @@
     if (dir !== 0) { const nb = shown[i + dir]; if (!nb) return; to = order.findIndex((p) => p.id === nb.id); }
     const [item] = order.splice(from, 1);
     order.splice(to, 0, item);
-    const next = order.map((p, k) => ({ ...p, sort_order: k + 1 }));
-    const changed = next.filter((p, k) => products.find((x) => x.id === p.id).sort_order !== p.sort_order);
-    try {
-      if (changed.length) await api("/rest/v1/products?on_conflict=id", { method: "POST", body: changed, headers: { Prefer: "resolution=merge-duplicates,return=minimal" } });
-      products = next; renderList();
-    } catch (err) { msg(err.message, "err"); }
+    try { await applyOrder(order); } catch (err) { msg(err.message, "err"); }
+  }
+  /* السحب والإفلات: المعروض بس بيتحرك، والمخفي (بسبب البحث/الفلتر) بيفضل في مكانه */
+  async function reorderByIds(ids) {
+    const queue = ids.map(find).filter(Boolean), shown = new Set(queue.map((p) => p.id));
+    const order = products.map((p) => (shown.has(p.id) ? queue.shift() : p));
+    try { await applyOrder(order); }
+    catch (err) { msg(err.message, "err"); renderList(); }
+  }
+  if (window.Sortable) {
+    Sortable.create($("plist"), {
+      handle: ".drag-handle", draggable: ".p", animation: 150, delay: 0, touchStartThreshold: 4,
+      ghostClass: "p--ghost", chosenClass: "p--chosen", dragClass: "p--drag",
+      onEnd: (ev) => {
+        if (ev.oldIndex === ev.newIndex) return;
+        if (!hasSort) { renderList(); return msg("لازم تشغّل ملف update-1.sql في Supabase الأول عشان الترتيب يشتغل.", "err"); }
+        reorderByIds([...$("plist").querySelectorAll(".p[data-id]")].map((el) => el.dataset.id));
+      },
+    });
   }
   $("q").addEventListener("input", renderList);
   $("f").addEventListener("change", renderList);
@@ -335,12 +356,15 @@
     const b = e.target.closest("[data-a]"); if (!b) return;
     const p = find(b.dataset.id); if (!p) return;
     if (["up", "down", "top"].includes(b.dataset.a)) return move(p.id, { up: -1, down: 1, top: 0 }[b.dataset.a]);
+    if (b.dataset.a === "gen") return window.MeemVariantsBulk ? MeemVariantsBulk.open(p.id) : openFull(p);
     if (b.dataset.a === "del") {
       if (!confirm(`حذف "${p.name}" نهائيًا؟ (سجل استفساراته هيتحذف معاه)`)) return;
       try {
         await api(`/rest/v1/products?id=eq.${encodeURIComponent(p.id)}`, { method: "DELETE" });
-        const m = p.image.match(/product-images\/([A-Za-z0-9_.-]+)$/);
-        if (m) api(`/storage/v1/object/product-images/${m[1]}`, { method: "DELETE" }).catch(() => {});
+        /* النسخ ممكن تكون من غير صورة، أو تشارك نفس الملف مع نسخ تانية: ما نمسحش الملف لو لسه مستخدم */
+        const m = p.image && p.image.match(/product-images\/([A-Za-z0-9_.-]+)$/);
+        const shared = p.image && products.some((x) => x.id !== p.id && x.image === p.image);
+        if (m && !shared) api(`/storage/v1/object/product-images/${m[1]}`, { method: "DELETE" }).catch(() => {});
         await loadAll(); msg("اتحذف المنتج.");
       } catch (err) { msg(err.message, "err"); }
     } else if (b.dataset.a === "full") openFull(p);
@@ -568,6 +592,6 @@
     refreshList() { renderList(); renderStats(); fillVariantOf(); },
     refreshCats() { fillCatSelect(); renderList(); },
     openFull(id) { const p = find(id); if (p) openFull(p); },
-    reload: loadAll,
+    reload: loadAll, hasSort: () => hasSort,
   };
 })();

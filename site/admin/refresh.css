@@ -69,3 +69,34 @@ body.dark-mode{--mute:#b4c2d8}
 h1,h2,h3{color:var(--ink)}
 .card h3{font-size:18px;font-weight:700}
 .page-head p{color:var(--mute)}
+
+/* ===== السحب والإفلات لترتيب المنتجات ===== */
+.drag-handle{flex:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:10px 6px;margin-inline-start:-4px;color:var(--mute,#8a8372);font-size:20px;line-height:1;letter-spacing:-2px;border-radius:6px}
+.drag-handle:hover{color:var(--ink,#0b1f3a);background:rgba(201,162,39,.14)}
+.drag-handle:active{cursor:grabbing}
+.plist .p--ghost{opacity:.35;background:rgba(201,162,39,.12)}
+.plist .p--chosen{box-shadow:0 6px 18px rgba(11,31,58,.18)}
+.plist .p--drag{opacity:.95}
+
+/* ===== ألوان ومقاسات دفعة واحدة ===== */
+.vg-base{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
+.vg-base:empty{display:none}
+.vg-base img{width:56px;height:56px;object-fit:cover;border-radius:6px;background:#efe9da}
+.vg-h{margin:22px 0 8px;font-size:1rem}
+.vg-list{display:grid;gap:8px}
+.vg-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+.vg-item>b{flex:1;min-width:90px}
+.vg-item input[data-f=hex]{width:96px;padding:6px 8px;font-size:.85rem}
+.vg-thumb{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:8px;overflow:hidden;background:var(--line)}
+.vg-thumb img{width:100%;height:100%;object-fit:cover}
+.vg-sw{display:block;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.15)}
+.vg-sw--none{background:repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)}
+.vg-rows{display:grid;gap:8px}
+.vg-row{display:grid;grid-template-columns:auto 48px 1fr minmax(96px,150px);gap:10px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+.vg-row.off{opacity:.5}
+.vg-row img{width:48px;height:48px;object-fit:cover;border-radius:6px;background:var(--line)}
+.vg-row .vg-on input{width:18px;height:18px}
+.vg-lbl small{display:block}
+.vg-row input[data-f=code]{padding:7px 9px;font-size:.85rem}
+#vgWork textarea{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:inherit;resize:vertical}
+@media (max-width:560px){.vg-row{grid-template-columns:auto 44px 1fr}.vg-row input[data-f=code]{grid-column:1/-1}}

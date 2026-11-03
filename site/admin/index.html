@@ -72,6 +72,9 @@
         <button class="nav-item" data-view="bulk">
           <span class="nav-ic">🖼️</span> إضافة جماعية
         </button>
+        <button class="nav-item" data-view="vgen">
+          <span class="nav-ic">🎨</span> ألوان ومقاسات
+        </button>
         <button class="nav-item" data-view="cats">
           <span class="nav-ic">🏷️</span> الأنواع
         </button>
@@ -238,6 +241,53 @@
           </div>
         </section>
 
+        <!-- ===== VARIANTS BULK ===== -->
+        <section class="view" data-view="vgen">
+          <div class="page-head">
+            <div>
+              <h2>ألوان ومقاسات دفعة واحدة</h2>
+              <p>اكتبي كل الألوان و/أو المقاسات مرة واحدة، وارفعي صورة لكل لون أو مقاس لو عندك</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="msg" id="vgMsg"></div>
+            <label>المنتج الأساسي
+              <select id="vgBase"><option value="">— اختاري المنتج الأساسي —</option></select>
+            </label>
+            <div class="vg-base" id="vgBaseInfo"></div>
+
+            <div id="vgWork" style="display:none">
+              <div class="bgrid">
+                <label>الألوان <span class="muted">(سطر لكل لون — ممكن تكتبي كود اللون بعد الاسم: <bdi dir="ltr">أحمر #C0392B</bdi>)</span>
+                  <textarea id="vgColors" rows="5" placeholder="ذهبي #C9A227&#10;فضي #C0C0C0&#10;أزرق"></textarea>
+                </label>
+                <label>المقاسات <span class="muted">(سطر لكل مقاس، أو افصلي بفاصلة)</span>
+                  <textarea id="vgSizes" rows="5" placeholder="٢٠ سم&#10;٢٥ سم&#10;٣٠ سم"></textarea>
+                </label>
+              </div>
+              <div class="acts acts--mt"><button class="btn" type="button" id="vgParse">⚡ توليد النسخ</button></div>
+
+              <div id="vgColorBox" style="display:none">
+                <h3 class="vg-h">🎨 الألوان <small class="muted">— الصورة هنا بتتطبّق على كل مقاسات اللون ده</small></h3>
+                <div class="vg-list" id="vgColorPanel"></div>
+              </div>
+              <div id="vgSizeBox" style="display:none">
+                <h3 class="vg-h">📐 المقاسات <small class="muted">— صورة اختيارية (صورة اللون أولى لو الاتنين موجودين)</small></h3>
+                <div class="vg-list" id="vgSizePanel"></div>
+              </div>
+
+              <h3 class="vg-h">📋 النسخ اللي هتتضاف <small class="muted">— الأكواد تلقائية وتقدري تعدّليها، وشيلي العلامة من أي نسخة مش عايزاها</small></h3>
+              <div class="vg-rows" id="vgRows"></div>
+              <div class="bar bar--progress"><i id="vgProg" style="width:0"></i></div>
+              <div class="acts acts--mt">
+                <button class="btn" type="button" id="vgSave" disabled>💾 حفظ النسخ</button>
+                <span class="muted" id="vgCount"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- ===== PRODUCTS ===== -->
         <section class="view" data-view="products">
           <div class="page-head">
@@ -359,9 +409,11 @@
       <footer class="sheet__foot"><button class="btn" type="submit" id="qSave">💾 حفظ</button><button class="btn q" type="button" id="qFull">⚙️ فورم كامل (ربط نسخ)</button></footer>
     </form>
   </dialog>
+  <script src="vendor/sortable.min.js"></script>
   <script src="catalog-docx.js"></script>
   <script src="dashboard.js"></script>
   <script src="manage.js"></script>
+  <script src="variants-bulk.js"></script>
   <script src="admin-ui.js"></script>
 </body>
 
