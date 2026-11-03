@@ -8,9 +8,10 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
   <title>لوحة التحكم — شركة ميم</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@600&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="icon" href="../images/brand/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="refresh.css">
 </head>
 
 <body>
@@ -71,9 +72,15 @@
         <button class="nav-item" data-view="bulk">
           <span class="nav-ic">🖼️</span> إضافة جماعية
         </button>
+        <button class="nav-item" data-view="cats">
+          <span class="nav-ic">🏷️</span> الأنواع
+        </button>
         <p class="nav-group-title">الموقع</p>
         <button class="nav-item" data-view="settings">
           <span class="nav-ic">⚙️</span> الاسم والرقم
+        </button>
+        <button class="nav-item" data-view="admins">
+          <span class="nav-ic">👤</span> المسؤولين
         </button>
         <p class="nav-group-title">البيانات</p>
         <button class="nav-item" data-view="backup">
@@ -238,6 +245,7 @@
               <p>تصفّح وعدّل المنتجات</p>
             </div>
             <div class="acts">
+              <button class="btn btn-word" id="expWord" type="button">📄 تحميل الكتالوج (Word)</button>
               <input id="q" type="search" placeholder="🔍 بحث بالاسم أو الكود" class="input--search">
               <select id="f" class="input--filter"></select>
             </div>
@@ -247,7 +255,31 @@
           </div>
         </section>
 
-                <!-- ===== SETTINGS ===== -->
+                <!-- ===== CATS ===== -->
+        <section class="view" data-view="cats">
+          <div class="page-head"><div><h2>الأنواع</h2><p>غيّر الاسم اللي بيظهر للعملاء في الفلاتر وفي الكتالوج</p></div></div>
+          <div class="card">
+            <div class="msg" id="catMsg"></div>
+            <div class="rowlist" id="catManage"></div>
+          </div>
+        </section>
+
+        <!-- ===== ADMINS ===== -->
+        <section class="view" data-view="admins">
+          <div class="page-head"><div><h2>المسؤولين</h2><p>مين يقدر يدخل لوحة الإدارة</p></div></div>
+          <div class="card">
+            <div class="msg" id="adMsg"></div>
+            <div class="rowlist" id="adminList"></div>
+            <div class="divider"></div>
+            <form id="adf" class="grid-form" autocomplete="off">
+              <label class="w">إيميل الأدمن الجديد<input name="email" type="email" required dir="ltr" placeholder="name@example.com"></label>
+              <label class="w">كلمة سر مؤقتة <span class="muted">(لو الحساب جديد — سيبها فاضية لو له حساب بالفعل)</span><input name="password" type="password" minlength="8" autocomplete="new-password" dir="ltr"></label>
+              <div class="w acts"><button class="btn" type="submit">➕ إضافة أدمن</button></div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== SETTINGS ===== -->
         <section class="view" data-view="settings">
           <div class="page-head">
             <div>
@@ -286,6 +318,7 @@
             </p>
             <div class="acts">
               <button class="btn q" id="exp">📥 تصدير نسخة</button>
+              <button class="btn btn-word" id="expWord2" type="button">📄 تحميل الكتالوج (Word)</button>
             </div>
             <div class="divider"></div>
             <p class="muted danger-note">⚠️ إجراءات حذف نهائية — لا يمكن التراجع</p>
@@ -302,7 +335,31 @@
 
   <script src="../js/config.js"></script>
   <script src="../js/supabase.js"></script>
+
+  <dialog id="qe" class="sheet" aria-labelledby="qTitle">
+    <form id="qf" autocomplete="off">
+      <header class="sheet__head"><h3 id="qTitle">تعديل</h3><button class="btn q sm" type="button" id="qCancel" aria-label="إغلاق">✕</button></header>
+      <div class="sheet__body">
+        <div class="msg" id="qMsg"></div>
+        <label>اسم المنتج<input name="name" required maxlength="100"></label>
+        <label>وصف مختصر<input name="era" required maxlength="120"></label>
+        <label>النوع<select name="cat" id="qCat"></select></label>
+        <label class="check" id="qSyncWrap"><input type="checkbox" name="sync" checked><span id="qSyncTxt"></span></label>
+        <p class="muted" id="qSyncNote">الكود واللون والمقاس والصورة بتفضل لكل نسخة لوحدها.</p>
+        <div class="sheet__row">
+          <label>الكود<input name="code" required maxlength="30" dir="ltr"></label>
+          <label>المقاس<input name="size" maxlength="60"></label>
+          <label>اللون<input name="color" maxlength="50"></label>
+          <label id="qHexWrap">لون العينة<input name="colorHex" maxlength="7" dir="ltr" placeholder="#C9A227"></label>
+        </div>
+        <div class="sheet__img"><img id="qPrev" alt=""><label>تغيير الصورة<input type="file" id="qImg" name="img" accept="image/png,image/jpeg,image/webp"></label></div>
+      </div>
+      <footer class="sheet__foot"><button class="btn" type="submit" id="qSave">💾 حفظ</button><button class="btn q" type="button" id="qFull">⚙️ فورم كامل (ربط نسخ)</button></footer>
+    </form>
+  </dialog>
+  <script src="catalog-docx.js"></script>
   <script src="dashboard.js"></script>
+  <script src="manage.js"></script>
   <script src="admin-ui.js"></script>
 </body>
 

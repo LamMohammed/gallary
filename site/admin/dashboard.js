@@ -264,7 +264,11 @@
         if (!target.group_id) await api(`/rest/v1/products?id=eq.${encodeURIComponent(target.id)}`, { method: "PATCH", body: { group_id: row.group_id, variant_by: row.variant_by }, headers: { Prefer: "return=minimal" } });
       } else { row.group_id = null; row.variant_by = null; }
       row.color_hex = row.group_id && row.variant_by !== "size" && hex ? hex : null;
-      if (old) await api(`/rest/v1/products?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: row, headers: { Prefer: "return=minimal" } });
+      if (old) {
+        await api(`/rest/v1/products?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: row, headers: { Prefer: "return=minimal" } });
+        /* الاسم والوصف والنوع مشتركين بين كل نسخ الشكل الواحد */
+        if (row.group_id) await api(`/rest/v1/products?group_id=eq.${encodeURIComponent(row.group_id)}&id=neq.${encodeURIComponent(id)}`, { method: "PATCH", body: { name: row.name, era: row.era, cat: row.cat }, headers: { Prefer: "return=minimal" } });
+      }
       else {
         const so = hasSort ? { sort_order: Math.max(0, ...products.map((x) => x.sort_order || 0)) + 1 } : {};
         await api("/rest/v1/products", { method: "POST", body: { id, ...row, ...so }, headers: { Prefer: "return=minimal" } });
@@ -290,7 +294,7 @@
           <button class="btn q" data-a="top" data-id="${esc(p.id)}" title="نقل لأول الصفحة" ${i === 0 ? "disabled" : ""}>⤒</button>
           <button class="btn q" data-a="up" data-id="${esc(p.id)}" title="لفوق" ${i === 0 ? "disabled" : ""}>▲</button>
           <button class="btn q" data-a="down" data-id="${esc(p.id)}" title="لتحت" ${i === list.length - 1 ? "disabled" : ""}>▼</button>
-          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
+          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn q" data-a="full" data-id="${esc(p.id)}" title="الفورم الكامل (ربط نسخ…)">⚙️</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
   }
   async function move(id, dir) {
     if (!hasSort) return msg("لازم تشغّل ملف update-1.sql في Supabase الأول عشان الترتيب يشتغل.", "err");
@@ -309,6 +313,22 @@
   }
   $("q").addEventListener("input", renderList);
   $("f").addEventListener("change", renderList);
+  /* الفورم الكامل (للربط بنسخ ولتغيير الأصل) */
+  function openFull(p) {
+    editingId = p.id; imageBlob = null;
+    const f = $("pf").elements;
+    $("catSel").value = p.cat; syncNew();
+    f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era;
+    $("prev").src = imgSrc(imageOf(p)); $("prev").style.display = "block";
+    fillVariantOf();
+    $("variantOf").value = p.group_id && !isBase(p) ? baseOf(p).id : "";
+    $("variantBy").value = p.variant_by || "color"; f.colorHex.value = p.color_hex || "";
+    syncVariantUI();
+    $("formTitle").textContent = "تعديل: " + p.name;
+    window.showView("add");
+    $("pf").scrollIntoView({ behavior: "smooth" });
+  }
+
   $("plist").addEventListener("click", async (e) => {
     const b = e.target.closest("[data-a]"); if (!b) return;
     const p = find(b.dataset.id); if (!p) return;
@@ -321,22 +341,27 @@
         if (m) api(`/storage/v1/object/product-images/${m[1]}`, { method: "DELETE" }).catch(() => {});
         await loadAll(); msg("اتحذف المنتج.");
       } catch (err) { msg(err.message, "err"); }
-    } else {
-      editingId = p.id; imageBlob = null;
-      const f = $("pf").elements;
-      $("catSel").value = p.cat; syncNew();
-      f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era;
-      $("prev").src = imgSrc(imageOf(p)); $("prev").style.display = "block";
-      fillVariantOf();
-      $("variantOf").value = p.group_id && !isBase(p) ? baseOf(p).id : "";
-      $("variantBy").value = p.variant_by || "color"; f.colorHex.value = p.color_hex || "";
-      syncVariantUI();
-      $("formTitle").textContent = "تعديل: " + p.name;
-      window.showView("add");
-      $("pf").scrollIntoView({ behavior: "smooth" });
-    }
+    } else if (b.dataset.a === "full") openFull(p);
+    else window.MeemManage ? MeemManage.openQuick(p.id) : openFull(p);
   });
 
+  /* ---------- كتالوج Word ---------- */
+  async function exportWord(btn) {
+    const old = btn.textContent; btn.disabled = true;
+    try {
+      const blob = await MeemCatalogDocx.build({
+        products, cats, imgUrl: (p) => imgSrc(imageOf(p)), siteUrl: location.origin + "/",
+        onProgress: (i, n) => { btn.textContent = "⏳ جاري التجهيز " + ar(i) + "/" + ar(n); },
+      });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "meem-catalog-" + new Date().toISOString().slice(0, 10) + ".docx";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    } catch (err) { msg(err.message, "err"); alert(err.message); }
+    btn.disabled = false; btn.textContent = old;
+  }
+  ["expWord", "expWord2"].forEach((id) => $(id).addEventListener("click", (e) => exportWord(e.currentTarget)));
   /* ---------- نسخة احتياطية ---------- */
   $("exp").addEventListener("click", async () => {
     try {
@@ -533,4 +558,14 @@
     } catch (err) { smsg(friendly(err), "err"); }
     btn.disabled = false;
   });
+
+  /* واجهة بسيطة لملف manage.js (الأنواع · التعديل السريع · المسؤولين) */
+  window.MeemAdmin = {
+    get cats() { return cats; }, get products() { return products; }, get session() { return session; },
+    api, esc, ar, imgSrc, imageOf, label, find, groupVariants, isBase, msg, friendly,
+    refreshList() { renderList(); renderStats(); fillVariantOf(); },
+    refreshCats() { fillCatSelect(); renderList(); },
+    openFull(id) { const p = find(id); if (p) openFull(p); },
+    reload: loadAll,
+  };
 })();

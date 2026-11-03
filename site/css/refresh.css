@@ -1,0 +1,31 @@
+/* refresh.css — تحديث تصميم المعرض (بيتحمّل بعد style.css) */
+h1,.brand-name,.hero-copy h1,.page-loader__text,.product-modal__content h2,.product-modal__content h3{font-family:'Reem Kufi','Tajawal',sans-serif;font-weight:600;letter-spacing:0}
+body{background:var(--stage)}
+.floaters{display:none}
+.site-header{border-bottom:1px solid rgba(201,162,39,.45);background:var(--stage)}
+.brand-name{font-size:21px}
+/* الهيرو: عنوان بلون واحد، من غير كبسولات */
+.hero-copy h1{font-size:clamp(46px,6.2vw,84px);line-height:1.12;color:var(--ink)}
+.hero-copy h1 span{color:inherit}
+.hero-copy .kicker,.kicker{background:none;border:0;padding:0;color:var(--gold-deep);font-size:17px;font-weight:700}
+.hero-highlights{gap:0}
+.hero-highlights li{background:none;border:0;border-radius:0;box-shadow:none;padding:0 22px;border-inline-start:1px solid var(--panel-edge)}
+.hero-highlights li:first-child{padding-inline-start:0;border-inline-start:0}
+.hero-highlights strong{font-family:'Reem Kufi',Tajawal,sans-serif;font-size:24px;font-weight:600}
+.hero-note span{display:none}
+.hero-cta{border-radius:4px}
+.hero-secondary{border-radius:4px}
+/* الفلاتر */
+.chip,.select-toggle,.sort-select,.search-wrap input{border-radius:4px}
+.chip[aria-pressed="true"],.chip.is-active,.chip.active{background:var(--navy-dk);color:#f5e3a0}
+/* البطاقات: قطعة على قاعدة ذهبية بدل كرت أبيض مدوّر */
+.card{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0;transform:none}
+.card:hover{transform:none;box-shadow:none}
+.card .product-image,.card .thumb{border-radius:3px;border-bottom:3px solid var(--gold)}
+.product-code-badge{border-radius:2px}
+.card-meta{padding-top:10px}
+.card-specs{border-top:1px solid var(--panel-edge);padding-top:8px}
+.quantity-control,.wa-button,.product-modal__btn{border-radius:4px}
+.product-modal__dialog{border-radius:6px}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

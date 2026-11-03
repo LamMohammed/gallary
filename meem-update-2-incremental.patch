@@ -1,0 +1,442 @@
+diff --git a/database/008_admin_management.sql b/database/008_admin_management.sql
+new file mode 100644
+index 0000000..4396655
+--- /dev/null
++++ b/database/008_admin_management.sql
+@@ -0,0 +1,50 @@
++-- ============================================================
++-- 008_admin_management.sql — إدارة المسؤولين من لوحة الإدارة
++-- شغّله بعد 004_security.sql (بيستخدم is_admin()).
++-- الجدول admins مقفول على الـ API، فالإضافة/الحذف بتتم عبر دوال محمية.
++-- ============================================================
++
++create or replace function public.list_admins()
++returns table (user_id uuid, email text, created_at timestamptz)
++language plpgsql stable security definer
++set search_path = public, auth
++as $$
++begin
++  if not public.is_admin() then raise exception 'NOT_ADMIN'; end if;
++  return query
++    select a.user_id, coalesce(a.email, u.email)::text, a.created_at
++    from public.admins a left join auth.users u on u.id = a.user_id
++    order by a.created_at nulls first;
++end $$;
++
++create or replace function public.add_admin(p_email text)
++returns void
++language plpgsql security definer
++set search_path = public, auth
++as $$
++declare v_id uuid;
++begin
++  if not public.is_admin() then raise exception 'NOT_ADMIN'; end if;
++  select id into v_id from auth.users where lower(email) = lower(trim(p_email)) limit 1;
++  if v_id is null then raise exception 'USER_NOT_FOUND'; end if;
++  insert into public.admins (user_id, email) values (v_id, lower(trim(p_email)))
++  on conflict (user_id) do nothing;
++end $$;
++
++create or replace function public.remove_admin(p_user_id uuid)
++returns void
++language plpgsql security definer
++set search_path = public, auth
++as $$
++begin
++  if not public.is_admin() then raise exception 'NOT_ADMIN'; end if;
++  if p_user_id = auth.uid() then raise exception 'CANNOT_REMOVE_SELF'; end if;
++  delete from public.admins where user_id = p_user_id;
++end $$;
++
++revoke all on function public.list_admins()        from public, anon;
++revoke all on function public.add_admin(text)      from public, anon;
++revoke all on function public.remove_admin(uuid)   from public, anon;
++grant execute on function public.list_admins()      to authenticated;
++grant execute on function public.add_admin(text)    to authenticated;
++grant execute on function public.remove_admin(uuid) to authenticated;
+diff --git a/database/README.md b/database/README.md
+index 7520f22..38f2c89 100644
+--- a/database/README.md
++++ b/database/README.md
+@@ -11,6 +11,7 @@
+ | `004_security.sql` | **الأمان**: أدمن محدد، RPC بحد معدّل، قيود الصور |
+ | `005_content_cleanup.sql` | تنظيف الأوصاف + مسارات الصور الجديدة |
+ | `007_variants_v2.sql` | **لون ومقاس معًا** + النسخة من غير صورة (بتاخد صورة المنتج الأساسي) |
++| `008_admin_management.sql` | **إدارة المسؤولين** من اللوحة (إضافة/حذف أدمن) |
+ | `006_variants_and_settings.sql` | **نسخ المنتج** (ألوان/مقاسات) + **إعدادات الاسم والرقم** القابلة للتعديل من لوحة الإدارة |
+ 
+ > **مهم:** شغّل `004_security.sql` **قبل** رفع النسخة الجديدة من الموقع، لأن الموقع بقى
+diff --git a/site/admin/dashboard.js b/site/admin/dashboard.js
+index a079c70..941e55f 100644
+--- a/site/admin/dashboard.js
++++ b/site/admin/dashboard.js
+@@ -264,7 +264,11 @@
+         if (!target.group_id) await api(`/rest/v1/products?id=eq.${encodeURIComponent(target.id)}`, { method: "PATCH", body: { group_id: row.group_id, variant_by: row.variant_by }, headers: { Prefer: "return=minimal" } });
+       } else { row.group_id = null; row.variant_by = null; }
+       row.color_hex = row.group_id && row.variant_by !== "size" && hex ? hex : null;
+-      if (old) await api(`/rest/v1/products?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: row, headers: { Prefer: "return=minimal" } });
++      if (old) {
++        await api(`/rest/v1/products?id=eq.${encodeURIComponent(id)}`, { method: "PATCH", body: row, headers: { Prefer: "return=minimal" } });
++        /* الاسم والوصف والنوع مشتركين بين كل نسخ الشكل الواحد */
++        if (row.group_id) await api(`/rest/v1/products?group_id=eq.${encodeURIComponent(row.group_id)}&id=neq.${encodeURIComponent(id)}`, { method: "PATCH", body: { name: row.name, era: row.era, cat: row.cat }, headers: { Prefer: "return=minimal" } });
++      }
+       else {
+         const so = hasSort ? { sort_order: Math.max(0, ...products.map((x) => x.sort_order || 0)) + 1 } : {};
+         await api("/rest/v1/products", { method: "POST", body: { id, ...row, ...so }, headers: { Prefer: "return=minimal" } });
+@@ -290,7 +294,7 @@
+           <button class="btn q" data-a="top" data-id="${esc(p.id)}" title="نقل لأول الصفحة" ${i === 0 ? "disabled" : ""}>⤒</button>
+           <button class="btn q" data-a="up" data-id="${esc(p.id)}" title="لفوق" ${i === 0 ? "disabled" : ""}>▲</button>
+           <button class="btn q" data-a="down" data-id="${esc(p.id)}" title="لتحت" ${i === list.length - 1 ? "disabled" : ""}>▼</button>
+-          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
++          <button class="btn q" data-a="edit" data-id="${esc(p.id)}">تعديل</button><button class="btn q" data-a="full" data-id="${esc(p.id)}" title="الفورم الكامل (ربط نسخ…)">⚙️</button><button class="btn d" data-a="del" data-id="${esc(p.id)}">حذف</button></div></div>`).join("") : `<div class="empty">لا توجد منتجات مطابقة.</div>`;
+   }
+   async function move(id, dir) {
+     if (!hasSort) return msg("لازم تشغّل ملف update-1.sql في Supabase الأول عشان الترتيب يشتغل.", "err");
+@@ -309,6 +313,22 @@
+   }
+   $("q").addEventListener("input", renderList);
+   $("f").addEventListener("change", renderList);
++  /* الفورم الكامل (للربط بنسخ ولتغيير الأصل) */
++  function openFull(p) {
++    editingId = p.id; imageBlob = null;
++    const f = $("pf").elements;
++    $("catSel").value = p.cat; syncNew();
++    f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era;
++    $("prev").src = imgSrc(imageOf(p)); $("prev").style.display = "block";
++    fillVariantOf();
++    $("variantOf").value = p.group_id && !isBase(p) ? baseOf(p).id : "";
++    $("variantBy").value = p.variant_by || "color"; f.colorHex.value = p.color_hex || "";
++    syncVariantUI();
++    $("formTitle").textContent = "تعديل: " + p.name;
++    window.showView("add");
++    $("pf").scrollIntoView({ behavior: "smooth" });
++  }
++
+   $("plist").addEventListener("click", async (e) => {
+     const b = e.target.closest("[data-a]"); if (!b) return;
+     const p = find(b.dataset.id); if (!p) return;
+@@ -321,20 +341,8 @@
+         if (m) api(`/storage/v1/object/product-images/${m[1]}`, { method: "DELETE" }).catch(() => {});
+         await loadAll(); msg("اتحذف المنتج.");
+       } catch (err) { msg(err.message, "err"); }
+-    } else {
+-      editingId = p.id; imageBlob = null;
+-      const f = $("pf").elements;
+-      $("catSel").value = p.cat; syncNew();
+-      f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era;
+-      $("prev").src = imgSrc(imageOf(p)); $("prev").style.display = "block";
+-      fillVariantOf();
+-      $("variantOf").value = p.group_id && !isBase(p) ? baseOf(p).id : "";
+-      $("variantBy").value = p.variant_by || "color"; f.colorHex.value = p.color_hex || "";
+-      syncVariantUI();
+-      $("formTitle").textContent = "تعديل: " + p.name;
+-      window.showView("add");
+-      $("pf").scrollIntoView({ behavior: "smooth" });
+-    }
++    } else if (b.dataset.a === "full") openFull(p);
++    else window.MeemManage ? MeemManage.openQuick(p.id) : openFull(p);
+   });
+ 
+   /* ---------- كتالوج Word ---------- */
+@@ -550,4 +558,14 @@
+     } catch (err) { smsg(friendly(err), "err"); }
+     btn.disabled = false;
+   });
++
++  /* واجهة بسيطة لملف manage.js (الأنواع · التعديل السريع · المسؤولين) */
++  window.MeemAdmin = {
++    get cats() { return cats; }, get products() { return products; }, get session() { return session; },
++    api, esc, ar, imgSrc, imageOf, label, find, groupVariants, isBase, msg, friendly,
++    refreshList() { renderList(); renderStats(); fillVariantOf(); },
++    refreshCats() { fillCatSelect(); renderList(); },
++    openFull(id) { const p = find(id); if (p) openFull(p); },
++    reload: loadAll,
++  };
+ })();
+diff --git a/site/admin/index.html b/site/admin/index.html
+index 9f2ab70..c58899e 100644
+--- a/site/admin/index.html
++++ b/site/admin/index.html
+@@ -72,10 +72,16 @@
+         <button class="nav-item" data-view="bulk">
+           <span class="nav-ic">🖼️</span> إضافة جماعية
+         </button>
++        <button class="nav-item" data-view="cats">
++          <span class="nav-ic">🏷️</span> الأنواع
++        </button>
+         <p class="nav-group-title">الموقع</p>
+         <button class="nav-item" data-view="settings">
+           <span class="nav-ic">⚙️</span> الاسم والرقم
+         </button>
++        <button class="nav-item" data-view="admins">
++          <span class="nav-ic">👤</span> المسؤولين
++        </button>
+         <p class="nav-group-title">البيانات</p>
+         <button class="nav-item" data-view="backup">
+           <span class="nav-ic">💾</span> نسخة احتياطية
+@@ -249,7 +255,31 @@
+           </div>
+         </section>
+ 
+-                <!-- ===== SETTINGS ===== -->
++                <!-- ===== CATS ===== -->
++        <section class="view" data-view="cats">
++          <div class="page-head"><div><h2>الأنواع</h2><p>غيّر الاسم اللي بيظهر للعملاء في الفلاتر وفي الكتالوج</p></div></div>
++          <div class="card">
++            <div class="msg" id="catMsg"></div>
++            <div class="rowlist" id="catManage"></div>
++          </div>
++        </section>
++
++        <!-- ===== ADMINS ===== -->
++        <section class="view" data-view="admins">
++          <div class="page-head"><div><h2>المسؤولين</h2><p>مين يقدر يدخل لوحة الإدارة</p></div></div>
++          <div class="card">
++            <div class="msg" id="adMsg"></div>
++            <div class="rowlist" id="adminList"></div>
++            <div class="divider"></div>
++            <form id="adf" class="grid-form" autocomplete="off">
++              <label class="w">إيميل الأدمن الجديد<input name="email" type="email" required dir="ltr" placeholder="name@example.com"></label>
++              <label class="w">كلمة سر مؤقتة <span class="muted">(لو الحساب جديد — سيبها فاضية لو له حساب بالفعل)</span><input name="password" type="password" minlength="8" autocomplete="new-password" dir="ltr"></label>
++              <div class="w acts"><button class="btn" type="submit">➕ إضافة أدمن</button></div>
++            </form>
++          </div>
++        </section>
++
++        <!-- ===== SETTINGS ===== -->
+         <section class="view" data-view="settings">
+           <div class="page-head">
+             <div>
+@@ -305,8 +335,31 @@
+ 
+   <script src="../js/config.js"></script>
+   <script src="../js/supabase.js"></script>
++
++  <dialog id="qe" class="sheet" aria-labelledby="qTitle">
++    <form id="qf" autocomplete="off">
++      <header class="sheet__head"><h3 id="qTitle">تعديل</h3><button class="btn q sm" type="button" id="qCancel" aria-label="إغلاق">✕</button></header>
++      <div class="sheet__body">
++        <div class="msg" id="qMsg"></div>
++        <label>اسم المنتج<input name="name" required maxlength="100"></label>
++        <label>وصف مختصر<input name="era" required maxlength="120"></label>
++        <label>النوع<select name="cat" id="qCat"></select></label>
++        <label class="check" id="qSyncWrap"><input type="checkbox" name="sync" checked><span id="qSyncTxt"></span></label>
++        <p class="muted" id="qSyncNote">الكود واللون والمقاس والصورة بتفضل لكل نسخة لوحدها.</p>
++        <div class="sheet__row">
++          <label>الكود<input name="code" required maxlength="30" dir="ltr"></label>
++          <label>المقاس<input name="size" maxlength="60"></label>
++          <label>اللون<input name="color" maxlength="50"></label>
++          <label id="qHexWrap">لون العينة<input name="colorHex" maxlength="7" dir="ltr" placeholder="#C9A227"></label>
++        </div>
++        <div class="sheet__img"><img id="qPrev" alt=""><label>تغيير الصورة<input type="file" id="qImg" name="img" accept="image/png,image/jpeg,image/webp"></label></div>
++      </div>
++      <footer class="sheet__foot"><button class="btn" type="submit" id="qSave">💾 حفظ</button><button class="btn q" type="button" id="qFull">⚙️ فورم كامل (ربط نسخ)</button></footer>
++    </form>
++  </dialog>
+   <script src="catalog-docx.js"></script>
+   <script src="dashboard.js"></script>
++  <script src="manage.js"></script>
+   <script src="admin-ui.js"></script>
+ </body>
+ 
+diff --git a/site/admin/manage.js b/site/admin/manage.js
+new file mode 100644
+index 0000000..556bb20
+--- /dev/null
++++ b/site/admin/manage.js
+@@ -0,0 +1,164 @@
++/* ============================================================
++   manage.js — الأنواع · التعديل السريع · المسؤولين
++   بيشتغل فوق window.MeemAdmin (متعرّف في dashboard.js)
++   ============================================================ */
++(() => {
++  const $ = (id) => document.getElementById(id);
++  const A = () => window.MeemAdmin;
++  const say = (el, text, type = "ok") => { el.textContent = text; el.className = "msg " + type; };
++  const enc = encodeURIComponent;
++
++  /* ================= 1) الأنواع: تعديل الاسم اللي بيظهر ================= */
++  function renderCats() {
++    const { cats, products, esc, ar } = A();
++    $("catManage").innerHTML = cats.map((c) => {
++      const n = products.filter((p) => p.cat === c.id).length;
++      return `<div class="rowline" data-id="${esc(c.id)}">
++        <label class="rowline__main">الاسم اللي بيظهر<input maxlength="40" value="${esc(c.label)}" data-orig="${esc(c.label)}"></label>
++        <span class="rowline__meta"><b dir="ltr">${esc(c.prefix || "—")}</b> بادئة الكود<br>${ar(n)} منتج</span>
++        <button class="btn" type="button" disabled>حفظ</button></div>`;
++    }).join("") || '<div class="empty">لا توجد أنواع.</div>';
++  }
++  $("catManage").addEventListener("input", (e) => {
++    const inp = e.target.closest("input"); if (!inp) return;
++    inp.closest(".rowline").querySelector("button").disabled = !inp.value.trim() || inp.value.trim() === inp.dataset.orig;
++  });
++  $("catManage").addEventListener("click", async (e) => {
++    const btn = e.target.closest("button"); if (!btn) return;
++    const row = btn.closest(".rowline"), inp = row.querySelector("input"), label = inp.value.trim();
++    const { api, cats, friendly } = A();
++    if (cats.some((c) => c.label === label && c.id !== row.dataset.id)) return say($("catMsg"), "فيه نوع تاني بنفس الاسم.", "err");
++    btn.disabled = true;
++    try {
++      await api(`/rest/v1/categories?id=eq.${enc(row.dataset.id)}`, { method: "PATCH", body: { label }, headers: { Prefer: "return=minimal" } });
++      cats.find((c) => c.id === row.dataset.id).label = label;
++      inp.dataset.orig = label;
++      A().refreshCats();
++      say($("catMsg"), `اتغيّر اسم النوع لـ "${label}" — هيظهر كده في الموقع كمان.`);
++    } catch (err) { say($("catMsg"), friendly(err), "err"); btn.disabled = false; }
++  });
++
++  /* ================= 2+3) التعديل السريع (نافذة جانبية) ================= */
++  let qeId = null, qeBlob = null;
++  const qf = () => $("qf").elements;
++
++  function compress(file) {
++    return new Promise((res, rej) => {
++      const url = URL.createObjectURL(file), im = new Image();
++      im.onload = () => {
++        const s = Math.min(1, 900 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
++        cv.width = Math.round(im.width * s); cv.height = Math.round(im.height * s);
++        cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
++        cv.toBlob((b) => { URL.revokeObjectURL(url); b ? res(b) : rej(new Error("الصورة غير صالحة.")); }, "image/webp", 0.82);
++      };
++      im.onerror = () => rej(new Error("الصورة غير صالحة."));
++      im.src = url;
++    });
++  }
++
++  function openQuick(id) {
++    const { find, groupVariants, cats, esc, ar, imgSrc, imageOf } = A(), p = find(id); if (!p) return;
++    qeId = id; qeBlob = null;
++    const f = qf(), group = groupVariants(p);
++    $("qCat").innerHTML = cats.map((c) => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join("");
++    f.name.value = p.name; f.era.value = p.era || ""; f.cat.value = p.cat; f.code.value = p.code;
++    f.color.value = p.color || ""; f.size.value = p.size || ""; f.colorHex.value = p.color_hex || "";
++    $("qHexWrap").style.display = p.group_id && p.variant_by !== "size" ? "" : "none";
++    $("qPrev").src = imgSrc(imageOf(p)); f.img.value = "";
++    const many = group.length > 1;
++    $("qSyncWrap").style.display = many ? "" : "none";
++    f.sync.checked = many;
++    $("qSyncTxt").textContent = `طبّق الاسم والوصف والنوع على كل النسخ (${ar(group.length)}) مرة واحدة`;
++    $("qTitle").textContent = "تعديل: " + p.name;
++    $("qMsg").className = "msg";
++    $("qe").showModal(); f.name.focus(); f.name.select();
++  }
++  $("qImg").addEventListener("change", async (e) => {
++    const file = e.target.files[0]; if (!file) return;
++    try { qeBlob = await compress(file); $("qPrev").src = URL.createObjectURL(qeBlob); } catch (err) { say($("qMsg"), err.message, "err"); }
++  });
++  $("qCancel").addEventListener("click", () => $("qe").close());
++  $("qFull").addEventListener("click", () => { $("qe").close(); A().openFull(qeId); });
++  $("qe").addEventListener("click", (e) => { if (e.target === $("qe")) $("qe").close(); });   // ضغطة على الخلفية
++
++  $("qf").addEventListener("submit", async (e) => {
++    e.preventDefault();
++    const { api, find, products, friendly, esc } = A(), p = find(qeId), f = qf(), btn = e.submitter || $("qSave");
++    const hex = f.colorHex.value.trim();
++    if (hex && !/^#[0-9A-Fa-f]{6}$/.test(hex)) return say($("qMsg"), "لون العينة لازم يكون بالشكل #C9A227", "err");
++    const shared = { name: f.name.value.trim(), era: f.era.value.trim(), cat: f.cat.value };
++    const own = { code: f.code.value.trim(), color: f.color.value.trim(), size: f.size.value.trim() };
++    if (p.group_id && p.variant_by !== "size") own.color_hex = hex || null;
++    const sync = !!p.group_id && f.sync.checked;
++    btn.disabled = true; say($("qMsg"), "جاري الحفظ…", "ok");
++    try {
++      if (qeBlob) {
++        const name = `${p.id}-${Date.now().toString(36)}.webp`;
++        await api(`/storage/v1/object/product-images/${name}`, { method: "POST", body: qeBlob, raw: true, headers: { "Content-Type": qeBlob.type } });
++        own.image = `${SUPABASE_URL}/storage/v1/object/public/product-images/${name}`;
++      }
++      const changed = (o, src) => Object.fromEntries(Object.entries(o).filter(([k, v]) => (src[k] ?? "") !== (v ?? "")));
++      const mine = changed({ ...own, ...(sync ? {} : shared) }, p), grp = sync ? changed(shared, p) : {};
++      const calls = [];
++      if (Object.keys(mine).length) calls.push(api(`/rest/v1/products?id=eq.${enc(p.id)}`, { method: "PATCH", body: mine, headers: { Prefer: "return=minimal" } }));
++      /* الاسم والوصف والنوع لكل النسخ في طلب واحد */
++      const others = sync ? products.filter((x) => x.group_id === p.group_id) : [];
++      const grpAll = sync ? Object.fromEntries(Object.entries(shared).filter(([k, v]) => others.some((x) => (x[k] ?? "") !== v))) : {};
++      if (Object.keys(grpAll).length) calls.push(api(`/rest/v1/products?group_id=eq.${enc(p.group_id)}`, { method: "PATCH", body: grpAll, headers: { Prefer: "return=minimal" } }));
++      if (!calls.length) { $("qe").close(); return; }
++      await Promise.all(calls);
++      Object.assign(p, mine); others.forEach((x) => Object.assign(x, grpAll));
++      A().refreshList();
++      $("qe").close();
++      A().msg(sync && others.length > 1 ? `اتحدّث ${A().ar(others.length)} نسخ.` : "اتحدّث المنتج.", "ok");
++    } catch (err) { say($("qMsg"), friendly(err), "err"); }
++    btn.disabled = false;
++  });
++
++  /* ================= 4) المسؤولين ================= */
++  const adminErr = (m) =>
++    /NOT_ADMIN/.test(m) ? "الحساب ده مش أدمن."
++    : /USER_NOT_FOUND/.test(m) ? "الإيميل ده مالوش حساب لسه. اكتب له كلمة سر مؤقتة (٨ حروف على الأقل) عشان نعمل له الحساب، أو اعمله من Supabase ← Authentication ← Users."
++    : /CANNOT_REMOVE_SELF/.test(m) ? "ما ينفعش تشيل نفسك."
++    : /could not find the function|list_admins|add_admin|remove_admin/i.test(m) ? "شغّل database/008_admin_management.sql في Supabase (SQL Editor) الأول."
++    : /signups? (are )?disabled|not allowed/i.test(m) ? "التسجيل الجديد مقفول في Supabase. اعمل الحساب من Authentication ← Users وبعدين اكتب الإيميل هنا بس."
++    : m;
++  const myId = () => { try { return JSON.parse(atob(A().session.access_token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).sub; } catch (e) { return null; } };
++
++  async function loadAdmins() {
++    const { api, esc } = A();
++    try {
++      const rows = await api("/rest/v1/rpc/list_admins", { method: "POST", body: {} }), me = myId();
++      $("adminList").innerHTML = rows.map((r) => `<div class="rowline"><span class="rowline__main" dir="ltr">${esc(r.email || r.user_id)}${r.user_id === me ? " <small class='muted'>(أنت)</small>" : ""}</span>
++        ${r.user_id === me || rows.length < 2 ? "" : `<button class="btn d" type="button" data-id="${esc(r.user_id)}" data-email="${esc(r.email || "")}">إزالة</button>`}</div>`).join("");
++    } catch (err) { $("adminList").innerHTML = ""; say($("adMsg"), adminErr(err.message), "err"); }
++  }
++  $("adminList").addEventListener("click", async (e) => {
++    const b = e.target.closest("button[data-id]"); if (!b) return;
++    if (!confirm(`إزالة صلاحية الأدمن من ${b.dataset.email}؟ (الحساب نفسه مش هيتحذف)`)) return;
++    try { await A().api("/rest/v1/rpc/remove_admin", { method: "POST", body: { p_user_id: b.dataset.id } }); say($("adMsg"), "اتشالت الصلاحية."); loadAdmins(); }
++    catch (err) { say($("adMsg"), adminErr(err.message), "err"); }
++  });
++  $("adf").addEventListener("submit", async (e) => {
++    e.preventDefault();
++    const f = $("adf").elements, email = f.email.value.trim().toLowerCase(), pass = f.password.value, btn = e.submitter;
++    if (pass && pass.length < 8) return say($("adMsg"), "كلمة السر لازم تكون ٨ حروف على الأقل.", "err");
++    btn.disabled = true; say($("adMsg"), "جاري الإضافة…");
++    try {
++      if (pass) {
++        try { await sbFetch("/auth/v1/signup", { method: "POST", body: { email, password: pass } }); }
++        catch (err) { if (!/already|registered|exists/i.test(err.message)) throw err; }
++      }
++      await A().api("/rest/v1/rpc/add_admin", { method: "POST", body: { p_email: email } });
++      f.email.value = ""; f.password.value = "";
++      say($("adMsg"), pass ? `اتضاف ${email} كأدمن. لو Supabase مفعّل تأكيد الإيميل، لازم يأكّده الأول قبل أول دخول.` : `اتضاف ${email} كأدمن.`);
++      loadAdmins();
++    } catch (err) { say($("adMsg"), adminErr(err.message), "err"); }
++    btn.disabled = false;
++  });
++
++  /* لما الصفحة تتفتح: نحدّث الأنواع/المسؤولين */
++  document.querySelectorAll('.nav-item[data-view="cats"]').forEach((b) => b.addEventListener("click", renderCats));
++  document.querySelectorAll('.nav-item[data-view="admins"]').forEach((b) => b.addEventListener("click", loadAdmins));
++  window.MeemManage = { openQuick, renderCats, loadAdmins };
++})();
+diff --git a/site/admin/refresh.css b/site/admin/refresh.css
+index 9ddc56c..415a2c6 100644
+--- a/site/admin/refresh.css
++++ b/site/admin/refresh.css
+@@ -37,3 +37,26 @@ input,select,textarea{border-radius:4px}
+ .btn-word:hover{background:#a8841c;border-color:#a8841c;color:#fff}
+ .btn-word[disabled]{opacity:.6;cursor:wait}
+ @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
++/* أنواع / مسؤولين: صفوف بسيطة */
++.rowlist{display:flex;flex-direction:column}
++.rowline{display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
++.rowline__main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute)}
++.rowline__main input{font-size:16px;color:var(--ink)}
++.rowline__meta{font-size:12px;color:var(--mute);text-align:start;line-height:1.7}
++/* نافذة التعديل السريع: شيت جانبي */
++.sheet{position:fixed;inset:0 auto 0 0;margin:0;width:min(460px,100vw);height:100dvh;max-height:100dvh;padding:0;border:0;border-inline-end:1px solid var(--line);background:var(--card);color:var(--ink);box-shadow:var(--shadow-lg)}
++.sheet::backdrop{background:rgba(11,31,58,.45)}
++.sheet[open]{display:flex}
++.sheet form{display:flex;flex-direction:column;width:100%;height:100%}
++.sheet__head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
++.sheet__head h3{margin:0;font-size:20px}
++.sheet__body{flex:1;overflow:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
++.sheet__body label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mute)}
++.sheet__body input,.sheet__body select{font-size:16px;color:var(--ink)}
++.sheet__row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
++.sheet__body .check{flex-direction:row;align-items:center;gap:10px;color:var(--ink);font-size:14px;background:rgba(201,162,39,.1);padding:10px 12px;border-radius:4px}
++.sheet__body .check input{width:18px;height:18px;flex:none}
++.sheet__img{display:flex;align-items:center;gap:14px}
++.sheet__img img{width:84px;height:84px;object-fit:cover;border-radius:3px;background:#efe9da;flex:none}
++.sheet__foot{display:flex;gap:10px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line)}
++@media (max-width:520px){.sheet{inset:auto 0 0 0;width:100%;height:92dvh;border-radius:10px 10px 0 0}.sheet__row{grid-template-columns:1fr}}
