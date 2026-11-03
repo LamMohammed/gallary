@@ -118,6 +118,7 @@ function validateCatalog(products) {
       id: text(raw.id).trim(), code: text(raw.code).trim(), name: text(raw.name).trim(), cat: text(raw.cat).trim(),
       color: text(raw.color).trim(), era: text(raw.era).replace(/\s+/g, " ").replace(/\s*·\s*$/, "").trim(),
       size: text(raw.size).trim(), image: normalizeImagePath(text(raw.image).trim()),
+      price: text(raw.price).trim().slice(0, 40),
     };
     /* حقول النسخ (اختيارية): أي قيمة غير صالحة بتتحول null بدل ما تبوّظ الكتالوج كله */
     const groupId = /^[A-Za-z0-9_-]{1,100}$/.test(text(raw.group_id)) ? text(raw.group_id) : null;
@@ -166,12 +167,14 @@ function applyRemoteCategories(rows) {
 async function loadRemoteCatalog() {
   const base = "id,code,name,cat,color,era,size,image";
   const ext = base + ",group_id,variant_by,color_hex";
+  const ext2 = ext + ",price";
   const url = (cols, order) => `/rest/v1/products?select=${cols}&order=${order}`;
   const sorted = "sort_order.asc.nullslast,created_at.asc,code.asc";
   const [cats, products] = await Promise.all([
     sbFetch("/rest/v1/categories?select=id,label,prefix"),
     // الأعمدة الجديدة (نسخ المنتج) → لو migration 006 لسه ما اتشغلتش نرجع للقديم
-    sbFetch(url(ext, sorted))
+    sbFetch(url(ext2, sorted))
+      .catch(() => sbFetch(url(ext, sorted)))
       .catch(() => sbFetch(url(base, sorted)))
       .catch(() => sbFetch(url(base, "created_at.asc,code.asc"))),
   ]);

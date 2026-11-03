@@ -62,7 +62,7 @@
     const f = qf(), group = groupVariants(p);
     $("qCat").innerHTML = cats.map((c) => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join("");
     f.name.value = p.name; f.era.value = p.era || ""; f.cat.value = p.cat; f.code.value = p.code;
-    f.color.value = p.color || ""; f.size.value = p.size || ""; f.colorHex.value = p.color_hex || "";
+    f.color.value = p.color || ""; f.size.value = p.size || ""; f.price.value = p.price || ""; f.colorHex.value = p.color_hex || "";
     $("qHexWrap").style.display = p.group_id && p.variant_by !== "size" ? "" : "none";
     $("qPrev").src = imgSrc(imageOf(p)); f.img.value = "";
     const many = group.length > 1;
@@ -88,6 +88,7 @@
     if (hex && !/^#[0-9A-Fa-f]{6}$/.test(hex)) return say($("qMsg"), "لون العينة لازم يكون بالشكل #C9A227", "err");
     const shared = { name: f.name.value.trim(), era: f.era.value.trim(), cat: f.cat.value };
     const own = { code: f.code.value.trim(), color: f.color.value.trim(), size: f.size.value.trim() };
+    const pr = f.price.value.trim(); if (pr || p.price) own.price = pr || null;
     if (p.group_id && p.variant_by !== "size") own.color_hex = hex || null;
     const sync = !!p.group_id && f.sync.checked;
     btn.disabled = true; say($("qMsg"), "جاري الحفظ…", "ok");

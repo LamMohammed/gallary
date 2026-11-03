@@ -36,6 +36,7 @@ const modalImage = document.getElementById("modal-product-image");
 const modalMaterial = document.getElementById("modal-product-material");
 const modalColor = document.getElementById("modal-product-color");
 const modalSize = document.getElementById("modal-product-size");
+const modalPrice = document.getElementById("modal-product-price");
 const modalName = document.getElementById("modal-product-name");
 const modalCode = document.getElementById("modal-product-code");
 const modalCounter = document.getElementById("modal-product-counter");
@@ -279,6 +280,7 @@ function renderModalProduct() {
   modalColor.hidden = !colorShown(product);
   modalSize.textContent = `المقاس: ${isoSize(product.size)}`;
   modalSize.hidden = !product.size;
+  if (modalPrice) { modalPrice.textContent = product.price ? `السعر: ${product.price}` : ""; modalPrice.hidden = !product.price; }
   modalName.textContent = product.name;
   modalCode.textContent = `كود المنتج: ${product.code}`;
   const quantity = productQuantities.get(product.id) ?? 1;
@@ -437,6 +439,7 @@ function cardMarkup(group, i) {
         ${colorShown(s) && !hasColorPicker ? `<span class="card-specs__color">${escapeHtml(s.color)}</span>` : ""}
         ${s.size && !hasSizePicker ? `<span class="card-specs__size">${escapeHtml(isoSize(s.size))}</span>` : ""}
       </div>
+      ${s.price ? `<p class="card-price">${escapeHtml(s.price)}</p>` : ""}
       ${variantPickerMarkup(group, s)}
       ${quantityControlMarkup(s)}
       <div class="card-meta">

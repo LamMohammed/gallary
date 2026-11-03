@@ -29,3 +29,14 @@ body{background:var(--stage)}
 .product-modal__dialog{border-radius:6px}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ===== وضوح العناوين + السعر ===== */
+:root{--muted:#46566e;--gold-deep:#8a6a0f}
+html[data-theme="dark"]{--muted:#b4c2d8;--gold-deep:#e2c25a}
+h1,h2,h3,.section-title{color:var(--ink)}
+.card h3{font-size:1.15rem;font-weight:800;line-height:1.35;color:var(--ink)}
+.card .era{color:var(--gold-deep);font-size:.84rem;font-weight:700}
+.card-specs span{color:var(--muted)}
+.card-price,.product-modal__price{font-family:'Reem Kufi','Tajawal',sans-serif;font-size:1.3rem;font-weight:600;color:var(--gold-deep);margin:.3rem 0 .1rem}
+.product-modal__price{font-size:1.5rem}
+.hero-copy p,.hero-note{color:var(--muted)}

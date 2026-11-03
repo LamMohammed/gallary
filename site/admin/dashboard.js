@@ -17,7 +17,7 @@
   const msg = (t, type) => { say($("msg"), t, type); $("msg").scrollIntoView({ behavior: "smooth", block: "nearest" }); };
   const friendly = (e) =>
     /duplicate|unique/i.test(e.message) ? "الكود ده مستخدم قبل كده، اختار كود تاني."
-    : /group_id|variant_by|color_hex|site_settings|"image"|variant_by_chk/i.test(e.message) ? "شغّلي database/006 و 007_variants_v2.sql في Supabase الأول (SQL Editor) وبعدين جرّبي تاني."
+    : /group_id|variant_by|color_hex|site_settings|"image"|variant_by_chk|price/i.test(e.message) ? "شغّلي database/006 و 007_variants_v2.sql و 009_price.sql في Supabase الأول (SQL Editor) وبعدين جرّبي تاني."
     : e.message;
 
   /* ---------- الدخول ---------- */
@@ -256,6 +256,8 @@
       const id = old ? old.id : "p" + Date.now().toString(36);
       const image = imageBlob ? await uploadImage(id) : old ? old.image : null;   // null = صورة المنتج الأساسي
       const row = { code: f.code.value.trim(), name: f.name.value.trim(), cat: catId, color: f.color.value.trim(), size: f.size.value.trim(), era: f.era.value.trim(), image };
+      const price = f.price.value.trim();
+      if (price || (old && old.price)) row.price = price || null;
       /* النسخ: group_id مشترك + نوع الاختلاف */
       const base = old && isBase(old);
       if (base) { row.group_id = old.group_id; row.variant_by = f.variantBy.value; }
@@ -289,7 +291,7 @@
     const list = visibleList();
     $("plist").innerHTML = list.length ? list.map((p, i) => `
       <div class="p"><img src="${esc(imgSrc(imageOf(p)))}" alt="" loading="lazy">
-        <div><b>${esc(p.name)}</b><br><small class="muted">${esc(p.code)} · ${esc(label(p.cat))} · ${esc(p.color)} · ${esc(p.size)}${p.group_id ? " · 🔗 " + (p.variant_by === "size" ? "مقاس" : "لون") + (isBase(p) ? " (أساسي)" : "") : ""}</small></div>
+        <div><b>${esc(p.name)}</b><br><small class="muted">${esc(p.code)} · ${esc(label(p.cat))} · ${esc(p.color)} · ${esc(p.size)}${p.price ? " · 💰 " + esc(p.price) : ""}${p.group_id ? " · 🔗 " + (p.variant_by === "size" ? "مقاس" : "لون") + (isBase(p) ? " (أساسي)" : "") : ""}</small></div>
         <div class="acts">
           <button class="btn q" data-a="top" data-id="${esc(p.id)}" title="نقل لأول الصفحة" ${i === 0 ? "disabled" : ""}>⤒</button>
           <button class="btn q" data-a="up" data-id="${esc(p.id)}" title="لفوق" ${i === 0 ? "disabled" : ""}>▲</button>
@@ -318,7 +320,7 @@
     editingId = p.id; imageBlob = null;
     const f = $("pf").elements;
     $("catSel").value = p.cat; syncNew();
-    f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era;
+    f.code.value = p.code; f.name.value = p.name; f.color.value = p.color; f.size.value = p.size; f.era.value = p.era; f.price.value = p.price || "";
     $("prev").src = imgSrc(imageOf(p)); $("prev").style.display = "block";
     fillVariantOf();
     $("variantOf").value = p.group_id && !isBase(p) ? baseOf(p).id : "";
@@ -350,7 +352,7 @@
     const old = btn.textContent; btn.disabled = true;
     try {
       const blob = await MeemCatalogDocx.build({
-        products, cats, imgUrl: (p) => imgSrc(imageOf(p)), siteUrl: location.origin + "/",
+        products, cats, imgUrl: (p) => imgSrc(imageOf(p)), siteUrl: location.origin + "/", logoUrl: "../images/brand/logo-mark.svg",
         onProgress: (i, n) => { btn.textContent = "⏳ جاري التجهيز " + ar(i) + "/" + ar(n); },
       });
       const a = document.createElement("a");
