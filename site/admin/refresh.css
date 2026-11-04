@@ -28,13 +28,29 @@ h1,h2,h3,.kpi-value,.topbar-brand{font-family:'Reem Kufi',Tajawal,sans-serif;fon
 .btn.d{background:transparent;color:var(--danger);border:1px solid var(--danger)}
 .seg button.on{background:#0b1f3a;color:#f5e3a0}
 input,select,textarea{border-radius:4px}
-/* قائمة المنتجات كسجلّ */
-.plist .p{grid-template-columns:56px 1fr auto;padding:12px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
+/* قائمة المنتجات كسجلّ — صف مضغوط: مقبض سحب + صورة + بيانات + أزرار صغيرة */
+.plist .p{grid-template-columns:auto 56px minmax(0,1fr) auto;gap:12px;padding:10px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
 .plist .p:hover{transform:none;border-color:var(--line);background:rgba(201,162,39,.06)}
 .plist .p img{width:56px;height:56px;border-radius:3px;background:#efe9da}
+.plist .p>div:not(.acts){display:block;min-width:0}
+.plist .p b{font-size:1rem;margin:0 0 4px;line-height:1.35}
+.plist .p small{display:block;font-size:.8rem;line-height:1.6}
+.plist .p .acts{flex-wrap:nowrap;gap:6px}
+.plist .p .btn{padding:6px 10px;min-height:36px;font-size:.82rem;font-weight:700;border-radius:4px}
 .page-head .acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .page-head .input--search{flex:1 1 180px;min-width:0}
 .page-head .input--filter{flex:0 0 150px}
+/* حقول موحّدة الارتفاع + السعر في صف لوحده */
+input:not([type=checkbox]):not([type=radio]):not([type=file]),select{min-height:44px}
+.grid-form label:has(input[name="price"]){grid-column:1/-1}
+@media (max-width:900px){.plist .p .acts{flex-wrap:wrap;justify-content:flex-end;max-width:260px}}
+@media (max-width:600px){
+  .page-head{flex-direction:column;align-items:stretch;gap:12px}
+  .page-head .acts>*{flex:1 1 100%}
+  .plist .p{grid-template-columns:auto 56px minmax(0,1fr);row-gap:10px}
+  .plist .p .acts{grid-column:1/-1;max-width:none;justify-content:flex-start}
+  .plist .p .acts .btn{flex:1 1 auto;min-width:44px}
+}
 .btn-word{background:#c9a227;border-color:#c9a227;color:#0b1f3a;font-weight:700}
 .btn-word:hover{background:#a8841c;border-color:#a8841c;color:#fff}
 .btn-word[disabled]{opacity:.6;cursor:wait}
@@ -72,11 +88,43 @@ h1,h2,h3{color:var(--ink)}
 .card h3{font-size:18px;font-weight:700}
 .page-head p{color:var(--mute)}
 
+/* ===== السحب والإفلات لترتيب المنتجات ===== */
+.drag-handle{flex:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:10px 6px;margin-inline-start:-4px;color:var(--mute,#8a8372);font-size:20px;line-height:1;letter-spacing:-2px;border-radius:6px}
+.drag-handle:hover{color:var(--ink,#0b1f3a);background:rgba(201,162,39,.14)}
+.drag-handle:active{cursor:grabbing}
+.plist .p--ghost{opacity:.35;background:rgba(201,162,39,.12)}
+.plist .p--chosen{box-shadow:0 6px 18px rgba(11,31,58,.18)}
+.plist .p--drag{opacity:.95}
+
+/* ===== ألوان ومقاسات دفعة واحدة ===== */
+.vg-base{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
+.vg-base:empty{display:none}
+.vg-base img{width:56px;height:56px;object-fit:cover;border-radius:6px;background:#efe9da}
+.vg-h{margin:22px 0 8px;font-size:1rem}
+.vg-list{display:grid;gap:8px}
+.vg-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+.vg-item>b{flex:1;min-width:90px}
+.vg-item input[data-f=hex]{width:96px;padding:6px 8px;font-size:.85rem}
+.vg-thumb{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:8px;overflow:hidden;background:var(--line)}
+.vg-thumb img{width:100%;height:100%;object-fit:cover}
+.vg-sw{display:block;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.15)}
+.vg-sw--none{background:repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)}
+.vg-rows{display:grid;gap:8px}
+.vg-row{display:grid;grid-template-columns:auto 48px 1fr minmax(96px,150px);gap:10px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+.vg-row.off{opacity:.5}
+.vg-row img{width:48px;height:48px;object-fit:cover;border-radius:6px;background:var(--line)}
+.vg-row .vg-on input{width:18px;height:18px}
+.vg-lbl small{display:block}
+.vg-row input[data-f=code]{padding:7px 9px;font-size:.85rem}
+#vgWork textarea{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:inherit;resize:vertical}
+@media (max-width:560px){.vg-row{grid-template-columns:auto 44px 1fr}.vg-row input[data-f=code]{grid-column:1/-1}}
+.vg-item,.vg-row,#vgWork textarea{border-radius:4px}
+
 /* =====================================================================
-   الدارك للوحة الإدارة: نفس «العرض الليلي» — كحلي عميق وذهبي للأفعال الأساسية بس
+   الدارك للوحة الإدارة: «عرض ليلي» — كحلي عميق وذهبي للأفعال الأساسية بس.
+   بيشتغل مع زرار الثيم (body.dark-mode) ومع دارك الجهاز لو ما اخترتش ثيم.
    ===================================================================== */
-body.dark-mode{--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8;--p:#e2c25a;--danger:#ff9c92}
-@media (prefers-color-scheme:dark){:root{--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8}}
+body.dark-mode{--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8;--p:#e2c25a;--p2:#e2c25a;--danger:#ff9c92}
 body.dark-mode .sidebar{background:#081a33}
 body.dark-mode .topbar{background:#0d284a;border-bottom-color:rgba(226,194,90,.4)}
 body.dark-mode .nav-item.active{background:rgba(226,194,90,.14);color:#f0d57a;border-inline-start-color:#e2c25a}
@@ -91,6 +139,32 @@ body.dark-mode .btn-word{background:#e2c25a;border-color:#e2c25a;color:#0b2140}
 body.dark-mode .seg button.on{background:#e2c25a;color:#0b2140}
 body.dark-mode .kpi-value{color:var(--ink)}
 body.dark-mode .plist .p:hover{background:rgba(226,194,90,.07)}
+body.dark-mode .plist .p img{background:#1b3d6d}
+body.dark-mode .drag-handle:hover{color:#e2c25a;background:rgba(226,194,90,.14)}
+body.dark-mode .vg-item,body.dark-mode .vg-row{background:var(--card)}
 body.dark-mode .sheet{background:#123058;border-inline-end-color:var(--line)}
 body.dark-mode .sheet__body .check{background:rgba(226,194,90,.12)}
 body.dark-mode :focus-visible{outline-color:#e2c25a}
+@media (prefers-color-scheme:dark){
+  body:not(.light-mode){--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8;--p:#e2c25a;--p2:#e2c25a;--danger:#ff9c92}
+  body:not(.light-mode) .sidebar{background:#081a33}
+  body:not(.light-mode) .topbar{background:#0d284a;border-bottom-color:rgba(226,194,90,.4)}
+  body:not(.light-mode) .nav-item.active{background:rgba(226,194,90,.14);color:#f0d57a;border-inline-start-color:#e2c25a}
+  body:not(.light-mode) input,body:not(.light-mode) select,body:not(.light-mode) textarea{background:rgba(244,239,225,.05);color:var(--ink);border-color:var(--line)}
+  body:not(.light-mode) input::placeholder{color:var(--mute)}
+  body:not(.light-mode) .btn{background:#e2c25a;border-color:#e2c25a;color:#0b2140}
+  body:not(.light-mode) .btn:hover{background:#f0d57a;border-color:#f0d57a}
+  body:not(.light-mode) .btn.q{background:transparent;color:var(--ink);border-color:var(--line)}
+  body:not(.light-mode) .btn.q:hover{border-color:#e2c25a}
+  body:not(.light-mode) .btn.d{background:transparent;color:#ff9c92;border-color:#ff9c92}
+  body:not(.light-mode) .btn-word{background:#e2c25a;border-color:#e2c25a;color:#0b2140}
+  body:not(.light-mode) .seg button.on{background:#e2c25a;color:#0b2140}
+  body:not(.light-mode) .kpi-value{color:var(--ink)}
+  body:not(.light-mode) .plist .p:hover{background:rgba(226,194,90,.07)}
+  body:not(.light-mode) .plist .p img{background:#1b3d6d}
+  body:not(.light-mode) .drag-handle:hover{color:#e2c25a;background:rgba(226,194,90,.14)}
+  body:not(.light-mode) .vg-item,body:not(.light-mode) .vg-row{background:var(--card)}
+  body:not(.light-mode) .sheet{background:#123058;border-inline-end-color:var(--line)}
+  body:not(.light-mode) .sheet__body .check{background:rgba(226,194,90,.12)}
+  body:not(.light-mode) :focus-visible{outline-color:#e2c25a}
+}
