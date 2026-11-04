@@ -40,3 +40,54 @@ h1,h2,h3,.section-title{color:var(--ink)}
 .card-price,.product-modal__price{font-family:'Reem Kufi','Tajawal',sans-serif;font-size:1.3rem;font-weight:600;color:var(--gold-deep);margin:.3rem 0 .1rem}
 .product-modal__price{font-size:1.5rem}
 .hero-copy p,.hero-note{color:var(--muted)}
+
+/* =====================================================================
+   الدارك — «عرض ليلي»: خلفية كحلي عميق (مش أسود)، والقطع تحت إضاءة موجّهة.
+   الذهبي بس للي يستاهل يلفت النظر: السعر، الفلتر المختار، زرار الدخول.
+   (كل القواعد بـ html[data-theme="dark"] عشان تغلب القواعد القديمة)
+   ===================================================================== */
+html[data-theme="dark"]{--stage:#0b2140;--panel:#123058;--panel-edge:#2a4a78;--ink:#f4efe1;--muted:#b9c5d8;--gold-deep:#e2c25a}
+html[data-theme="dark"] body{background:radial-gradient(ellipse 1100px 620px at 50% -12%,rgba(226,194,90,.17),transparent 66%),var(--stage)}
+html[data-theme="dark"] .site-header{background:transparent;border-bottom-color:rgba(226,194,90,.4)}
+html[data-theme="dark"] :focus-visible{outline:2px solid #e2c25a;outline-offset:2px}
+
+/* الهيرو */
+html[data-theme="dark"] .hero .kicker{background:none;border:0;color:#e2c25a;padding:0}
+html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero h1 span{color:var(--ink)}
+html[data-theme="dark"] .hero-copy p,html[data-theme="dark"] .hero-description,html[data-theme="dark"] .hero-note{color:var(--muted)}
+html[data-theme="dark"] .hero-highlights li{background:none;border-color:var(--panel-edge);box-shadow:none}
+html[data-theme="dark"] .hero-highlights strong{color:var(--ink)}
+html[data-theme="dark"] .hero-cta{background:#e2c25a;color:#0b2140;box-shadow:none}
+html[data-theme="dark"] .hero-cta:hover{background:#f0d57a}
+html[data-theme="dark"] .hero-secondary{color:var(--ink);border-bottom-color:rgba(244,239,225,.35)}
+html[data-theme="dark"] .hero-stack{background:radial-gradient(ellipse at 50% 46%,rgba(226,194,90,.24),transparent 68%);border-color:transparent;box-shadow:none}
+
+/* الفلاتر والبحث */
+html[data-theme="dark"] .count,html[data-theme="dark"] .search-count{color:var(--muted)}
+html[data-theme="dark"] .count strong,html[data-theme="dark"] .search-count strong{color:var(--ink)}
+html[data-theme="dark"] .chip{background:transparent;color:var(--muted);border:1px solid var(--panel-edge);border-radius:4px}
+html[data-theme="dark"] .chip:hover{background:transparent;border-color:#e2c25a;color:var(--ink)}
+html[data-theme="dark"] .chip[aria-pressed="true"],html[data-theme="dark"] .chip.active,html[data-theme="dark"] .chip.is-active{background:#e2c25a;color:#0b2140;border-color:#e2c25a}
+html[data-theme="dark"] .search-wrap input,html[data-theme="dark"] .sort-select,html[data-theme="dark"] .select-toggle{background:rgba(244,239,225,.05);border-color:var(--panel-edge);color:var(--ink);border-radius:4px}
+
+/* القطع: صورة على قاعدة مضاءة، من غير كرت */
+html[data-theme="dark"] .card{background:transparent;border:0;box-shadow:none}
+html[data-theme="dark"] .card:hover{border-color:transparent}
+html[data-theme="dark"] .thumb,html[data-theme="dark"] .thumb[data-cat="gold"],html[data-theme="dark"] .thumb[data-cat="crystal"],html[data-theme="dark"] .thumb[data-cat="acrylic"]{background:radial-gradient(ellipse at 50% 30%,#2f5a98 0%,#183c6c 52%,#102a4e 100%);border:0;border-bottom:3px solid #c9a227;border-radius:3px}
+html[data-theme="dark"] .card h3{color:var(--ink)}
+html[data-theme="dark"] .card .era{background:none;border:0;padding:0;color:#e2c25a}
+html[data-theme="dark"] .card-specs span,html[data-theme="dark"] .card-specs__material{background:rgba(244,239,225,.08);color:var(--ink);border:0;border-radius:3px}
+html[data-theme="dark"] .card-price,html[data-theme="dark"] .product-modal__price{color:#e2c25a}
+
+/* نافذة تفاصيل المنتج */
+html[data-theme="dark"] .product-modal__dialog{background:#102a4e;border:1px solid var(--panel-edge)}
+html[data-theme="dark"] .product-modal__gallery,html[data-theme="dark"] .product-modal__image{background:transparent;border-color:transparent;box-shadow:none}
+html[data-theme="dark"] .product-modal__material,html[data-theme="dark"] .product-modal__color{background:rgba(244,239,225,.1);color:var(--ink);border:0}
+html[data-theme="dark"] .product-modal__code,html[data-theme="dark"] .product-modal__size{background:transparent;color:var(--ink);border-color:var(--panel-edge)}
+html[data-theme="dark"] .product-modal__counter{color:#e2c25a}
+html[data-theme="dark"] .count b{color:var(--ink)}
+html[data-theme="dark"] .hero-stack::after{background:rgba(226,194,90,.05);border-color:rgba(226,194,90,.32)}
+html[data-theme="dark"] .quantity-control,html[data-theme="dark"] .card-specs{border-color:var(--panel-edge)}
+html[data-theme="dark"] .product-modal__content *{border-color:var(--panel-edge)}
+html[data-theme="dark"] .product-modal__close,html[data-theme="dark"] .product-modal__nav{background:#123058;color:var(--ink);border:1px solid var(--panel-edge)}
+html[data-theme="dark"] .product-modal__close:hover,html[data-theme="dark"] .product-modal__nav:hover{background:#e2c25a;color:#0b2140;border-color:#e2c25a}

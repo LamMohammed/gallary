@@ -55,14 +55,22 @@
       c.save(); c.translate(x, y); c.rotate(Math.PI / 4); c.fillRect(-16, -16, 32, 32); c.restore();
     });
     c.fillRect(W / 2 - 150, H - 260, 300, 3);
+    let logo = null;
     if (logoUrl) {
-      try {
-        const im = new Image(); im.src = logoUrl; await im.decode();
-        const s = 330, r = im.naturalWidth / (im.naturalHeight || 1) || 1;
-        c.drawImage(im, W / 2 - (s * r) / 2, 330, s * r, s);
-      } catch (e) { /* من غير شعار */ }
+      try { const im = new Image(); im.src = logoUrl; await im.decode(); logo = im; } catch (e) { /* من غير شعار */ }
     }
-    const out = await new Promise((r) => cv.toBlob(r, "image/jpeg", 0.9));
+    const draw = (withLogo) => {
+      if (!withLogo || !logo) return;
+      const s = 330, r = logo.naturalWidth / (logo.naturalHeight || 1) || 1;
+      c.drawImage(logo, W / 2 - (s * r) / 2, 330, s * r, s);
+    };
+    draw(true);
+    let out;
+    try { out = await new Promise((res, rej) => { try { cv.toBlob((b) => (b ? res(b) : rej(new Error("blob"))), "image/jpeg", 0.9); } catch (e) { rej(e); } }); }
+    catch (e) {
+      /* الشعار لو لوّث الكانفاس (taint): نرسم الغلاف من غيره بدل ما التصدير كله يفشل */
+      return coverJpeg(null);
+    }
     return out.arrayBuffer();
   }
 

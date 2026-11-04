@@ -1,0 +1,169 @@
+diff --git a/site/admin/catalog-docx.js b/site/admin/catalog-docx.js
+index 51c7e8c..4940d74 100644
+--- a/site/admin/catalog-docx.js
++++ b/site/admin/catalog-docx.js
+@@ -55,14 +55,22 @@
+       c.save(); c.translate(x, y); c.rotate(Math.PI / 4); c.fillRect(-16, -16, 32, 32); c.restore();
+     });
+     c.fillRect(W / 2 - 150, H - 260, 300, 3);
++    let logo = null;
+     if (logoUrl) {
+-      try {
+-        const im = new Image(); im.src = logoUrl; await im.decode();
+-        const s = 330, r = im.naturalWidth / (im.naturalHeight || 1) || 1;
+-        c.drawImage(im, W / 2 - (s * r) / 2, 330, s * r, s);
+-      } catch (e) { /* من غير شعار */ }
++      try { const im = new Image(); im.src = logoUrl; await im.decode(); logo = im; } catch (e) { /* من غير شعار */ }
++    }
++    const draw = (withLogo) => {
++      if (!withLogo || !logo) return;
++      const s = 330, r = logo.naturalWidth / (logo.naturalHeight || 1) || 1;
++      c.drawImage(logo, W / 2 - (s * r) / 2, 330, s * r, s);
++    };
++    draw(true);
++    let out;
++    try { out = await new Promise((res, rej) => { try { cv.toBlob((b) => (b ? res(b) : rej(new Error("blob"))), "image/jpeg", 0.9); } catch (e) { rej(e); } }); }
++    catch (e) {
++      /* الشعار لو لوّث الكانفاس (taint): نرسم الغلاف من غيره بدل ما التصدير كله يفشل */
++      return coverJpeg(null);
+     }
+-    const out = await new Promise((r) => cv.toBlob(r, "image/jpeg", 0.9));
+     return out.arrayBuffer();
+   }
+ 
+diff --git a/site/admin/refresh.css b/site/admin/refresh.css
+index e992a58..9552d68 100644
+--- a/site/admin/refresh.css
++++ b/site/admin/refresh.css
+@@ -29,10 +29,12 @@ h1,h2,h3,.kpi-value,.topbar-brand{font-family:'Reem Kufi',Tajawal,sans-serif;fon
+ .seg button.on{background:#0b1f3a;color:#f5e3a0}
+ input,select,textarea{border-radius:4px}
+ /* قائمة المنتجات كسجلّ */
+-.plist .p{display:flex;align-items:center;gap:14px;padding:12px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
+-.plist .p img{width:56px;height:56px;object-fit:cover;border-radius:3px;flex:none;background:#efe9da}
+-.plist .p>div{flex:1;min-width:0}
+-.plist .p .acts{margin-top:6px}
++.plist .p{grid-template-columns:56px 1fr auto;padding:12px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none}
++.plist .p:hover{transform:none;border-color:var(--line);background:rgba(201,162,39,.06)}
++.plist .p img{width:56px;height:56px;border-radius:3px;background:#efe9da}
++.page-head .acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
++.page-head .input--search{flex:1 1 180px;min-width:0}
++.page-head .input--filter{flex:0 0 150px}
+ .btn-word{background:#c9a227;border-color:#c9a227;color:#0b1f3a;font-weight:700}
+ .btn-word:hover{background:#a8841c;border-color:#a8841c;color:#fff}
+ .btn-word[disabled]{opacity:.6;cursor:wait}
+@@ -70,33 +72,25 @@ h1,h2,h3{color:var(--ink)}
+ .card h3{font-size:18px;font-weight:700}
+ .page-head p{color:var(--mute)}
+ 
+-/* ===== السحب والإفلات لترتيب المنتجات ===== */
+-.drag-handle{flex:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:10px 6px;margin-inline-start:-4px;color:var(--mute,#8a8372);font-size:20px;line-height:1;letter-spacing:-2px;border-radius:6px}
+-.drag-handle:hover{color:var(--ink,#0b1f3a);background:rgba(201,162,39,.14)}
+-.drag-handle:active{cursor:grabbing}
+-.plist .p--ghost{opacity:.35;background:rgba(201,162,39,.12)}
+-.plist .p--chosen{box-shadow:0 6px 18px rgba(11,31,58,.18)}
+-.plist .p--drag{opacity:.95}
+-
+-/* ===== ألوان ومقاسات دفعة واحدة ===== */
+-.vg-base{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
+-.vg-base:empty{display:none}
+-.vg-base img{width:56px;height:56px;object-fit:cover;border-radius:6px;background:#efe9da}
+-.vg-h{margin:22px 0 8px;font-size:1rem}
+-.vg-list{display:grid;gap:8px}
+-.vg-item{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+-.vg-item>b{flex:1;min-width:90px}
+-.vg-item input[data-f=hex]{width:96px;padding:6px 8px;font-size:.85rem}
+-.vg-thumb{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:8px;overflow:hidden;background:var(--line)}
+-.vg-thumb img{width:100%;height:100%;object-fit:cover}
+-.vg-sw{display:block;width:28px;height:28px;border-radius:50%;border:2px solid rgba(0,0,0,.15)}
+-.vg-sw--none{background:repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)}
+-.vg-rows{display:grid;gap:8px}
+-.vg-row{display:grid;grid-template-columns:auto 48px 1fr minmax(96px,150px);gap:10px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--card,#fff)}
+-.vg-row.off{opacity:.5}
+-.vg-row img{width:48px;height:48px;object-fit:cover;border-radius:6px;background:var(--line)}
+-.vg-row .vg-on input{width:18px;height:18px}
+-.vg-lbl small{display:block}
+-.vg-row input[data-f=code]{padding:7px 9px;font-size:.85rem}
+-#vgWork textarea{width:100%;font:inherit;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:inherit;resize:vertical}
+-@media (max-width:560px){.vg-row{grid-template-columns:auto 44px 1fr}.vg-row input[data-f=code]{grid-column:1/-1}}
++/* =====================================================================
++   الدارك للوحة الإدارة: نفس «العرض الليلي» — كحلي عميق وذهبي للأفعال الأساسية بس
++   ===================================================================== */
++body.dark-mode{--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8;--p:#e2c25a;--danger:#ff9c92}
++@media (prefers-color-scheme:dark){:root{--bg:#0b2140;--card:#123058;--line:#2a4a78;--ink:#f4efe1;--mute:#b9c5d8}}
++body.dark-mode .sidebar{background:#081a33}
++body.dark-mode .topbar{background:#0d284a;border-bottom-color:rgba(226,194,90,.4)}
++body.dark-mode .nav-item.active{background:rgba(226,194,90,.14);color:#f0d57a;border-inline-start-color:#e2c25a}
++body.dark-mode input,body.dark-mode select,body.dark-mode textarea{background:rgba(244,239,225,.05);color:var(--ink);border-color:var(--line)}
++body.dark-mode input::placeholder{color:var(--mute)}
++body.dark-mode .btn{background:#e2c25a;border-color:#e2c25a;color:#0b2140}
++body.dark-mode .btn:hover{background:#f0d57a;border-color:#f0d57a}
++body.dark-mode .btn.q{background:transparent;color:var(--ink);border-color:var(--line)}
++body.dark-mode .btn.q:hover{border-color:#e2c25a}
++body.dark-mode .btn.d{background:transparent;color:#ff9c92;border-color:#ff9c92}
++body.dark-mode .btn-word{background:#e2c25a;border-color:#e2c25a;color:#0b2140}
++body.dark-mode .seg button.on{background:#e2c25a;color:#0b2140}
++body.dark-mode .kpi-value{color:var(--ink)}
++body.dark-mode .plist .p:hover{background:rgba(226,194,90,.07)}
++body.dark-mode .sheet{background:#123058;border-inline-end-color:var(--line)}
++body.dark-mode .sheet__body .check{background:rgba(226,194,90,.12)}
++body.dark-mode :focus-visible{outline-color:#e2c25a}
+diff --git a/site/css/refresh.css b/site/css/refresh.css
+index 576af18..48cc20e 100644
+--- a/site/css/refresh.css
++++ b/site/css/refresh.css
+@@ -40,3 +40,54 @@ h1,h2,h3,.section-title{color:var(--ink)}
+ .card-price,.product-modal__price{font-family:'Reem Kufi','Tajawal',sans-serif;font-size:1.3rem;font-weight:600;color:var(--gold-deep);margin:.3rem 0 .1rem}
+ .product-modal__price{font-size:1.5rem}
+ .hero-copy p,.hero-note{color:var(--muted)}
++
++/* =====================================================================
++   الدارك — «عرض ليلي»: خلفية كحلي عميق (مش أسود)، والقطع تحت إضاءة موجّهة.
++   الذهبي بس للي يستاهل يلفت النظر: السعر، الفلتر المختار، زرار الدخول.
++   (كل القواعد بـ html[data-theme="dark"] عشان تغلب القواعد القديمة)
++   ===================================================================== */
++html[data-theme="dark"]{--stage:#0b2140;--panel:#123058;--panel-edge:#2a4a78;--ink:#f4efe1;--muted:#b9c5d8;--gold-deep:#e2c25a}
++html[data-theme="dark"] body{background:radial-gradient(ellipse 1100px 620px at 50% -12%,rgba(226,194,90,.17),transparent 66%),var(--stage)}
++html[data-theme="dark"] .site-header{background:transparent;border-bottom-color:rgba(226,194,90,.4)}
++html[data-theme="dark"] :focus-visible{outline:2px solid #e2c25a;outline-offset:2px}
++
++/* الهيرو */
++html[data-theme="dark"] .hero .kicker{background:none;border:0;color:#e2c25a;padding:0}
++html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero h1 span{color:var(--ink)}
++html[data-theme="dark"] .hero-copy p,html[data-theme="dark"] .hero-description,html[data-theme="dark"] .hero-note{color:var(--muted)}
++html[data-theme="dark"] .hero-highlights li{background:none;border-color:var(--panel-edge);box-shadow:none}
++html[data-theme="dark"] .hero-highlights strong{color:var(--ink)}
++html[data-theme="dark"] .hero-cta{background:#e2c25a;color:#0b2140;box-shadow:none}
++html[data-theme="dark"] .hero-cta:hover{background:#f0d57a}
++html[data-theme="dark"] .hero-secondary{color:var(--ink);border-bottom-color:rgba(244,239,225,.35)}
++html[data-theme="dark"] .hero-stack{background:radial-gradient(ellipse at 50% 46%,rgba(226,194,90,.24),transparent 68%);border-color:transparent;box-shadow:none}
++
++/* الفلاتر والبحث */
++html[data-theme="dark"] .count,html[data-theme="dark"] .search-count{color:var(--muted)}
++html[data-theme="dark"] .count strong,html[data-theme="dark"] .search-count strong{color:var(--ink)}
++html[data-theme="dark"] .chip{background:transparent;color:var(--muted);border:1px solid var(--panel-edge);border-radius:4px}
++html[data-theme="dark"] .chip:hover{background:transparent;border-color:#e2c25a;color:var(--ink)}
++html[data-theme="dark"] .chip[aria-pressed="true"],html[data-theme="dark"] .chip.active,html[data-theme="dark"] .chip.is-active{background:#e2c25a;color:#0b2140;border-color:#e2c25a}
++html[data-theme="dark"] .search-wrap input,html[data-theme="dark"] .sort-select,html[data-theme="dark"] .select-toggle{background:rgba(244,239,225,.05);border-color:var(--panel-edge);color:var(--ink);border-radius:4px}
++
++/* القطع: صورة على قاعدة مضاءة، من غير كرت */
++html[data-theme="dark"] .card{background:transparent;border:0;box-shadow:none}
++html[data-theme="dark"] .card:hover{border-color:transparent}
++html[data-theme="dark"] .thumb,html[data-theme="dark"] .thumb[data-cat="gold"],html[data-theme="dark"] .thumb[data-cat="crystal"],html[data-theme="dark"] .thumb[data-cat="acrylic"]{background:radial-gradient(ellipse at 50% 30%,#2f5a98 0%,#183c6c 52%,#102a4e 100%);border:0;border-bottom:3px solid #c9a227;border-radius:3px}
++html[data-theme="dark"] .card h3{color:var(--ink)}
++html[data-theme="dark"] .card .era{background:none;border:0;padding:0;color:#e2c25a}
++html[data-theme="dark"] .card-specs span,html[data-theme="dark"] .card-specs__material{background:rgba(244,239,225,.08);color:var(--ink);border:0;border-radius:3px}
++html[data-theme="dark"] .card-price,html[data-theme="dark"] .product-modal__price{color:#e2c25a}
++
++/* نافذة تفاصيل المنتج */
++html[data-theme="dark"] .product-modal__dialog{background:#102a4e;border:1px solid var(--panel-edge)}
++html[data-theme="dark"] .product-modal__gallery,html[data-theme="dark"] .product-modal__image{background:transparent;border-color:transparent;box-shadow:none}
++html[data-theme="dark"] .product-modal__material,html[data-theme="dark"] .product-modal__color{background:rgba(244,239,225,.1);color:var(--ink);border:0}
++html[data-theme="dark"] .product-modal__code,html[data-theme="dark"] .product-modal__size{background:transparent;color:var(--ink);border-color:var(--panel-edge)}
++html[data-theme="dark"] .product-modal__counter{color:#e2c25a}
++html[data-theme="dark"] .count b{color:var(--ink)}
++html[data-theme="dark"] .hero-stack::after{background:rgba(226,194,90,.05);border-color:rgba(226,194,90,.32)}
++html[data-theme="dark"] .quantity-control,html[data-theme="dark"] .card-specs{border-color:var(--panel-edge)}
++html[data-theme="dark"] .product-modal__content *{border-color:var(--panel-edge)}
++html[data-theme="dark"] .product-modal__close,html[data-theme="dark"] .product-modal__nav{background:#123058;color:var(--ink);border:1px solid var(--panel-edge)}
++html[data-theme="dark"] .product-modal__close:hover,html[data-theme="dark"] .product-modal__nav:hover{background:#e2c25a;color:#0b2140;border-color:#e2c25a}
