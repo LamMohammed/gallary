@@ -24,6 +24,7 @@
 
   /* الصورة → JPEG مصغّر (Word ما بيقرأش WebP كويس) */
   async function jpegOf(src, maxSide = 560) {
+    if (!src || /\/$/.test(src)) return null;
     try {
       const blob = await (await fetch(src)).blob();
       const bmp = await createImageBitmap(blob);
@@ -94,7 +95,9 @@
         if (real && !colors.some((x) => x.name === c)) colors.push({ name: c, hex: /^#[0-9A-Fa-f]{6}$/.test(p.color_hex || "") ? p.color_hex.slice(1).toUpperCase() : null });
       });
       const prices = list.map((p) => ({ size: (p.size || "").trim(), price: (p.price || "").trim() })).filter((x) => x.price);
-      return { base, list, prices, name: base.name, codes: list.map((p) => p.code), material: label(base.cat), sizes, colors };
+      /* الصورة من أول نسخة ليها صورة (النسخ المضافة بالجملة ممكن تكون من غير صورة) */
+      const owner = list.find((p) => p.image) || base;
+      return { base, owner, list, prices, name: base.name, codes: list.map((p) => p.code), material: label(base.cat), sizes, colors };
     });
   }
 
@@ -108,7 +111,7 @@
     for (let i = 0; i < fams.length; i++) {
       const f = fams[i];
       onProgress && onProgress(i + 1, fams.length);
-      const img = await jpegOf(imgUrl(f.base));
+      const img = await jpegOf(imgUrl(f.owner));
       const kids = [];
       if (img) {
         const k = Math.min(250 / img.w, 250 / img.h);
@@ -157,7 +160,7 @@
       center([run("دروع التكريم", { bold: true, size: 120, color: IVORY })], { spacing: { after: 240 } }),
       center([run(" ", { size: 8 })], { indent: { left: 3300, right: 3300 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 12, color: "C9A227", space: 1 } }, spacing: { after: 360 } }),
       center([run("شركة ميم", { bold: true, size: 56, color: IVORY })], { spacing: { after: 200 } }),
-      center([run(cats.map((c) => c.label).join("  ·  "), { size: 28, color: "C9D3E3" })], { spacing: { after: 1700 } }),
+      center([run(cats.filter((c) => products.some((p) => p.cat === c.id)).map((c) => c.label).join("  ·  "), { size: 28, color: "C9D3E3" })], { spacing: { after: 1700 } }),
       center([run(date, { size: 26, color: GOLD_LT })]),
     ];
     const children = [

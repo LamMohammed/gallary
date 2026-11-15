@@ -80,15 +80,15 @@ function colorShown(product) {
 }
 
 function productMessageLines(product) {
-  const lines = [`🏆 اسم المنتج: ${product.name}`, `📌 كود المنتج: ${product.code}`, `✨ الخامة: ${catLabel(product.cat)}`];
-  if (colorShown(product)) lines.push(`🎨 اللون: ${product.color}`);
-  if (product.size) lines.push(`📐 المقاس: ${isoSize(product.size)}`);
+  const lines = [`اسم المنتج: ${product.name}`, `كود المنتج: ${product.code}`, `الخامة: ${catLabel(product.cat)}`];
+  if (colorShown(product)) lines.push(`اللون: ${product.color}`);
+  if (product.size) lines.push(`المقاس: ${isoSize(product.size)}`);
   return lines;
 }
 
 function whatsappUrl(product, quantity = 1) {
-  const lines = [...productMessageLines(product), `🔢 الكمية: ${toArabicNumber(quantity)}`];
-  const message = `👋 مرحبًا، أريد الاستفسار عن هذا المنتج:\n\n${lines.join("\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
+  const lines = [...productMessageLines(product), `الكمية: ${toArabicNumber(quantity)}`];
+  const message = `مرحبًا، أريد الاستفسار عن هذا المنتج:\n\n${lines.join("\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
@@ -200,9 +200,9 @@ bulkSend.addEventListener("click", () => {
   if (items.length === 0) return;
 
   const lines = items.map((p, i) =>
-    `${toArabicNumber(i + 1)}-\n${[...productMessageLines(p), `🔢 الكمية: ${toArabicNumber(productQuantities.get(p.id) ?? 1)}`].join("\n")}`,
+    `${toArabicNumber(i + 1)}-\n${[...productMessageLines(p), `الكمية: ${toArabicNumber(productQuantities.get(p.id) ?? 1)}`].join("\n")}`,
   );
-  const message = `👋 مرحبًا، أريد الاستفسار عن هذه المنتجات:\n\n${lines.join("\n\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
+  const message = `مرحبًا، أريد الاستفسار عن هذه المنتجات:\n\n${lines.join("\n\n")}\n\nأريد معرفة السعر والتفاصيل المتاحة.`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   clearSelection();

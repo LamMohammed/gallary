@@ -1,0 +1,86 @@
+diff --git a/site/admin/catalog-docx.js b/site/admin/catalog-docx.js
+index 4940d74..364aa69 100644
+--- a/site/admin/catalog-docx.js
++++ b/site/admin/catalog-docx.js
+@@ -24,6 +24,7 @@
+ 
+   /* الصورة → JPEG مصغّر (Word ما بيقرأش WebP كويس) */
+   async function jpegOf(src, maxSide = 560) {
++    if (!src || /\/$/.test(src)) return null;
+     try {
+       const blob = await (await fetch(src)).blob();
+       const bmp = await createImageBitmap(blob);
+@@ -94,7 +95,9 @@
+         if (real && !colors.some((x) => x.name === c)) colors.push({ name: c, hex: /^#[0-9A-Fa-f]{6}$/.test(p.color_hex || "") ? p.color_hex.slice(1).toUpperCase() : null });
+       });
+       const prices = list.map((p) => ({ size: (p.size || "").trim(), price: (p.price || "").trim() })).filter((x) => x.price);
+-      return { base, list, prices, name: base.name, codes: list.map((p) => p.code), material: label(base.cat), sizes, colors };
++      /* الصورة من أول نسخة ليها صورة (النسخ المضافة بالجملة ممكن تكون من غير صورة) */
++      const owner = list.find((p) => p.image) || base;
++      return { base, owner, list, prices, name: base.name, codes: list.map((p) => p.code), material: label(base.cat), sizes, colors };
+     });
+   }
+ 
+@@ -108,7 +111,7 @@
+     for (let i = 0; i < fams.length; i++) {
+       const f = fams[i];
+       onProgress && onProgress(i + 1, fams.length);
+-      const img = await jpegOf(imgUrl(f.base));
++      const img = await jpegOf(imgUrl(f.owner));
+       const kids = [];
+       if (img) {
+         const k = Math.min(250 / img.w, 250 / img.h);
+@@ -157,7 +160,7 @@
+       center([run("دروع التكريم", { bold: true, size: 120, color: IVORY })], { spacing: { after: 240 } }),
+       center([run(" ", { size: 8 })], { indent: { left: 3300, right: 3300 }, border: { bottom: { style: D.BorderStyle.SINGLE, size: 12, color: "C9A227", space: 1 } }, spacing: { after: 360 } }),
+       center([run("شركة ميم", { bold: true, size: 56, color: IVORY })], { spacing: { after: 200 } }),
+-      center([run(cats.map((c) => c.label).join("  ·  "), { size: 28, color: "C9D3E3" })], { spacing: { after: 1700 } }),
++      center([run(cats.filter((c) => products.some((p) => p.cat === c.id)).map((c) => c.label).join("  ·  "), { size: 28, color: "C9D3E3" })], { spacing: { after: 1700 } }),
+       center([run(date, { size: 26, color: GOLD_LT })]),
+     ];
+     const children = [
+diff --git a/site/admin/dashboard.js b/site/admin/dashboard.js
+index e478cd2..0b87fdc 100644
+--- a/site/admin/dashboard.js
++++ b/site/admin/dashboard.js
+@@ -372,11 +372,25 @@
+   });
+ 
+   /* ---------- كتالوج Word ---------- */
++  /* الرابط اللي بيظهر آخر الملف: دومين الموقع الحقيقي. لو اللوحة مفتوحة من جهازك (localhost) بنستخدم
++     SITE_URL من config.js، ولو فاضي بنسأل مرة واحدة ونفتكر الإجابة. */
++  function siteUrlForWord() {
++    const local = /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === "file:";
++    if (!local) return location.origin + "/";
++    let u = (typeof SITE_URL === "string" && SITE_URL) || "";
++    try { u = u || localStorage.getItem("meem-site-url") || ""; } catch (e) {}
++    if (!u) u = (prompt("اكتب رابط الموقع الأساسي اللي هيظهر آخر ملف Word (مثال: https://example.com/)") || "").trim();
++    if (!/^https:\/\/[^\s]+$/.test(u)) throw new Error("رابط الموقع لازم يبدأ بـ https:// — اضبط SITE_URL في js/config.js أو اكتبه لما يطلبه منك.");
++    if (!u.endsWith("/")) u += "/";
++    try { localStorage.setItem("meem-site-url", u); } catch (e) {}
++    return u;
++  }
++
+   async function exportWord(btn) {
+     const old = btn.textContent; btn.disabled = true;
+     try {
+       const blob = await MeemCatalogDocx.build({
+-        products, cats, imgUrl: (p) => imgSrc(imageOf(p)), siteUrl: location.origin + "/", logoUrl: "../images/brand/logo-mark.svg",
++        products, cats, imgUrl: (p) => (imageOf(p) ? imgSrc(imageOf(p)) : ""), siteUrl: siteUrlForWord(), logoUrl: "../images/brand/logo-mark.svg",
+         onProgress: (i, n) => { btn.textContent = "⏳ جاري التجهيز " + ar(i) + "/" + ar(n); },
+       });
+       const a = document.createElement("a");
+diff --git a/site/js/config.js b/site/js/config.js
+index 08d11f3..99407bd 100644
+--- a/site/js/config.js
++++ b/site/js/config.js
+@@ -3,6 +3,9 @@
+    ============================================================ */
+ const ACCOUNT_NAME = "شركة ميم";
+ 
++/* رابط الموقع الحقيقي (https://…/) — بيظهر آخر ملف Word اللي بينزّله الأدمن. سيبه فاضي لو بتفتح اللوحة من الدومين نفسه. */
++const SITE_URL = "";
++
+ /* القيم الافتراضية لاسم التواصل ورقم واتساب.
+    الأدمن يقدر يغيّرهم من لوحة الإدارة (الإعدادات) من غير ما تعدّلي الكود،
+    والموقع بيقرأ القيمة الحالية من قاعدة البيانات. */

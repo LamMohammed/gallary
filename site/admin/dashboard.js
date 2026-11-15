@@ -372,11 +372,25 @@
   });
 
   /* ---------- كتالوج Word ---------- */
+  /* الرابط اللي بيظهر آخر الملف: دومين الموقع الحقيقي. لو اللوحة مفتوحة من جهازك (localhost) بنستخدم
+     SITE_URL من config.js، ولو فاضي بنسأل مرة واحدة ونفتكر الإجابة. */
+  function siteUrlForWord() {
+    const local = /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === "file:";
+    if (!local) return location.origin + "/";
+    let u = (typeof SITE_URL === "string" && SITE_URL) || "";
+    try { u = u || localStorage.getItem("meem-site-url") || ""; } catch (e) {}
+    if (!u) u = (prompt("اكتب رابط الموقع الأساسي اللي هيظهر آخر ملف Word (مثال: https://example.com/)") || "").trim();
+    if (!/^https:\/\/[^\s]+$/.test(u)) throw new Error("رابط الموقع لازم يبدأ بـ https:// — اضبط SITE_URL في js/config.js أو اكتبه لما يطلبه منك.");
+    if (!u.endsWith("/")) u += "/";
+    try { localStorage.setItem("meem-site-url", u); } catch (e) {}
+    return u;
+  }
+
   async function exportWord(btn) {
     const old = btn.textContent; btn.disabled = true;
     try {
       const blob = await MeemCatalogDocx.build({
-        products, cats, imgUrl: (p) => imgSrc(imageOf(p)), siteUrl: location.origin + "/", logoUrl: "../images/brand/logo-mark.svg",
+        products, cats, imgUrl: (p) => (imageOf(p) ? imgSrc(imageOf(p)) : ""), siteUrl: siteUrlForWord(), logoUrl: "../images/brand/logo-mark.svg",
         onProgress: (i, n) => { btn.textContent = "⏳ جاري التجهيز " + ar(i) + "/" + ar(n); },
       });
       const a = document.createElement("a");
