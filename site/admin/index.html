@@ -12,6 +12,7 @@
   <link rel="icon" href="../images/brand/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="refresh.css">
+  <link rel="stylesheet" href="import.css">
 </head>
 
 <body>
@@ -297,6 +298,8 @@
             </div>
             <div class="acts">
               <button class="btn btn-word" id="expWord" type="button">📄 تحميل الكتالوج (Word)</button>
+              <button class="btn q js-xlsx-export" type="button">📊 تصدير Excel</button>
+              <button class="btn q js-xlsx-import" type="button">📥 استيراد Excel</button>
               <input id="q" type="search" placeholder="🔍 بحث بالاسم أو الكود" class="input--search">
               <select id="f" class="input--filter"></select>
             </div>
@@ -370,6 +373,8 @@
             <div class="acts">
               <button class="btn q" id="exp">📥 تصدير نسخة</button>
               <button class="btn btn-word" id="expWord2" type="button">📄 تحميل الكتالوج (Word)</button>
+              <button class="btn q js-xlsx-export" type="button">📊 تصدير Excel</button>
+              <button class="btn q js-xlsx-import" type="button">📥 استيراد Excel</button>
             </div>
             <div class="divider"></div>
             <p class="muted danger-note">⚠️ إجراءات حذف نهائية — لا يمكن التراجع</p>
@@ -409,10 +414,24 @@
       <footer class="sheet__foot"><button class="btn" type="submit" id="qSave">💾 حفظ</button><button class="btn q" type="button" id="qFull">⚙️ فورم كامل (ربط نسخ)</button></footer>
     </form>
   </dialog>
+  <input type="file" id="impFile" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+  <dialog id="imp" class="sheet sheet--wide" aria-labelledby="impTitle">
+    <div class="imp-wrap">
+      <header class="sheet__head"><h3 id="impTitle">مراجعة التغييرات قبل الحفظ</h3><button class="btn q sm" type="button" id="impClose" aria-label="إغلاق">✕</button></header>
+      <div class="sheet__body">
+        <div class="msg" id="impMsg"></div>
+        <p class="imp-sum" id="impSum"></p>
+        <div class="imp-table" id="impTable"></div>
+        <div class="imp-errs" id="impErrs"></div>
+      </div>
+      <footer class="sheet__foot"><button class="btn" type="button" id="impApply">💾 تطبيق</button><button class="btn q" type="button" id="impCancel">إلغاء</button></footer>
+    </div>
+  </dialog>
   <script src="vendor/sortable.min.js"></script>
   <script src="catalog-docx.js"></script>
   <script src="dashboard.js"></script>
   <script src="manage.js"></script>
+  <script src="excel-io.js"></script>
   <script src="variants-bulk.js"></script>
   <script src="admin-ui.js"></script>
 </body>

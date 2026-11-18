@@ -1,0 +1,23 @@
+/* import.css — نافذة مراجعة استيراد Excel (بتتحمّل بعد refresh.css) */
+.sheet--wide{width:min(780px,100vw)}
+.imp-wrap{display:flex;flex-direction:column;width:100%;height:100%}
+.imp-sum{font-size:15px;line-height:1.9;margin:0}
+.imp-table{border:1px solid var(--line);border-radius:4px;overflow:auto;max-height:46vh}
+.imp-table:empty{display:none}
+.imp-table table{width:100%;border-collapse:collapse;font-size:13px}
+.imp-table th,.imp-table td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+.imp-table th{position:sticky;top:0;background:var(--card);color:var(--mute);font-weight:700}
+.imp-from{color:var(--mute);text-decoration:line-through;word-break:break-word}
+.imp-to{font-weight:700;word-break:break-word}
+.imp-note{color:var(--mute);font-size:12px;font-weight:400}
+.imp-errs{border-inline-start:3px solid var(--danger);padding:8px 14px;font-size:13px;background:rgba(192,57,43,.07)}
+.imp-errs:empty{display:none}
+.imp-errs ul{margin:6px 0 0;padding-inline-start:18px}
+.imp-errs li{margin:2px 0}
+
+/* موبايل: الشيت ياخد عرض الشاشة كله (قاعدة المتصفح الافتراضية للـ dialog كانت بتقصّه وتزيحه) */
+.sheet{max-width:100vw}
+@media (max-width:520px){
+  .sheet,.sheet--wide{inset:auto 0 0 0;width:100vw;max-width:100vw;margin:0}
+  .imp-table th,.imp-table td{padding:7px 6px}
+}
