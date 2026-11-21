@@ -156,7 +156,11 @@ const BASE_CAT_ORDER = ["gold", "crystal", "acrylic"];
 
 function applyRemoteCategories(rows) {
   const all = CATS.find((c) => c.id === "all") || { id: "all", label: "الكل" };
-  const sorted = [...rows].sort((a, b) => {
+  /* الأنواع المخفية بتتشال من الفلتر، ومنتجاتها بتتشال لأن validateCatalog بيرفض أي منتج نوعه مش في CATS */
+  const visible = rows.filter((c) => !c.hidden);
+  const ordered = visible.some((c) => Number.isFinite(c.sort_order));   // ترتيب الأدمن لو موجود
+  const sorted = [...visible].sort((a, b) => {
+    if (ordered) return (a.sort_order ?? 1e9) - (b.sort_order ?? 1e9) || a.id.localeCompare(b.id);
     const ia = BASE_CAT_ORDER.indexOf(a.id), ib = BASE_CAT_ORDER.indexOf(b.id);
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.id.localeCompare(b.id);
   });
@@ -168,19 +172,24 @@ async function loadRemoteCatalog() {
   const base = "id,code,name,cat,color,era,size,image";
   const ext = base + ",group_id,variant_by,color_hex";
   const ext2 = ext + ",price";
+  const ext3 = ext2 + ",hidden";
   const url = (cols, order) => `/rest/v1/products?select=${cols}&order=${order}`;
   const sorted = "sort_order.asc.nullslast,created_at.asc,code.asc";
   const [cats, products] = await Promise.all([
-    sbFetch("/rest/v1/categories?select=id,label,prefix"),
+    sbFetch("/rest/v1/categories?select=id,label,prefix,sort_order,hidden")
+      .catch(() => sbFetch("/rest/v1/categories?select=id,label,prefix")),
     // الأعمدة الجديدة (نسخ المنتج) → لو migration 006 لسه ما اتشغلتش نرجع للقديم
-    sbFetch(url(ext2, sorted))
+    sbFetch(url(ext3, sorted))
+      .catch(() => sbFetch(url(ext2, sorted)))
       .catch(() => sbFetch(url(ext, sorted)))
       .catch(() => sbFetch(url(base, sorted)))
       .catch(() => sbFetch(url(base, "created_at.asc,code.asc"))),
   ]);
   if (!Array.isArray(cats) || !cats.length) throw new Error("قاعدة البيانات فاضية");
   applyRemoteCategories(cats);
-  const valid = validateCatalog(products);
+  /* المنتج المخفي ومنتجات النوع المخفي بتتشال قبل التحقق، لأن validateCatalog بيرفض الكتالوج كله لو لقى نوع مش في الفلتر */
+  const hiddenCats = new Set(cats.filter((c) => c.hidden).map((c) => c.id));
+  const valid = validateCatalog((products || []).filter((p) => !p.hidden && !hiddenCats.has(p.cat)));
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ cats, products: valid })); } catch (e) {}
   return { cats, products: valid };
 }
@@ -258,6 +267,9 @@ function pickVariant(group, current, axis, value) {
    إعدادات الموقع (اسم التواصل + رقم واتساب) — بيعدّلها الأدمن
    ============================================================ */
 const SETTINGS_KEY = "meem-settings-v1";
+const SITE_TEXT = {};          // نصوص الصفحة الرئيسية من لوحة الإدارة (فاضي = النص الأصلي في index.html)
+let SHOW_PRICES = true;
+const SITE_TEXT_KEYS = ["hero_kicker", "hero_title", "hero_text", "footer_text", "banner_text"];
 
 function applySettingsObject(s) {
   if (!s) return false;
@@ -266,6 +278,12 @@ function applySettingsObject(s) {
   if (/^[1-9][0-9]{7,14}$/.test(phone) && phone !== WHATSAPP_NUMBER) { WHATSAPP_NUMBER = phone; changed = true; }
   const name = String(s.contact_name || "").trim();
   if (name && name.length <= 60 && name !== CONTACT_NAME) { CONTACT_NAME = name; changed = true; }
+  SITE_TEXT_KEYS.forEach((k) => {
+    const v = String(s[k] ?? "").trim().slice(0, 200);
+    if ((SITE_TEXT[k] || "") !== v) { SITE_TEXT[k] = v; changed = true; }
+  });
+  const showPrices = String(s.show_prices ?? "1") !== "0";
+  if (showPrices !== SHOW_PRICES) { SHOW_PRICES = showPrices; changed = true; }
   return changed;
 }
 

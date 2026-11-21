@@ -779,7 +779,21 @@ function formatPhone(number) {
   return `+${number}`;
 }
 
+/* نصوص الصفحة الرئيسية + شريط الإعلان + عرض الأسعار (من إعدادات الأدمن). النص الفاضي = بيفضل الأصلي. */
+function applySiteTexts() {
+  const set = (sel, text) => { const el = document.querySelector(sel); if (el && text) el.textContent = text; };
+  set(".hero .kicker", SITE_TEXT.hero_kicker);
+  const h1 = document.querySelector(".hero-copy h1");
+  if (h1 && SITE_TEXT.hero_title) { h1.textContent = SITE_TEXT.hero_title; h1.style.whiteSpace = "pre-line"; }
+  set(".hero-description", SITE_TEXT.hero_text);
+  set(".footer-copy p", SITE_TEXT.footer_text);
+  const banner = document.getElementById("siteBanner");
+  if (banner) { banner.textContent = SITE_TEXT.banner_text || ""; banner.hidden = !SITE_TEXT.banner_text; }
+  document.documentElement.dataset.prices = SHOW_PRICES ? "on" : "off";
+}
+
 function refreshContactLinks() {
+  applySiteTexts();
   const nameEl = document.getElementById("header-contact-name");
   const phoneEl = document.getElementById("header-contact-phone");
   const link = document.getElementById("header-contact");

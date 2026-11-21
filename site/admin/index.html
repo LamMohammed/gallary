@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="refresh.css">
   <link rel="stylesheet" href="import.css">
+  <link rel="stylesheet" href="controls.css">
 </head>
 
 <body>
@@ -81,7 +82,7 @@
         </button>
         <p class="nav-group-title">الموقع</p>
         <button class="nav-item" data-view="settings">
-          <span class="nav-ic">⚙️</span> الاسم والرقم
+          <span class="nav-ic">⚙️</span> إعدادات الموقع
         </button>
         <button class="nav-item" data-view="admins">
           <span class="nav-ic">👤</span> المسؤولين
@@ -311,10 +312,28 @@
 
                 <!-- ===== CATS ===== -->
         <section class="view" data-view="cats">
-          <div class="page-head"><div><h2>الأنواع</h2><p>غيّر الاسم اللي بيظهر للعملاء في الفلاتر وفي الكتالوج</p></div></div>
+          <div class="page-head">
+            <div>
+              <h2>الأنواع</h2>
+              <p>رتّب الأنواع بالسحب، أخفِ نوعًا، أو أضف نوعًا جديدًا</p>
+            </div>
+          </div>
           <div class="card">
             <div class="msg" id="catMsg"></div>
+            <p class="note note--mb">الترتيب هنا هو ترتيب الفلتر في الموقع. النوع المخفي بيختفي من الفلتر وتختفي منتجاته من الموقع، والمنتجات نفسها بتفضل عندك في اللوحة.</p>
             <div class="rowlist" id="catManage"></div>
+          </div>
+          <div class="card">
+            <h3>نوع جديد</h3>
+            <form id="ctf" class="grid-form" autocomplete="off">
+              <label>الاسم اللي هيظهر
+                <input name="label" required maxlength="40" placeholder="مثال: خشب">
+              </label>
+              <label>بادئة الكود <span class="muted">(اختياري، حروف إنجليزي)</span>
+                <input name="prefix" maxlength="5" dir="ltr" placeholder="WD">
+              </label>
+              <div class="w acts"><button class="btn" type="submit">➕ إضافة النوع</button></div>
+            </form>
           </div>
         </section>
 
@@ -337,11 +356,13 @@
         <section class="view" data-view="settings">
           <div class="page-head">
             <div>
-              <h2>الاسم والرقم</h2>
-              <p>بيظهروا في أعلى الموقع وفي رسائل واتساب اللي بتوصلك</p>
+              <h2>إعدادات الموقع</h2>
+              <p>بيانات التواصل، نصوص الصفحة الرئيسية، وعرض الأسعار</p>
             </div>
           </div>
           <div class="card">
+            <h3>بيانات التواصل</h3>
+            <p class="muted">الاسم والرقم بيظهروا أعلى الموقع، والرقم هو اللي بتوصله رسائل واتساب.</p>
             <div class="msg" id="smsg"></div>
             <form id="sf" autocomplete="off" class="grid-form">
               <label>اسم التواصل
@@ -353,6 +374,34 @@
               <p class="muted w" id="sPreview"></p>
               <div class="w acts">
                 <button class="btn" type="submit">💾 حفظ</button>
+              </div>
+            </form>
+          </div>
+                  <div class="card">
+            <h3>نصوص الصفحة الرئيسية</h3>
+            <p class="muted">سيب أي خانة فاضية عشان الموقع يعرض نصها الأصلي.</p>
+            <div class="msg" id="scMsg"></div>
+            <form id="sc" autocomplete="off" class="grid-form">
+              <label class="w">السطر الصغير فوق العنوان
+                <input name="hero_kicker" maxlength="80" id="scKicker">
+              </label>
+              <label class="w">العنوان الرئيسي <span class="muted">(سطر جديد = سطر في العنوان)</span>
+                <textarea name="hero_title" rows="2" maxlength="80" id="scTitle"></textarea>
+              </label>
+              <label class="w">الوصف تحت العنوان
+                <textarea name="hero_text" rows="2" maxlength="200" id="scText"></textarea>
+              </label>
+              <label class="w">الجملة في آخر الصفحة (الفوتر)
+                <input name="footer_text" maxlength="200" id="scFooter">
+              </label>
+              <label class="w">شريط الإعلان <span class="muted">(بيظهر أعلى الموقع كله. فاضي = مفيش شريط)</span>
+                <input name="banner_text" maxlength="200" id="scBanner">
+              </label>
+              <label class="check w"><input type="checkbox" name="show_prices" id="scPrices" checked><span>عرض الأسعار في الموقع</span></label>
+              <p class="muted w">لو قفلت العرض، السعر بيختفي من بطاقة المنتج ومن تفاصيله. الأسعار نفسها بتفضل محفوظة.</p>
+              <div class="w acts">
+                <button class="btn" type="submit">💾 حفظ</button>
+                <button class="btn q" type="button" id="scReset">↩ رجّع النصوص الأصلية</button>
               </div>
             </form>
           </div>
@@ -401,6 +450,7 @@
         <label>وصف مختصر<input name="era" required maxlength="120"></label>
         <label>النوع<select name="cat" id="qCat"></select></label>
         <label class="check" id="qSyncWrap"><input type="checkbox" name="sync" checked><span id="qSyncTxt"></span></label>
+        <label class="check" id="qVisWrap"><input type="checkbox" name="visible" checked><span>ظاهر في الموقع</span></label>
         <p class="muted" id="qSyncNote">الكود واللون والمقاس والصورة بتفضل لكل نسخة لوحدها.</p>
         <div class="sheet__row">
           <label>الكود<input name="code" required maxlength="30" dir="ltr"></label>
@@ -432,6 +482,7 @@
   <script src="dashboard.js"></script>
   <script src="manage.js"></script>
   <script src="excel-io.js"></script>
+  <script src="site-controls.js"></script>
   <script src="variants-bulk.js"></script>
   <script src="admin-ui.js"></script>
 </body>

@@ -1,0 +1,12 @@
+/* controls.css — صفحة الأنواع (ترتيب/إخفاء) وإعدادات الموقع (بتتحمّل بعد import.css) */
+.cat-row{gap:12px;flex-wrap:wrap}
+.cat-row .drag-handle{align-self:center}
+.cat-row .rowline__main{flex:1 1 200px}
+.cat-row.is-off{background:rgba(201,162,39,.07)}
+.cat-row.is-off .rowline__main input{opacity:.65}
+.switch{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);cursor:pointer;white-space:nowrap}
+.switch input{width:18px;height:18px}
+.card h3{margin:0 0 6px}
+.card>.muted{margin:0 0 12px}
+.grid-form textarea{width:100%;resize:vertical;min-height:64px}
+@media (max-width:600px){.cat-row .rowline__main{flex:1 1 100%}}

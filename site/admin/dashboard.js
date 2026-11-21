@@ -52,8 +52,11 @@
   /* ---------- تحميل البيانات ---------- */
   const ORDER = "order=sort_order.asc.nullslast,created_at.asc,code.asc";
   let hasSort = true;
+  /* ترتيب الأنواع زي ما حدده الأدمن (sort_order) */
+  function sortCats() { cats.sort((a, b) => (a.sort_order ?? 1e9) - (b.sort_order ?? 1e9) || String(a.id).localeCompare(String(b.id))); }
   async function loadAll() {
-    cats = await api("/rest/v1/categories?select=id,label,prefix");
+    cats = await api("/rest/v1/categories?select=*");
+    sortCats();
     try { products = await api("/rest/v1/products?select=*&" + ORDER); hasSort = true; }
     catch (e) { hasSort = false; products = await api("/rest/v1/products?select=*&order=created_at.asc,code.asc"); }
     fillCatSelect(); renderList(); renderStats(); fillVariantOf(); loadSettings();
@@ -292,7 +295,7 @@
     const list = visibleList();
     $("plist").innerHTML = list.length ? list.map((p, i) => `
       <div class="p" data-id="${esc(p.id)}"><span class="drag-handle" title="اسحب لتغيير الترتيب" aria-label="اسحب لتغيير الترتيب">⋮⋮</span><img src="${esc(imgSrc(imageOf(p)))}" alt="" loading="lazy" draggable="false">
-        <div><b>${esc(p.name)}</b><br><small class="muted">${esc(p.code)} · ${esc(label(p.cat))} · ${esc(p.color)} · ${esc(p.size)}${p.price ? " · 💰 " + esc(p.price) : ""}${p.group_id ? " · 🔗 " + (p.variant_by === "size" ? "مقاس" : "لون") + (isBase(p) ? " (أساسي)" : "") : ""}</small></div>
+        <div><b>${esc(p.name)}</b><br><small class="muted">${esc(p.code)} · ${esc(label(p.cat))} · ${esc(p.color)} · ${esc(p.size)}${p.price ? " · 💰 " + esc(p.price) : ""}${p.hidden ? " · 🙈 مخفي من الموقع" : ""}${p.group_id ? " · 🔗 " + (p.variant_by === "size" ? "مقاس" : "لون") + (isBase(p) ? " (أساسي)" : "") : ""}</small></div>
         <div class="acts">
           <button class="btn q" data-a="top" data-id="${esc(p.id)}" title="نقل لأول الصفحة" ${i === 0 ? "disabled" : ""}>⤒</button>
           <button class="btn q" data-a="up" data-id="${esc(p.id)}" title="لفوق" ${i === 0 ? "disabled" : ""}>▲</button>
@@ -390,7 +393,7 @@
     const old = btn.textContent; btn.disabled = true;
     try {
       const blob = await MeemCatalogDocx.build({
-        products, cats, imgUrl: (p) => (imageOf(p) ? imgSrc(imageOf(p)) : ""), siteUrl: siteUrlForWord(), logoUrl: "../images/brand/logo-mark.svg",
+        products: products.filter((p) => !p.hidden && !(cats.find((c) => c.id === p.cat) || {}).hidden), cats: cats.filter((c) => !c.hidden), imgUrl: (p) => (imageOf(p) ? imgSrc(imageOf(p)) : ""), siteUrl: siteUrlForWord(), logoUrl: "../images/brand/logo-mark.svg",
         onProgress: (i, n) => { btn.textContent = "⏳ جاري التجهيز " + ar(i) + "/" + ar(n); },
       });
       const a = document.createElement("a");
@@ -604,7 +607,7 @@
     get cats() { return cats; }, get products() { return products; }, get session() { return session; },
     api, esc, ar, imgSrc, imageOf, label, find, groupVariants, isBase, msg, friendly,
     refreshList() { renderList(); renderStats(); fillVariantOf(); },
-    refreshCats() { fillCatSelect(); renderList(); },
+    refreshCats() { sortCats(); fillCatSelect(); renderList(); },
     openFull(id) { const p = find(id); if (p) openFull(p); },
     reload: loadAll, hasSort: () => hasSort,
   };

@@ -8,34 +8,100 @@
   const say = (el, text, type = "ok") => { el.textContent = text; el.className = "msg " + type; };
   const enc = encodeURIComponent;
 
-  /* ================= 1) الأنواع: تعديل الاسم اللي بيظهر ================= */
+  /* ================= 1) الأنواع: ترتيب بالسحب · إخفاء · إضافة · تسمية · حذف النوع الفاضي ================= */
+  const MIG = "شغّل database/010_site_controls.sql في Supabase (SQL Editor) الأول، وبعدين جرّب تاني.";
+  const needsMig = (m) => /sort_order|hidden|column|schema cache/i.test(m || "");
+  let catSortable = null;
+
   function renderCats() {
     const { cats, products, esc, ar } = A();
     $("catManage").innerHTML = cats.map((c) => {
       const n = products.filter((p) => p.cat === c.id).length;
-      return `<div class="rowline" data-id="${esc(c.id)}">
+      return `<div class="rowline cat-row${c.hidden ? " is-off" : ""}" data-id="${esc(c.id)}">
+        <span class="drag-handle" title="اسحب لتغيير الترتيب" aria-hidden="true">⋮⋮</span>
         <label class="rowline__main">الاسم اللي بيظهر<input maxlength="40" value="${esc(c.label)}" data-orig="${esc(c.label)}"></label>
         <span class="rowline__meta"><b dir="ltr">${esc(c.prefix || "—")}</b> بادئة الكود<br>${ar(n)} منتج</span>
-        <button class="btn" type="button" disabled>حفظ</button></div>`;
+        <label class="switch" title="النوع المخفي بيختفي من الموقع هو ومنتجاته"><input type="checkbox" data-act="vis" ${c.hidden ? "" : "checked"}><span>ظاهر</span></label>
+        <button class="btn" type="button" data-act="save" disabled>حفظ</button>
+        <button class="btn d" type="button" data-act="del" ${n ? 'disabled title="فيه منتجات — انقلهم لنوع تاني الأول"' : ""}>حذف</button></div>`;
     }).join("") || '<div class="empty">لا توجد أنواع.</div>';
+    if (catSortable) { catSortable.destroy(); catSortable = null; }
+    if (window.Sortable) catSortable = Sortable.create($("catManage"), { handle: ".drag-handle", draggable: ".cat-row", animation: 150, touchStartThreshold: 4, onEnd: saveCatOrder });
   }
+
+  async function saveCatOrder() {
+    const { api, cats, friendly } = A();
+    const ids = [...$("catManage").querySelectorAll(".cat-row")].map((r) => r.dataset.id), byId = new Map(cats.map((c) => [c.id, c]));
+    const changed = [];
+    ids.forEach((id, i) => { const c = byId.get(id); if (c && c.sort_order !== i + 1) changed.push([c, i + 1]); });
+    if (!changed.length) return;
+    try {
+      await Promise.all(changed.map(([c, n]) => api(`/rest/v1/categories?id=eq.${enc(c.id)}`, { method: "PATCH", body: { sort_order: n }, headers: { Prefer: "return=minimal" } })));
+      changed.forEach(([c, n]) => { c.sort_order = n; });
+      A().refreshCats();
+      say($("catMsg"), "اتحفظ الترتيب. فلتر الموقع هيظهر بنفس الترتيب.");
+    } catch (err) { say($("catMsg"), needsMig(err.message) ? MIG : friendly(err), "err"); renderCats(); }
+  }
+
   $("catManage").addEventListener("input", (e) => {
-    const inp = e.target.closest("input"); if (!inp) return;
-    inp.closest(".rowline").querySelector("button").disabled = !inp.value.trim() || inp.value.trim() === inp.dataset.orig;
+    const inp = e.target.closest("input[maxlength]"); if (!inp) return;
+    inp.closest(".rowline").querySelector('[data-act="save"]').disabled = !inp.value.trim() || inp.value.trim() === inp.dataset.orig;
+  });
+  $("catManage").addEventListener("change", async (e) => {
+    const chk = e.target.closest('[data-act="vis"]'); if (!chk) return;
+    const { api, cats, products, friendly, ar } = A(), row = chk.closest(".cat-row"), c = cats.find((x) => x.id === row.dataset.id), hide = !chk.checked;
+    const n = products.filter((p) => p.cat === c.id).length;
+    if (hide && n && !confirm(`إخفاء «${c.label}» هيشيل ${ar(n)} منتج من الموقع. المنتجات نفسها بتفضل عندك في اللوحة. تكمل؟`)) { chk.checked = true; return; }
+    try {
+      await api(`/rest/v1/categories?id=eq.${enc(c.id)}`, { method: "PATCH", body: { hidden: hide }, headers: { Prefer: "return=minimal" } });
+      c.hidden = hide; row.classList.toggle("is-off", hide);
+      say($("catMsg"), hide ? `«${c.label}» اتخفى من الموقع.` : `«${c.label}» رجع يظهر في الموقع.`);
+    } catch (err) { chk.checked = !hide; say($("catMsg"), needsMig(err.message) ? MIG : friendly(err), "err"); }
   });
   $("catManage").addEventListener("click", async (e) => {
-    const btn = e.target.closest("button"); if (!btn) return;
-    const row = btn.closest(".rowline"), inp = row.querySelector("input"), label = inp.value.trim();
-    const { api, cats, friendly } = A();
-    if (cats.some((c) => c.label === label && c.id !== row.dataset.id)) return say($("catMsg"), "فيه نوع تاني بنفس الاسم.", "err");
+    const btn = e.target.closest("button[data-act]"); if (!btn) return;
+    const { api, cats, friendly } = A(), row = btn.closest(".cat-row"), id = row.dataset.id, c = cats.find((x) => x.id === id);
+    if (btn.dataset.act === "del") {
+      if (!confirm(`حذف النوع «${c.label}»؟ مش هينفع ترجعه.`)) return;
+      try {
+        await api(`/rest/v1/categories?id=eq.${enc(id)}`, { method: "DELETE", headers: { Prefer: "return=minimal" } });
+        cats.splice(cats.indexOf(c), 1); A().refreshCats(); renderCats(); say($("catMsg"), `اتحذف النوع «${c.label}».`);
+      } catch (err) { say($("catMsg"), friendly(err), "err"); }
+      return;
+    }
+    const inp = row.querySelector("input[maxlength]"), label = inp.value.trim();
+    if (cats.some((x) => x.label === label && x.id !== id)) return say($("catMsg"), "فيه نوع تاني بنفس الاسم.", "err");
     btn.disabled = true;
     try {
-      await api(`/rest/v1/categories?id=eq.${enc(row.dataset.id)}`, { method: "PATCH", body: { label }, headers: { Prefer: "return=minimal" } });
-      cats.find((c) => c.id === row.dataset.id).label = label;
-      inp.dataset.orig = label;
-      A().refreshCats();
-      say($("catMsg"), `اتغيّر اسم النوع لـ "${label}" — هيظهر كده في الموقع كمان.`);
+      await api(`/rest/v1/categories?id=eq.${enc(id)}`, { method: "PATCH", body: { label }, headers: { Prefer: "return=minimal" } });
+      c.label = label; inp.dataset.orig = label; A().refreshCats();
+      say($("catMsg"), `اتغيّر اسم النوع لـ «${label}». هيظهر كده في الموقع كمان.`);
     } catch (err) { say($("catMsg"), friendly(err), "err"); btn.disabled = false; }
+  });
+
+  $("ctf").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const { api, cats, friendly } = A(), f = $("ctf").elements, label = f.label.value.trim(), prefix = f.prefix.value.trim().toUpperCase();
+    if (!label || label.length > 40) return say($("catMsg"), "اكتب اسم النوع (حتى ٤٠ حرف).", "err");
+    if (!/^[A-Z0-9]{0,5}$/.test(prefix)) return say($("catMsg"), "بادئة الكود حروف إنجليزي أو أرقام بس (حتى ٥).", "err");
+    if (cats.some((c) => c.label === label)) return say($("catMsg"), "فيه نوع بنفس الاسم.", "err");
+    if (prefix && cats.some((c) => (c.prefix || "").toUpperCase() === prefix)) return say($("catMsg"), `البادئة ${prefix} مستخدمة في نوع تاني.`, "err");
+    const base = prefix.toLowerCase(), id = !base || cats.some((c) => c.id === base) ? "t" + Date.now().toString(36) : base;
+    const row = { id, label, prefix, sort_order: Math.max(0, ...cats.map((c) => c.sort_order || 0)) + 1, hidden: false };
+    const btn = e.submitter; btn.disabled = true;
+    try {
+      let note = "";
+      try { await api("/rest/v1/categories", { method: "POST", body: row, headers: { Prefer: "return=minimal" } }); }
+      catch (err) {
+        if (!needsMig(err.message)) throw err;
+        delete row.sort_order; delete row.hidden;      // قاعدة قديمة: نضيف النوع من غير ترتيب
+        await api("/rest/v1/categories", { method: "POST", body: row, headers: { Prefer: "return=minimal" } });
+        note = " " + MIG.replace(" وبعدين جرّب تاني.", " عشان الترتيب والإخفاء يشتغلوا.");
+      }
+      cats.push(row); f.label.value = ""; f.prefix.value = ""; A().refreshCats(); renderCats();
+      say($("catMsg"), `اتضاف النوع «${label}».${note}`);
+    } catch (err) { say($("catMsg"), friendly(err), "err"); }
+    btn.disabled = false;
   });
 
   /* ================= 2+3) التعديل السريع (نافذة جانبية) ================= */
@@ -61,14 +127,14 @@
     qeId = id; qeBlob = null;
     const f = qf(), group = groupVariants(p);
     $("qCat").innerHTML = cats.map((c) => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join("");
-    f.name.value = p.name; f.era.value = p.era || ""; f.cat.value = p.cat; f.code.value = p.code;
+    f.name.value = p.name; f.era.value = p.era || ""; f.visible.checked = !p.hidden; f.cat.value = p.cat; f.code.value = p.code;
     f.color.value = p.color || ""; f.size.value = p.size || ""; f.price.value = p.price || ""; f.colorHex.value = p.color_hex || "";
     $("qHexWrap").style.display = p.group_id && p.variant_by !== "size" ? "" : "none";
     $("qPrev").src = imgSrc(imageOf(p)); f.img.value = "";
     const many = group.length > 1;
     $("qSyncWrap").style.display = many ? "" : "none";
     f.sync.checked = many;
-    $("qSyncTxt").textContent = `طبّق الاسم والوصف والنوع على كل النسخ (${ar(group.length)}) مرة واحدة`;
+    $("qSyncTxt").textContent = `طبّق الاسم والوصف والنوع وحالة الظهور على كل النسخ (${ar(group.length)}) مرة واحدة`;
     $("qTitle").textContent = "تعديل: " + p.name;
     $("qMsg").className = "msg";
     $("qe").showModal(); f.name.focus(); f.name.select();
@@ -87,6 +153,7 @@
     const hex = f.colorHex.value.trim();
     if (hex && !/^#[0-9A-Fa-f]{6}$/.test(hex)) return say($("qMsg"), "لون العينة لازم يكون بالشكل #C9A227", "err");
     const shared = { name: f.name.value.trim(), era: f.era.value.trim(), cat: f.cat.value };
+    const hide = !f.visible.checked; if (hide || "hidden" in p) shared.hidden = hide;   // لو العمود لسه مش موجود ومفيش إخفاء، ما نبعتش حاجة
     const own = { code: f.code.value.trim(), color: f.color.value.trim(), size: f.size.value.trim() };
     const pr = f.price.value.trim(); if (pr || p.price) own.price = pr || null;
     if (p.group_id && p.variant_by !== "size") own.color_hex = hex || null;
